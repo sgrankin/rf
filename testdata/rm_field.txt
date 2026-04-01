@@ -1,25 +1,21 @@
-rm T.F
+# rm: remove struct field
+rm T.Y
 -- x.go --
 package m
 
 type T struct {
-	// Not about F.
-
-	// F
-	F int // more about F
-	// G
-	G int
+	X int
+	Y string
+	Z bool
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -3,8 +3,6 @@
- type T struct {
- 	// Not about F.
+@@ -2,6 +2,5 @@
 
--	// F
--	F int // more about F
- 	// G
- 	G int
+ type T struct {
+ 	X int
+-	Y string
+ 	Z bool
  }
