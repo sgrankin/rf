@@ -1,0 +1,24 @@
+# ex: contextAppropriate - don't substitute non-addressable as & operand
+ex {
+	var x int
+	x -> x + 1
+}
+-- x.go --
+package m
+
+func F() {
+	x := 0
+	_ = &x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package m
+
+ func F() {
+-	x := 0
++	x := 0 + 1
+ 	_ = &x
+ }
