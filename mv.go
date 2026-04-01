@@ -624,7 +624,7 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 				}
 				return nil
 			}()
-			if call == nil || len(call.Args) >= 1 {
+			if call != nil && len(call.Args) >= 1 {
 				fn := func() *ast.Ident {
 					switch t := call.Fun.(type) {
 					case *ast.Ident:
