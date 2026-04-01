@@ -1,0 +1,9 @@
+# error: newline in regexp search address
+mv x.go:/foo
+bar/ NewName
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+newline in regexp search: /foo

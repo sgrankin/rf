@@ -1,0 +1,8 @@
+# error: unterminated quoted string in script
+mv "unterminated
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+newline in "-quoted string
