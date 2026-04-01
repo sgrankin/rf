@@ -1,0 +1,29 @@
+# mv: method to function where receiver is named but params are unnamed
+mv T.M F
+-- x.go --
+package p
+
+type T struct{}
+
+func (t T) M(int, string) {}
+
+func f() {
+	var t T
+	t.M(1, "x")
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,9 +2,9 @@
+
+ type T struct{}
+
+-func (t T) M(int, string) {}
++func F(t T, _ int, _ string) {}
+
+ func f() {
+ 	var t T
+-	t.M(1, "x")
++	F(t, 1, "x")
+ }
