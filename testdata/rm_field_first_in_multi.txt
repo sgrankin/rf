@@ -1,0 +1,22 @@
+# rm: remove first field from multi-field struct (idx == 0 path)
+rm T.X
+-- x.go --
+package m
+
+type T struct {
+	X int
+	Y string
+	Z bool
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,6 @@
+ package m
+
+ type T struct {
+-	X int
+ 	Y string
+ 	Z bool
+ }
