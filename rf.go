@@ -150,6 +150,8 @@ func run(rf *refactor.Refactor, script string) error {
 				resets++
 				resetErrs.Add(err)
 				continue
+			default:
+				return wrapError(err, "errors found during: %s", lastCmd)
 			}
 
 			if err := snap.Errors.Err(); err != nil {

@@ -5,5 +5,5 @@ package p
 type T struct{}
 
 func (T) M() {}
--- stdout --
 -- stderr --
+errors found during: add T.M text: TODO: add after method

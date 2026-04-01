@@ -3,3 +3,5 @@ rm x.go
 package p
 
 func F() {}
+-- stderr --
+errors found during: rm x.go: rm x.go: file not supported
