@@ -1,0 +1,9 @@
+# key: error when type is not a struct
+key T
+-- x.go --
+package m
+
+type T int
+-- stderr --
+T is not a struct type
+errors found during: key T
