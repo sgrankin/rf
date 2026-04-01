@@ -1,0 +1,29 @@
+# ex: assigneeType handles multi-value assignment (Lhs != Rhs count)
+ex {
+	var f func(int) int
+	var x int
+	implicit f
+	f(x) -> x + 1
+}
+-- x.go --
+package p
+
+func twovals() (int, int) { return 1, 2 }
+
+func g() {
+	a, b := twovals()
+	_ = a
+	_ = b
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package p
+
+-func twovals() (int, int) { return 1, 2 }
++func twovals() (int, int) { return 1 + 1, 2 + 1 }
+
+ func g() {
+ 	a, b := twovals()
