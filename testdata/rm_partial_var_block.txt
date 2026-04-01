@@ -1,0 +1,23 @@
+# rm: remove one var from a var block (partial deletion)
+rm X
+-- x.go --
+package m
+
+var (
+	X = 1
+	Y = 2
+)
+
+func F() int { return Y }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,6 @@
+ package m
+
+ var (
+-	X = 1
+ 	Y = 2
+ )
+
