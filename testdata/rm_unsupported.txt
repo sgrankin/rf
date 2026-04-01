@@ -1,0 +1,5 @@
+rm x.go
+-- x.go --
+package p
+
+func F() {}

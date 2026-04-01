@@ -1,0 +1,10 @@
+ex nonexistent/pkg {
+	1 -> 2
+}
+-- x.go --
+package p
+
+var _ = 1
+-- stderr --
+cannot find package nonexistent/pkg
+errors found during: ex nonexistent/pkg { \ ...
