@@ -1,26 +1,32 @@
-mv T.Method Func
+mv T.DoWork DoWork
 -- x.go --
-package m
+package p
 
-type T struct{ X int }
+type T struct{}
 
-func (t T) Method() int {
-	return t.X
+func (t T) DoWork() int {
+	return 1
 }
 
-var _ = T{1}.Method()
+func f() {
+	var t T
+	_ = t.DoWork()
+}
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -2,8 +2,8 @@
+@@ -2,11 +2,11 @@
 
- type T struct{ X int }
+ type T struct{}
 
--func (t T) Method() int {
-+func Func(t T) int {
- 	return t.X
+-func (t T) DoWork() int {
++func DoWork(t T) int {
+ 	return 1
  }
 
--var _ = T{1}.Method()
-+var _ = Func(T{1})
+ func f() {
+ 	var t T
+-	_ = t.DoWork()
++	_ = DoWork(t)
+ }

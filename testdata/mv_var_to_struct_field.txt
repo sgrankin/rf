@@ -1,0 +1,31 @@
+mv x s.X
+-- x.go --
+package p
+
+type S struct{}
+
+var s S
+var x int
+
+func f() {
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,10 +1,11 @@
+ package p
+
+-type S struct{}
++type S struct {
++	X int
++}
+
+ var s S
+-var x int
+
+ func f() {
+-	_ = x
++	_ = s.X
+ }

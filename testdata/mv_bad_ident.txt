@@ -1,8 +1,7 @@
-# mv: error when new name is not a valid Go identifier
-mv F 123bad
+mv F 123abc
 -- x.go --
-package m
+package p
 
 func F() {}
 -- stderr --
-usage: malformed replacement: not a valid Go identifier: 123bad
+usage: malformed replacement: not a valid Go identifier: 123abc

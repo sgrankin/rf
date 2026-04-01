@@ -1,17 +1,16 @@
-# mv: convert function to method (funcToMethod path)
-mv F T.M
+mv DoWork T.DoWork
 -- x.go --
-package m
+package p
 
-type T struct{ X int }
+type T struct{}
 
-func F(t T, x int) int {
-	return t.X + x
+func DoWork(t T) int {
+	return 1
 }
 
-func G() int {
+func f() {
 	var t T
-	return F(t, 1)
+	_ = DoWork(t)
 }
 -- stdout --
 diff old/x.go new/x.go
@@ -19,15 +18,15 @@ diff old/x.go new/x.go
 +++ new/x.go
 @@ -2,11 +2,11 @@
 
- type T struct{ X int }
+ type T struct{}
 
--func F(t T, x int) int {
-+func (t T) M(x int) int {
- 	return t.X + x
+-func DoWork(t T) int {
++func (t T) DoWork() int {
+ 	return 1
  }
 
- func G() int {
+ func f() {
  	var t T
--	return F(t, 1)
-+	return t.M(1)
+-	_ = DoWork(t)
++	_ = t.DoWork()
  }
