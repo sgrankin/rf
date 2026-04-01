@@ -1,12 +1,22 @@
 # ex: type pattern rewrite (DeclStmt path in check)
 ex {
-	type T []int -> type T []string
+	[]int -> []string
 }
 -- x.go --
-package m
+package p
 
 type MySlice []int
 
-func F() MySlice { return nil }
--- stderr --
-usage: parsing type T []int -> type T []string: 1:22: expected ';', found '-'
+var _ []int
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package p
+
+-type MySlice []int
++type MySlice []string
+
+-var _ []int
++var _ []string
