@@ -1,0 +1,6 @@
+# error: unknown command
+badcmd args
+-- x.go --
+package m
+-- stderr --
+unknown command badcmd
