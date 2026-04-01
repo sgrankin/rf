@@ -1,11 +1,6 @@
-# ex: empty block error
+# ex: block with only var declaration and no rewrite does nothing
 ex {
 	var x int
 }
 -- x.go --
 package m
--- stderr --
-errors in example:
-declared and not used: x
-var x int
-errors found during: ex { \ ...
