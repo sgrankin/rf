@@ -1,0 +1,21 @@
+debug verbose
+ex {
+	type T any
+	new(T) -> (*T)(nil)
+}
+-- x.go --
+package p
+
+var X = new(int)
+var Y = new(string)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,4 +1,4 @@
+ package p
+
+-var X = new(int)
+-var Y = new(string)
++var X = (*int)(nil)
++var Y = (*string)(nil)
