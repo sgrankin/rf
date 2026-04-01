@@ -1,0 +1,9 @@
+# Test error for non-import declarations in ex
+ex {
+	func f() {}
+	f() -> g()
+}
+-- x.go --
+package m
+-- stderr --
+usage: func declaration not allowed

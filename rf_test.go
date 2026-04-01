@@ -19,6 +19,30 @@ import (
 	"rsc.io/rf/refactor"
 )
 
+var trimCommentsTests = []struct {
+	in  string
+	out string
+}{
+	{"hello", "hello"},
+	{"hello # comment", "hello"},
+	{"hello '#' world", "hello '#' world"},
+	{`hello "#" world`, `hello "#" world`},
+	{`hello \# world`, `hello \`},
+	{"", ""},
+	{"# all comment", ""},
+	{`"hello # world"`, `"hello # world"`},
+	{"`hello # world`", "`hello # world`"},
+}
+
+func TestTrimComments(t *testing.T) {
+	for _, tt := range trimCommentsTests {
+		out := trimComments(tt.in)
+		if out != tt.out {
+			t.Errorf("trimComments(%q) = %q, want %q", tt.in, out, tt.out)
+		}
+	}
+}
+
 var readLineTests = []struct {
 	in  string
 	out []string

@@ -1,0 +1,40 @@
+# Test hasBreak with range stmt and nested break
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(items []int) {
+	total := 0
+	// BEGIN
+	for _, v := range items {
+		if v < 0 {
+			break
+		}
+		total += v
+	}
+	// END
+	_ = total
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,12 +3,16 @@
+ func F(items []int) {
+ 	total := 0
+ 	// BEGIN
++	New(items, total)
++	// END
++	_ = total
++}
++
++func New(items []int, total int) {
+ 	for _, v := range items {
+ 		if v < 0 {
+ 			break
+ 		}
+ 		total += v
+ 	}
+-	// END
+-	_ = total
+ }

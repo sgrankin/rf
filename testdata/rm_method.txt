@@ -1,0 +1,20 @@
+rm T.M
+-- x.go --
+package m
+
+type T struct{}
+
+func (T) M() {}
+
+func (T) N() {}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,4 @@
+
+ type T struct{}
+
+-func (T) M() {}
+-
+ func (T) N() {}

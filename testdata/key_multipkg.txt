@@ -1,0 +1,36 @@
+# key across multiple packages
+key T
+-- x.go --
+package m
+
+type T struct {
+	A int
+	B string
+}
+
+var _ = T{1, "a"}
+-- p/p.go --
+package p
+
+import "m"
+
+var _ = m.T{1, "b"}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,4 +5,4 @@
+ 	B string
+ }
+
+-var _ = T{1, "a"}
++var _ = T{A: 1, B: "a"}
+diff old/p/p.go new/p/p.go
+--- old/p/p.go
++++ new/p/p.go
+@@ -2,4 +2,4 @@
+
+ import "m"
+
+-var _ = m.T{1, "b"}
++var _ = m.T{A: 1, B: "b"}
