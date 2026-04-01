@@ -358,13 +358,6 @@ func trimComments(line string) string {
 
 var isGoIdent = regexp.MustCompile(`^[\p{L}_][\p{L}\p{Nd}_]*$`)
 
-func topItem(item *refactor.Item) *refactor.Item {
-	for item != nil && item.Outer != nil {
-		item = item.Outer
-	}
-	return item
-}
-
 func cut(s, sep string) (before, after string, ok bool) {
 	if before0, after0, ok0 := strings.Cut(s, sep); ok0 {
 		return before0, after0, true
