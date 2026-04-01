@@ -1,0 +1,26 @@
+# mv_stmts: hasBreak with labeled break in nested constructs
+mv x.go:4,18 G
+-- x.go --
+package m
+
+func F() {
+	switch {
+	case true:
+		for {
+			select {
+			default:
+				switch interface{}(0).(type) {
+				case int:
+					if true {
+						return
+					} else {
+						return
+					}
+				}
+			}
+		}
+	}
+}
+-- stderr --
+x.go:4:1: code to move is not a list of statements [x.go:4:1 x.go:19:1] [x.go:4:2 x.go:19:3] [x.go:3:10 x.go:20:2]
+errors found during: mv x.go:4,18 G
