@@ -202,11 +202,15 @@ func cmdMv(snap *refactor.Snapshot, args string) error {
 			// But an empty struct type has no pos at all, so we have to
 			// use the pos of the declaration in which the struct appears.
 			var structPos token.Pos
-			switch typ := tvar.Type().(type) {
+			t := tvar.Type()
+			if ptr, ok := t.(*types.Pointer); ok {
+				t = ptr.Elem()
+			}
+			switch t := t.(type) {
 			case *types.Struct:
 				structPos = tvar.Pos()
 			case *types.Named:
-				structPos = typ.Obj().Pos()
+				structPos = t.Obj().Pos()
 			}
 
 			doc := removeDecl(snap, old)
