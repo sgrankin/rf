@@ -1,0 +1,11 @@
+# ex: identical() interface method comparison via function type matching
+ex {
+	var f func(interface{ M() int })
+	f -> f
+}
+-- x.go --
+package p
+
+func G(f func(interface{ M() int })) {
+	f(nil)
+}
