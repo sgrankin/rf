@@ -656,7 +656,8 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 					repl = "(" + repl + ")"
 				}
 			default:
-				panic("unreachable")
+				m.snap.ErrorAt(id.Pos(), "internal error: unexpected object type %T", xobj)
+				return
 			}
 			buf.Replace(id.Pos(), id.End(), repl)
 			return
@@ -729,7 +730,7 @@ func needParen(newX ast.Node, stack []ast.Node) bool {
 	var prec int
 	switch newX := newX.(type) {
 	default:
-		panic(fmt.Sprintf("needParen inner %T", newX))
+		return true // conservatively add parens for unknown node types
 	case *ast.SelectorExpr,
 		*ast.TypeAssertExpr,
 		*ast.CallExpr,
@@ -754,7 +755,7 @@ func needParen(newX ast.Node, stack []ast.Node) bool {
 
 	switch outer := outer.(type) {
 	default:
-		panic(fmt.Sprintf("needParen outer %T", outer))
+		return true // conservatively add parens for unknown outer context
 	case *ast.BinaryExpr:
 		return prec < outer.Op.Precedence()
 	case *ast.StarExpr, *ast.UnaryExpr:
@@ -1244,8 +1245,10 @@ func typeAssertIf(m *matcher, stack []ast.Node, typeAsserts []example, done map[
 						list = stmt.List
 					case *ast.CaseClause:
 						list = stmt.Body
+					case *ast.CommClause:
+						list = stmt.Body
 					default:
-						panic(fmt.Sprintf("unexpected %T", stmt))
+						return // unexpected context; skip assertion
 					}
 					for j := 0; j < len(list); j++ {
 						if list[j] == stack[i-1] {

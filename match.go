@@ -180,7 +180,7 @@ func (m *matcher) matchExpr(x, y ast.Expr) bool {
 	}
 	switch x := x.(type) {
 	default:
-		panic(fmt.Sprintf("unhandled AST node type: %T", x))
+		return false // unhandled AST node type
 
 	case *ast.Ident:
 		log.Fatalf("unexpected Ident: %s", astString(m.fset, x))
@@ -592,7 +592,7 @@ func (m *matcher) identical(x, y types.Type) bool {
 		return x.Obj() == y.Obj()
 	}
 
-	panic("unreachable")
+	return false // unhandled type
 }
 
 func (m *matcher) implements(V types.Type, T *types.Interface) bool {
