@@ -1,0 +1,11 @@
+# mv: funcToMethod error when function has no parameters
+mv F T.F
+-- x.go --
+package p
+
+type T struct{}
+
+func F() {}
+-- stderr --
+x.go:5:6: function "F" has no parameters to use as receiver
+errors found during: mv F T.F

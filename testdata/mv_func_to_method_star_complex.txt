@@ -1,0 +1,11 @@
+# mv: funcToMethod error when star param X is not an ident
+mv F T.F
+-- x.go --
+package p
+
+type T = *[]int
+
+func F(s *[]int) {}
+-- stderr --
+x.go:5:6: parameter type is not an identifier
+errors found during: mv F T.F
