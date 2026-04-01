@@ -11,7 +11,6 @@ import (
 	"go/token"
 	"go/types"
 	"path"
-	"reflect"
 	"regexp"
 	"strings"
 
@@ -323,14 +322,6 @@ func rewriteUses(snap *refactor.Snapshot, old *refactor.Item, new string, checkP
 		return
 	}
 	snap.ForEachFile(fix)
-}
-
-func StackTypes(list []ast.Node) string {
-	var types []reflect.Type
-	for _, n := range list {
-		types = append(types, reflect.TypeOf(n))
-	}
-	return fmt.Sprint(types)
 }
 
 // removeDecl removes the declaration of old,
