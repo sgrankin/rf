@@ -1,0 +1,28 @@
+# mvstmt: extract code returning named type (printType named from same package)
+mv x.go:6 NewFunc
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F() {
+	t := T{1}
+	println(t.X)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,6 +3,11 @@
+ type T struct{ X int }
+
+ func F() {
+-	t := T{1}
++	t := NewFunc()
+ 	println(t.X)
+ }
++
++func NewFunc() T {
++	t := T{1}
++	return t
++}
