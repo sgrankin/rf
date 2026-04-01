@@ -1,0 +1,16 @@
+# mv: extract loop body with labeled continue to outer loop
+mv x.go:5,7 Inner
+-- x.go --
+package m
+
+func F() {
+outer:
+	for i := 0; i < 10; i++ {
+		if i%2 == 0 {
+			continue outer
+		}
+	}
+}
+-- stderr --
+x.go:5:1: code to move is not a list of statements [x.go:5:1 x.go:8:1] [x.go:4:1 x.go:9:3] [x.go:3:10 x.go:10:2]
+errors found during: mv x.go:5,7 Inner

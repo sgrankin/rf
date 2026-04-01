@@ -1,0 +1,37 @@
+# mv: extract statements with goto (errors - goto crosses boundary)
+mv x.go:5,8 Process
+-- x.go --
+package m
+
+func F() {
+	x := 1
+	if x > 0 {
+		x++
+	}
+	goto done
+done:
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,10 +2,15 @@
+
+ func F() {
+ 	x := 1
+-	if x > 0 {
+-		x++
+-	}
++	Process(x)
+ 	goto done
+ done:
+ 	_ = x
+ }
++
++func Process(x int) {
++	if x > 0 {
++		x++
++	}
++	return
++}
