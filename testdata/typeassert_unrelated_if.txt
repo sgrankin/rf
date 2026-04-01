@@ -1,0 +1,35 @@
+# typeassert: matchCond returns nil for non-EQL/NEQ conditions
+typeassert {
+	var x I
+	x.M() == 1 -> x.(m1)
+}
+-- x.go --
+package p
+
+type I interface{ M() int }
+type m1 int
+
+func (m1) M() int { return 1 }
+
+func f(x I) {
+	// Unrelated if with > operator - matchCond returns nil
+	if x.M() > 0 {
+		println("positive")
+	}
+	// Matching if with == operator
+	if x.M() == 1 {
+		_ = x
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -12,6 +12,7 @@
+ 	}
+ 	// Matching if with == operator
+ 	if x.M() == 1 {
++		x := x.(m1)
+ 		_ = x
+ 	}
+ }
