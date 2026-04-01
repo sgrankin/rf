@@ -1,6 +1,9 @@
-inline NoSuch
+# inline: error when item not found
+inline Nonexistent
 -- x.go --
 package m
+
+var X = 1
 -- stderr --
-NoSuch not found
-errors found during: inline NoSuch
+Nonexistent not found
+errors found during: inline Nonexistent
