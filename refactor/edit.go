@@ -12,7 +12,6 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -220,7 +219,7 @@ func (s *Snapshot) CreatePackage(pkgpath string) (*Package, error) {
 	}
 
 	if _, err := os.Stat(dir); err == nil {
-		files, _ := ioutil.ReadDir(dir)
+		files, _ := os.ReadDir(dir)
 		for _, file := range files {
 			if strings.HasSuffix(file.Name(), ".go") {
 				return nil, fmt.Errorf("%s exists but not loaded", pkgpath)
