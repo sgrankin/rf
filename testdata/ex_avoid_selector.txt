@@ -1,4 +1,4 @@
-# ex: avoid with selector expression (SelectorExpr path)
+# ex: avoid with selector expression (method)
 ex {
 	import "fmt"
 	var x int
@@ -10,17 +10,17 @@ package m
 
 import "fmt"
 
-func F() {
-	fmt.Println(1 + 1)
-}
+func F() int { return 1 + 1 }
+func G() { fmt.Println(1 + 1) }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -3,5 +3,5 @@
+@@ -2,5 +2,5 @@
+
  import "fmt"
 
- func F() {
--	fmt.Println(1 + 1)
-+	fmt.Println(1 + 2)
- }
+-func F() int { return 1 + 1 }
+-func G() { fmt.Println(1 + 1) }
++func F() int { return 1 + 2 }
++func G()     { fmt.Println(1 + 2) }

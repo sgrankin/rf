@@ -1,22 +1,23 @@
-# ex: match slice expression
+# ex: match involving slice index
 ex {
 	var s []int
-	s[1:2] -> s[:2]
+	s[0] -> s[1]
 }
 -- x.go --
 package m
 
-func F(s []int) []int {
-	return s[1:2]
+func F() int {
+	s := []int{1, 2}
+	return s[0]
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -1,5 +1,5 @@
- package m
+@@ -2,5 +2,5 @@
 
- func F(s []int) []int {
--	return s[1:2]
-+	return s[:2]
+ func F() int {
+ 	s := []int{1, 2}
+-	return s[0]
++	return s[1]
  }

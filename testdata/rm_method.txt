@@ -1,20 +1,29 @@
+# rm: remove a method
 rm T.M
 -- x.go --
 package m
 
 type T struct{}
 
-func (T) M() {}
+func (t T) M() int { return 0 }
 
-func (T) N() {}
+func F() int {
+	var t T
+	return t.M()
+}
+-- stderr --
+x.go:7:11: t.M undefined (type T has no field or method M)
+errors found after executing: rm T.M
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -2,6 +2,4 @@
+@@ -2,8 +2,6 @@
 
  type T struct{}
 
--func (T) M() {}
+-func (t T) M() int { return 0 }
 -
- func (T) N() {}
+ func F() int {
+ 	var t T
+ 	return t.M()
