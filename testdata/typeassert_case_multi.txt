@@ -1,0 +1,26 @@
+# typeassert: switch case with multiple values, same assertion (joinTypeAssert ok)
+# and case with incompatible assertions (joinTypeAssert nil)
+typeassert {
+	var x I
+	x.M() == 1 -> x.(m1)
+	x.M() == 2 -> x.(m2)
+}
+-- x.go --
+package p
+
+type I interface{ M() int }
+type m1 int
+type m2 int
+
+func (m1) M() int { return 1 }
+func (m2) M() int { return 2 }
+
+func f(x I) {
+	// case with incompatible assertions - no rewrite
+	{
+		switch x.M() {
+		case 1, 2:
+			_ = x
+		}
+	}
+}
