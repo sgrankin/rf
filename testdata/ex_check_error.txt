@@ -1,0 +1,14 @@
+# ex: type check error in pattern
+ex {
+	var x int
+	x.BadMethod() -> x
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+-- stderr --
+errors in example:
+x.BadMethod undefined (type int has no field or method BadMethod)
+x.BadMethod() /* -> x */
+errors found during: ex { \ ...
