@@ -55,3 +55,25 @@ func TestDiffSingleLine(t *testing.T) {
 		t.Fatal("Diff single line: want non-nil")
 	}
 }
+
+func TestDiffNoNewline(t *testing.T) {
+	out, err := Diff("a", []byte("x"), "b", []byte("y"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out == nil {
+		t.Fatal("Diff no newline: want non-nil")
+	}
+}
+
+func TestDiffLarger(t *testing.T) {
+	old := []byte("line1\nline2\nline3\nline4\nline5\n")
+	new := []byte("line1\nLINE2\nline3\nline4\nLINE5\n")
+	out, err := Diff("old.txt", old, "new.txt", new)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out == nil {
+		t.Fatal("Diff larger: want non-nil")
+	}
+}
