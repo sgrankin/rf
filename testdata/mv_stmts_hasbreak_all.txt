@@ -1,0 +1,36 @@
+# mvstmt: exercise hasBreak with various node types in for body
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(x int, ch chan int, items []int, v any) {
+	// BEGIN
+	for {
+		if x > 0 {
+			break
+		}
+		for i := 0; i < x; i++ {
+			break
+		}
+		for _, item := range items {
+			_ = item
+			break
+		}
+		select {
+		case <-ch:
+			break
+		}
+		switch x {
+		case 0:
+			break
+		}
+		switch v.(type) {
+		case int:
+			break
+		}
+	}
+	// END
+}
+-- stderr --
+x.go:5:1: extract type *types.Interface not implemented
+errors found during: mv F:/BEGIN/+0,/END/-0 New

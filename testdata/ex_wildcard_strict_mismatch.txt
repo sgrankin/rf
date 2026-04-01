@@ -1,0 +1,26 @@
+# ex: strict wildcard where types are assignable but not identical
+ex {
+	type T int
+	var x T
+	x + 1 -> x + 2
+}
+-- x.go --
+package m
+
+type MyInt int
+
+func F() {
+	var x MyInt
+	_ = x + 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+
+ func F() {
+ 	var x MyInt
+-	_ = x + 1
++	_ = x + 2
+ }
