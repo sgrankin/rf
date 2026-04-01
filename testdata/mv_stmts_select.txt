@@ -1,0 +1,36 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(ch chan int) {
+	x := 1
+	// BEGIN
+	select {
+	case ch <- x:
+		return
+	default:
+		return
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,11 +3,15 @@
+ func F(ch chan int) {
+ 	x := 1
+ 	// BEGIN
++	New(ch, x)
++	// END
++}
++
++func New(ch chan int, x int) {
+ 	select {
+ 	case ch <- x:
+ 		return
+ 	default:
+ 		return
+ 	}
+-	// END
+ }

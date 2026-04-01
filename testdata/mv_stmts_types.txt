@@ -1,0 +1,44 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F() {
+	// BEGIN
+	var a *int
+	var b []int
+	var c [3]int
+	var d map[string]int
+	var e chan int
+	var f chan<- int
+	var g <-chan int
+	_ = a
+	_ = b
+	_ = c
+	_ = d
+	_ = e
+	_ = f
+	_ = g
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F() {
+ 	// BEGIN
++	New()
++	// END
++}
++
++func New() {
+ 	var a *int
+ 	var b []int
+ 	var c [3]int
+@@ -16,5 +21,4 @@
+ 	_ = e
+ 	_ = f
+ 	_ = g
+-	// END
+ }
