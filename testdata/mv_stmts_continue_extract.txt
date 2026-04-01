@@ -1,0 +1,20 @@
+# mvstmt: extract code with continue in range (findControlFlow coverage)
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(items []int) {
+	for _, v := range items {
+		// BEGIN
+		if v > 0 {
+			continue
+		}
+		println(v)
+		// END
+	}
+}
+-- stderr --
+x.go:6:1: multiple control flow exits from moved code:
+	x.go:7:4: continue
+	x.go:10:1: implicit next statement
+errors found during: mv F:/BEGIN/+0,/END/-0 New
