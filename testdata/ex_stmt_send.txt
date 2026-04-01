@@ -1,13 +1,14 @@
-# ex: rewrite expression in send statement context
+# ex: match SendStmt via statement-level pattern
 ex {
+	var ch chan int
 	var x int
-	x + 1 -> x + 2
+	ch <- x -> ch <- x + 1
 }
 -- x.go --
 package m
 
 func F(ch chan int) {
-	ch <- 42 + 1
+	ch <- 42
 }
 -- stdout --
 diff old/x.go new/x.go
@@ -17,6 +18,6 @@ diff old/x.go new/x.go
  package m
 
  func F(ch chan int) {
--	ch <- 42 + 1
-+	ch <- 42 + 2
+-	ch <- 42
++	ch <- 42 + 1
  }
