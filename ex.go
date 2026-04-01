@@ -602,15 +602,15 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 					}
 				}
 				if op == '&' {
-					if addr, ok := replx.(*ast.UnaryExpr); ok && addr.Op == token.AND {
+					if star, ok := replx.(*ast.StarExpr); ok {
 						// Delete the inner *.
-						replx = addr.X
+						replx = star.X
 						op = 0
 					}
 					if px, ok := replx.(*ast.ParenExpr); ok {
-						if addr, ok := px.X.(*ast.UnaryExpr); ok && addr.Op == token.AND {
+						if star, ok := px.X.(*ast.StarExpr); ok {
 							// Delete the inner *.
-							replx = addr.X
+							replx = star.X
 							op = 0
 						}
 					}
