@@ -489,6 +489,10 @@ func (m *matcher) isWildcardType(t types.Type) bool {
 
 // identical reports whether x and y are identical types.
 func (m *matcher) identical(x, y types.Type) bool {
+	// Resolve type aliases so that IntAlias (= int) compares equal to int.
+	x = types.Unalias(x)
+	y = types.Unalias(y)
+
 	if x == y {
 		return true
 	}
@@ -654,6 +658,7 @@ func (m *matcher) matchWildcardType(xname *types.Named, y types.Type) bool {
 		fmt.Fprintf(os.Stderr, "primary type match\n")
 	}
 
+	y = types.Unalias(y)
 	m.envT[name] = y // record binding
 
 	// Treat basic types as though they were unnamed.
