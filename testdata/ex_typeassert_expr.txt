@@ -1,0 +1,14 @@
+# ex: match type assertion expression
+ex {
+	var x interface{}
+	x.(int) -> x.(int64)
+}
+-- x.go --
+package m
+
+func F(x interface{}) int64 {
+	return x.(int)
+}
+-- stderr --
+x.go:4:9: cannot use x.(int) (comma, ok expression of type int) as int64 value in return statement
+errors found before executing script

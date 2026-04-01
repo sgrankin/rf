@@ -1,0 +1,22 @@
+# ex: match star (dereference) expression
+ex {
+	var p *int
+	*p -> 0
+}
+-- x.go --
+package m
+
+func F(p *int) int {
+	return *p
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F(p *int) int {
+-	return *p
++	return 0
+ }

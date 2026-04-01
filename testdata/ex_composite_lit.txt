@@ -1,0 +1,28 @@
+# ex: match composite literal with type
+ex {
+	var x int
+	var y int
+	T{x, y} -> T{y, x}
+}
+-- x.go --
+package m
+
+type T struct {
+	A int
+	B int
+}
+
+func F() T {
+	return T{1, 2}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+ }
+
+ func F() T {
+-	return T{1, 2}
++	return T{2, 1}
+ }
