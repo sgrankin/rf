@@ -1,9 +1,9 @@
-# add: error when symbol not found
-add Nonexistent const X = 1
+# add: item not found
+add Nonexistent text
 -- x.go --
 package m
 
 func F() {}
 -- stderr --
 Nonexistent not found
-errors found during: add Nonexistent const X = 1
+errors found during: add Nonexistent text

@@ -1,0 +1,20 @@
+# mv: move code ending with non-terminating switch (no default)
+mv x.go:4,10 Compute
+-- x.go --
+package m
+
+func F(x int) int {
+	y := x + 1
+	switch {
+	case y == 1:
+		return 1
+	case y == 2:
+		return 2
+	}
+	return 0
+}
+-- stderr --
+x.go:4:1: multiple control flow exits from moved code:
+	x.go:7:3: return
+	x.go:11:1: implicit next statement
+errors found during: mv x.go:4,10 Compute
