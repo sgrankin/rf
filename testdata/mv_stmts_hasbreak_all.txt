@@ -1,24 +1,42 @@
 # mvstmt: exercise hasBreak with various node types in for body
-mv x.go:5,14 Extracted
+mv x.go:4,23 Extracted
 -- x.go --
 package m
 
 func F(ch chan int, v int) {
 	for {
+	L:
+		for range []int{1} {
+			break L
+		}
 		select {
 		case x := <-ch:
 			_ = x
 		}
-		if v > 0 {
+		switch interface{}(v).(type) {
+		case int:
 			break
 		}
 		for range []int{1} {
 			break
 		}
+		if v > 0 {
+			break
+		}
 	}
 }
--- stderr --
-x.go:5:1: multiple control flow exits from moved code:
-	x.go:10:4: break
-	x.go:15:1: implicit next statement
-errors found during: mv x.go:5,14 Extracted
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,10 @@
+ package m
+
+ func F(ch chan int, v int) {
++	Extracted(ch, v)
++}
++
++func Extracted(ch chan int, v int) {
+ 	for {
+ 	L:
+ 		for range []int{1} {
