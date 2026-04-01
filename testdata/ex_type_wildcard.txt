@@ -1,25 +1,26 @@
-# ex: type wildcard in pattern (match.go:379-384)
+# ex: type wildcard binding in pattern (match.go:379-384)
 ex {
 	type T interface{}
 	var x T
-	Wrap(x) -> x
+	T(x) -> x
 }
 -- x.go --
 package p
 
-func Wrap(x interface{}) interface{} { return x }
-
-func f() interface{} {
-	return Wrap(42)
+func f() {
+	x := 42
+	_ = int(x)
+	_ = int64(x)
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -3,5 +3,5 @@
- func Wrap(x interface{}) interface{} { return x }
+@@ -2,6 +2,6 @@
 
- func f() interface{} {
--	return Wrap(42)
-+	return 42
+ func f() {
+ 	x := 42
+-	_ = int(x)
++	_ = x
+ 	_ = int64(x)
  }
