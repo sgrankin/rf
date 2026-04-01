@@ -1,0 +1,6 @@
+# unknown command error
+badcmd foo
+-- x.go --
+package m
+-- stderr --
+unknown command badcmd

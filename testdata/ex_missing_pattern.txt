@@ -1,0 +1,8 @@
+# ex: missing pattern before ->
+ex {
+	-> foo
+}
+-- x.go --
+package m
+-- stderr --
+usage: missing pattern in example: -> foo

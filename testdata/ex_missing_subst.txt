@@ -1,0 +1,9 @@
+# ex: missing substitution after ->
+ex {
+	var x int
+	x ->
+}
+-- x.go --
+package m
+-- stderr --
+usage: missing substitution in example: x ->

@@ -1,0 +1,21 @@
+# run: multiple commands in a script
+mv X Y
+mv Y Z
+-- x.go --
+package m
+
+var X = 1
+
+func F() int { return X }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+-var X = 1
++var Z = 1
+
+-func F() int { return X }
++func F() int { return Z }

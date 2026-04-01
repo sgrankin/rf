@@ -1,0 +1,14 @@
+# ex: import after var declaration (import too late error)
+ex {
+	var x int
+	import "fmt"
+	x -> fmt.Println(x)
+}
+-- x.go --
+package m
+
+import "fmt"
+
+func F() { fmt.Println(1) }
+-- stderr --
+usage: parsing import "fmt": import too late

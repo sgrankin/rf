@@ -1,0 +1,25 @@
+# ex: pattern with import and package-qualified replacement
+ex {
+	import "fmt"
+	var x int
+	x + 1 -> fmt.Sprintf("%d", x)
+}
+-- x.go --
+package m
+
+import "fmt"
+
+func F() string {
+	return fmt.Sprintf("%d", 1+1)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ import "fmt"
+
+ func F() string {
+-	return fmt.Sprintf("%d", 1+1)
++	return fmt.Sprintf("%d", fmt.Sprintf("%d", 1))
+ }
