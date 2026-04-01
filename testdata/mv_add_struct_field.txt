@@ -1,0 +1,28 @@
+# mv: move a global var into a struct as a field (addStructField coverage)
+mv Y S.Y
+-- x.go --
+package m
+
+type S struct {
+	X int
+}
+
+var Y string
+
+func F(s *S) string {
+	return Y
+}
+-- stderr --
+x.go:10:11: S.Y undefined (type S has no field or method Y)
+errors found after executing: mv Y S.Y
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,5 +7,5 @@
+ var Y string
+
+ func F(s *S) string {
+-	return Y
++	return S.Y
+ }
