@@ -1,0 +1,11 @@
+# ex: needParen when replacing slice base
+ex {
+	var s []int
+	s -> s
+}
+-- x.go --
+package m
+
+func F(s []int) []int {
+	return s[1:2]
+}

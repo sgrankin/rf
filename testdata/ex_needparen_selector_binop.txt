@@ -1,0 +1,25 @@
+# ex: needParen when binary expression used in selector position
+ex {
+	import "bytes"
+	var b bytes.Buffer
+	b.Len() -> b.Cap()
+}
+-- x.go --
+package m
+
+import "bytes"
+
+func F(b bytes.Buffer) int {
+	return b.Len()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ import "bytes"
+
+ func F(b bytes.Buffer) int {
+-	return b.Len()
++	return b.Cap()
+ }

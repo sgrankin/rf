@@ -1,0 +1,11 @@
+# ex: needParen when replacing type assert base
+ex {
+	var x any
+	x.(int) -> x.(int)
+}
+-- x.go --
+package m
+
+func F(x any) int {
+	return x.(int)
+}
