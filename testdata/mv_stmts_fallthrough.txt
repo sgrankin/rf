@@ -1,37 +1,39 @@
-mv F:/BEGIN/+0,/END/-0 New
+# mv_stmts: findControlFlow with fallthrough in moved code
+mv x.go:6,8 G
 -- x.go --
-package p
+package m
 
-func F(x int) {
-	y := x + 1
-	switch y {
+func F() int {
+	switch 1 {
 	case 1:
-		// BEGIN
-		_ = y
+		x := 1
+		_ = x
 		fallthrough
-		// END
-	case 2:
-		_ = y
+	default:
+		return 0
 	}
+	return 0
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -5,10 +5,15 @@
- 	switch y {
+@@ -3,11 +3,16 @@
+ func F() int {
+ 	switch 1 {
  	case 1:
- 		// BEGIN
--		_ = y
-+		New(y)
+-		x := 1
+-		_ = x
++		G()
  		fallthrough
- 		// END
- 	case 2:
- 		_ = y
+ 	default:
+ 		return 0
  	}
+ 	return 0
  }
 +
-+func New(y int) {
-+	_ = y
++func G() {
++	x := 1
++	_ = x
 +	return
 +}
