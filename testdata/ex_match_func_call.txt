@@ -1,0 +1,25 @@
+# ex: match function call and replace
+ex {
+	var x int
+	var y int
+	Add(x, y) -> x + y
+}
+-- x.go --
+package m
+
+func Add(a, b int) int { return a + b }
+
+func F() int {
+	return Add(1, 2)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ func Add(a, b int) int { return a + b }
+
+ func F() int {
+-	return Add(1, 2)
++	return 1 + 2
+ }
