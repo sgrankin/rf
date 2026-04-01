@@ -561,6 +561,10 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 			case *types.Var:
 				b := m.env[xobj]
 				replx := b.matchExpr
+				if replx == nil {
+					m.snap.ErrorAt(matchPos, "pattern variable %s not bound in match", id.Name)
+					return
+				}
 
 				var outer ast.Node
 				if len(stack) >= 2 {
