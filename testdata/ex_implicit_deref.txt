@@ -1,24 +1,29 @@
-# ex: implicit dereference in selector (applySubst implicit * path)
+# ex: implicit dereference cancels with inner address-of
 ex {
-	var p *T
-	p.X -> p.X + 1
+	var t T
+	t.Val() -> NewVal(&t)
 }
 -- x.go --
-package m
+package p
 
-type T struct{ X int }
+type T struct{ v int }
 
-func F(t T) int {
-	return t.X
+func (t T) Val() int { return t.v }
+
+func NewVal(t *T) int { return t.v }
+
+func f() {
+	p := &T{1}
+	_ = p.Val()
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -3,5 +3,5 @@
- type T struct{ X int }
+@@ -8,5 +8,5 @@
 
- func F(t T) int {
--	return t.X
-+	return t.X + 1
+ func f() {
+ 	p := &T{1}
+-	_ = p.Val()
++	_ = NewVal(p)
  }

@@ -1,0 +1,31 @@
+# ex: implicit address-of cancels inner * (ex.go:610-614)
+# Pattern wildcard is pointer *T, source expression is (*ptr) which is T.
+# When substituting, &(*ptr) simplifies to ptr.
+ex {
+	var p *T
+	p.M() -> Use(p)
+}
+-- x.go --
+package p
+
+type T struct{ v int }
+
+func (t *T) M() int { return t.v }
+
+func Use(t *T) int { return t.v }
+
+func f() {
+	var ptr *T
+	_ = (*ptr).M()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -8,5 +8,5 @@
+
+ func f() {
+ 	var ptr *T
+-	_ = (*ptr).M()
++	_ = Use(ptr)
+ }

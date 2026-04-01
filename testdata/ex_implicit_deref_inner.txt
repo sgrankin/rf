@@ -1,0 +1,31 @@
+# ex: implicit dereference cancels inner &  (ex.go:596-600)
+# Pattern wildcard is value type T, source expression is (&x) which is *T.
+# When substituting, *(&x) simplifies to x.
+ex {
+	var t T
+	t.Val() -> Use(t)
+}
+-- x.go --
+package p
+
+type T struct{ v int }
+
+func (t T) Val() int { return t.v }
+
+func Use(t T) int { return t.v }
+
+func f() {
+	var x T
+	_ = (&x).Val()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -8,5 +8,5 @@
+
+ func f() {
+ 	var x T
+-	_ = (&x).Val()
++	_ = Use(x)
+ }

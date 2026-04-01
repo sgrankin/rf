@@ -2,6 +2,9 @@
 # Reads a Go coverage profile and prints uncovered line ranges per file.
 # Usage: ./uncovered.sh [coverprofile] [file-filter]
 # Example: ./uncovered.sh c.out ex.go
+#
+# A line is only reported as uncovered if it appears in at least one
+# count=0 block and does NOT appear in any count>0 block.
 
 profile="${1:-c.out}"
 filter="${2:-}"
@@ -9,67 +12,69 @@ filter="${2:-}"
 awk '
 NR == 1 { next }  # skip mode line
 {
-    # Format: pkg/file.go:startLine.startCol,endLine.endCol numStmts count
-    # Split on space first to get the block spec, numStmts, count
     split($0, parts, " ")
     count = parts[3] + 0
-
-    if (count != 0) next
-
-    # Parse "pkg/file.go:startLine.startCol,endLine.endCol"
     spec = parts[1]
-    # Find the colon separating file from line info
     ci = index(spec, ":")
     file = substr(spec, 1, ci - 1)
     rest = substr(spec, ci + 1)
-    # rest is "startLine.startCol,endLine.endCol"
     split(rest, lr, ",")
     split(lr[1], sl, ".")
     split(lr[2], el, ".")
     startLine = sl[1] + 0
     endLine = el[1] + 0
 
-    # Store uncovered ranges per file
-    n = file_count[file]++
-    starts[file, n] = startLine
-    ends[file, n] = endLine
+    for (l = startLine; l <= endLine; l++) {
+        if (count > 0) {
+            covered[file, l] = 1
+        } else {
+            uncov[file, l] = 1
+        }
+        files[file] = 1
+    }
 }
 END {
-    for (file in file_count) {
-        n = file_count[file]
-        # Sort ranges by start line (simple insertion sort)
-        for (i = 1; i < n; i++) {
-            s = starts[file, i]; e = ends[file, i]
+    for (file in files) {
+        # Collect truly uncovered lines
+        n = 0
+        for (key in uncov) {
+            split(key, kp, SUBSEP)
+            if (kp[1] != file) continue
+            l = kp[2] + 0
+            if (!covered[file, l]) {
+                lines[++n] = l
+            }
+        }
+        if (n == 0) continue
+
+        # Insertion sort
+        for (i = 2; i <= n; i++) {
+            key = lines[i]
             j = i - 1
-            while (j >= 0 && starts[file, j] > s) {
-                starts[file, j+1] = starts[file, j]
-                ends[file, j+1] = ends[file, j]
+            while (j >= 1 && lines[j] > key) {
+                lines[j+1] = lines[j]
                 j--
             }
-            starts[file, j+1] = s
-            ends[file, j+1] = e
+            lines[j+1] = key
         }
-        # Merge overlapping/adjacent ranges
-        m = 0
-        ms[0] = starts[file, 0]; me[0] = ends[file, 0]
-        for (i = 1; i < n; i++) {
-            if (starts[file, i] <= me[m] + 1) {
-                if (ends[file, i] > me[m]) me[m] = ends[file, i]
+
+        # Build ranges
+        ranges = ""
+        rstart = lines[1]; rend = lines[1]
+        for (i = 2; i <= n; i++) {
+            if (lines[i] == rend + 1) {
+                rend = lines[i]
             } else {
-                m++
-                ms[m] = starts[file, i]; me[m] = ends[file, i]
+                if (ranges != "") ranges = ranges ","
+                ranges = ranges (rstart == rend ? rstart : rstart "-" rend)
+                rstart = lines[i]; rend = lines[i]
             }
         }
-        # Format output
-        ranges = ""
-        for (i = 0; i <= m; i++) {
-            if (ranges != "") ranges = ranges ","
-            if (ms[i] == me[i])
-                ranges = ranges ms[i]
-            else
-                ranges = ranges ms[i] "-" me[i]
-        }
+        if (ranges != "") ranges = ranges ","
+        ranges = ranges (rstart == rend ? rstart : rstart "-" rend)
+
         print file ": " ranges
+        delete lines
     }
 }
 ' "$profile" | sort | if [ -n "$filter" ]; then grep "$filter"; else cat; fi

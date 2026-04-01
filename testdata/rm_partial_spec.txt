@@ -1,0 +1,19 @@
+# rm: remove one name from a multi-name var spec in a block
+rm X
+-- x.go --
+package m
+
+var (
+	X, Y = 1, 2
+)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ var (
+-	X, Y = 1, 2
++	Y = 2
+ )
