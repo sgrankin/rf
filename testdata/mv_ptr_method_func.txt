@@ -1,0 +1,31 @@
+# move a pointer receiver method to a function
+mv T.Method Func
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func (t *T) Method() int {
+	return t.X
+}
+
+func F(t *T) int {
+	return t.Method()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,10 +2,10 @@
+
+ type T struct{ X int }
+
+-func (t *T) Method() int {
++func Func(t *T) int {
+ 	return t.X
+ }
+
+ func F(t *T) int {
+-	return t.Method()
++	return Func(t)
+ }

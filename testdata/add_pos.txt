@@ -1,0 +1,22 @@
+# add using position address
+add F:/return/+0 x := 1; _ = x;
+-- x.go --
+package m
+
+func F() int {
+	return 0
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,4 +2,6 @@
+
+ func F() int {
+ 	return 0
++	x := 1
++	_ = x
+ }
+-- stderr --
+x.go:7:1: missing return
+errors found after executing: add F:/return/+0 x := 1; _ = x;
