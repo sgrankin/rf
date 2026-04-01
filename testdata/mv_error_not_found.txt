@@ -1,0 +1,8 @@
+mv NoSuchThing Y
+-- x.go --
+package m
+
+var X int
+-- stderr --
+NoSuchThing not found
+errors found during: mv NoSuchThing Y

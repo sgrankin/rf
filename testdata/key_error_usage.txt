@@ -1,0 +1,5 @@
+key
+-- x.go --
+package m
+-- stderr --
+usage: key StructType...

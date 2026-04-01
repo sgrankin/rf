@@ -1,0 +1,5 @@
+rm
+-- x.go --
+package m
+-- stderr --
+usage: rm old...

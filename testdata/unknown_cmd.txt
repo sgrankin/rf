@@ -1,0 +1,5 @@
+nosuchcommand
+-- x.go --
+package m
+-- stderr --
+unknown command nosuchcommand

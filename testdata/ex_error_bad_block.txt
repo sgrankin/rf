@@ -1,0 +1,5 @@
+ex { x
+-- x.go --
+package m
+-- stderr --
+unclosed {
