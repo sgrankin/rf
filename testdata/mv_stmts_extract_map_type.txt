@@ -1,0 +1,26 @@
+# mvstmt: extract code that returns a map value (printType map coverage)
+mv x.go:4 NewFunc
+-- x.go --
+package m
+
+func F() {
+	m := map[string]int{"a": 1}
+	println(m["a"])
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package m
+
+ func F() {
+-	m := map[string]int{"a": 1}
++	m := NewFunc()
+ 	println(m["a"])
+ }
++
++func NewFunc() map[string]int {
++	m := map[string]int{"a": 1}
++	return m
++}

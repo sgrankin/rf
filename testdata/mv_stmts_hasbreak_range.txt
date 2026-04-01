@@ -1,0 +1,43 @@
+# mvstmt: hasBreak with break inside range and nested for
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(items []int) int {
+	total := 0
+	// BEGIN
+	for _, v := range items {
+		for i := 0; i < v; i++ {
+			if i > 5 {
+				break
+			}
+			total += i
+		}
+	}
+	// END
+	return total
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,6 +3,12 @@
+ func F(items []int) int {
+ 	total := 0
+ 	// BEGIN
++	New(items, total)
++	// END
++	return total
++}
++
++func New(items []int, total int) {
+ 	for _, v := range items {
+ 		for i := 0; i < v; i++ {
+ 			if i > 5 {
+@@ -11,6 +17,4 @@
+ 			total += i
+ 		}
+ 	}
+-	// END
+-	return total
+ }

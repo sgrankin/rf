@@ -1,0 +1,20 @@
+# mvstmt: extract code with isTerm checking type switch termination
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(v any) int {
+	// BEGIN
+	switch v.(type) {
+	case int:
+		return 1
+	case string:
+		return 2
+	default:
+		return 0
+	}
+	// END
+}
+-- stderr --
+x.go:5:1: extract type *types.Interface not implemented
+errors found during: mv F:/BEGIN/+0,/END/-0 New

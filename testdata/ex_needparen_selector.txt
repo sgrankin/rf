@@ -1,0 +1,13 @@
+# ex: needParen with star expr in selector context
+ex {
+	var p *int
+	*p -> *p
+}
+-- x.go --
+package m
+
+import "unsafe"
+
+func F(p *int) uintptr {
+	return unsafe.Sizeof(*p)
+}

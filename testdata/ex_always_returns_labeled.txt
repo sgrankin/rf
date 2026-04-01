@@ -1,0 +1,19 @@
+# typeassert: alwaysReturns with labeled statement (alwaysReturns coverage)
+typeassert {
+	var i I
+	i.M() == 1 -> i.(m1)
+}
+-- x.go --
+package m
+
+type I interface { M() int }
+type m1 int
+func (m1) M() int { return 1 }
+
+func F(x I) int {
+	if x.M() != 1 {
+		return 0
+	}
+	_ = x
+	return 1
+}
