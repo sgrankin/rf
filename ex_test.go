@@ -5,6 +5,7 @@
 package main
 
 import (
+	"go/ast"
 	"reflect"
 	"testing"
 )
@@ -31,6 +32,43 @@ var commonRangesTests = []struct {
 	{"zx", "wyx", []rangePair{{1, 2, 1}}},
 	{"zyx", "wx", []rangePair{{2, 1, 1}}},
 	{"a", "b", nil},
+}
+
+func TestTrimCommentsEscape(t *testing.T) {
+	tests := []struct {
+		in   string
+		want string
+	}{
+		{`hello # comment`, "hello"},
+		{`"hello # world"`, `"hello # world"`},
+		{`"esc\"ape" # comment`, `"esc\"ape"`},
+		{`'esc\'ape' # comment`, `'esc\'ape'`},
+		{"no comment", "no comment"},
+	}
+	for _, tt := range tests {
+		got := trimComments(tt.in)
+		if got != tt.want {
+			t.Errorf("trimComments(%q) = %q, want %q", tt.in, got, tt.want)
+		}
+	}
+}
+
+func TestImportPath(t *testing.T) {
+	tests := []struct {
+		value string
+		want  string
+	}{
+		{`"fmt"`, "fmt"},
+		{`"net/http"`, "net/http"},
+		{`bad`, ""},
+	}
+	for _, tt := range tests {
+		spec := &ast.ImportSpec{Path: &ast.BasicLit{Value: tt.value}}
+		got := importPath(spec)
+		if got != tt.want {
+			t.Errorf("importPath(%q) = %q, want %q", tt.value, got, tt.want)
+		}
+	}
 }
 
 func TestCommonRanges(t *testing.T) {
