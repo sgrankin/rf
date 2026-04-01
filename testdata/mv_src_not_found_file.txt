@@ -1,0 +1,9 @@
+# mv: error when moving not-found source to file destination  
+mv Nonexistent x.go
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+Nonexistent not found
+errors found during: mv Nonexistent x.go

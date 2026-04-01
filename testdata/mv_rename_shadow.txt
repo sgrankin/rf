@@ -1,0 +1,14 @@
+# mv: error when renaming global and new name shadows at use site
+mv X Y
+-- x.go --
+package m
+
+var X = 1
+
+func F() int {
+	Y := 2
+	return X + Y
+}
+-- stderr --
+x.go:7:9: Y already in scope
+errors found during: mv X Y

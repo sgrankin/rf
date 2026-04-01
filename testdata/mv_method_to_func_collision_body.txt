@@ -1,0 +1,17 @@
+# mv: method to func with name collision in scope at use site
+mv T.M F
+-- x.go --
+package m
+
+type T struct{}
+
+func (t T) M() int { return 0 }
+
+func G() int {
+	var F = func() int { return 1 }
+	var t T
+	return t.M() + F()
+}
+-- stderr --
+x.go:10:11: F already in scope
+errors found during: mv T.M F
