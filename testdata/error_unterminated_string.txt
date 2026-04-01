@@ -1,8 +1,6 @@
-# error: unterminated quoted string in script
-mv "unterminated
+# error: unterminated string in script
+mv "foo
 -- x.go --
 package m
-
-func F() {}
 -- stderr --
 newline in "-quoted string

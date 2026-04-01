@@ -1,0 +1,6 @@
+# error: unterminated backtick string
+mv `foo
+-- x.go --
+package m
+-- stderr --
+unterminated `-quoted string

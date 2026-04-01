@@ -1,0 +1,8 @@
+# error: unclosed brace in script
+ex {
+	var x int
+	x -> x
+-- x.go --
+package m
+-- stderr --
+unclosed {
