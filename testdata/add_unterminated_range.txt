@@ -1,0 +1,9 @@
+# add: item is nil when text range applied to constant
+add C:/x/ text
+-- x.go --
+package p
+
+const C = 1
+-- stderr --
+cannot apply text range to const
+errors found during: add C:/x/ text
