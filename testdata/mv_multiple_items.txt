@@ -1,0 +1,8 @@
+mv F G H
+-- x.go --
+package p
+
+func F() {}
+func G() {}
+-- stderr --
+usage: cannot move multiple items to H
