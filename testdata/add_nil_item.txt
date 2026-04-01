@@ -1,0 +1,9 @@
+# add: item evaluates to nil (not found)
+add Nonexistent func G() {}
+-- x.go --
+package p
+
+func F() {}
+-- stderr --
+Nonexistent not found
+errors found during: add Nonexistent func G() {}
