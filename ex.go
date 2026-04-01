@@ -434,6 +434,7 @@ func (ex *exArgs) run() {
 		env:     make(map[types.Object]envBind),
 		envT:    make(map[string]types.Type),
 		stricts: ex.stricts,
+		verbose: ex.snap.Refactor().Debug["verbose"] != "",
 	}
 
 	var avoid map[ast.Node]bool
@@ -1167,6 +1168,7 @@ func (ex *exArgs) runTypeAssert() {
 		infoX:   ex.patternPkg.TypesInfo,
 		env:     make(map[types.Object]envBind),
 		envT:    make(map[string]types.Type),
+		verbose: snap.Refactor().Debug["verbose"] != "",
 	}
 
 	// TODO(rsc): This is almost as wrong as the other avoidOf call.
