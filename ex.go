@@ -385,6 +385,9 @@ func (ex *exArgs) check() error {
 func avoidOf(snap *refactor.Snapshot, avoids []types.Object, substInfo *types.Info, subst ast.Node) map[ast.Node]bool {
 	avoid := make(map[ast.Node]bool)
 	avoidObj := func(obj types.Object) {
+		if !obj.Pos().IsValid() {
+			return
+		}
 		stack := snap.SyntaxAt(obj.Pos())
 		for i := range stack {
 			switch n := stack[i].(type) {

@@ -1,0 +1,25 @@
+# ex: match wildcard binding to named types
+ex {
+	var x MyInt
+	x + 1 -> x + 2
+}
+-- x.go --
+package m
+
+type MyInt int
+
+func F() MyInt {
+	var n MyInt = 5
+	return n + 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+
+ func F() MyInt {
+ 	var n MyInt = 5
+-	return n + 1
++	return n + 2
+ }
