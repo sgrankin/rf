@@ -1,0 +1,17 @@
+# mv: error when converting method to func and name is already in scope
+mv T.M F
+-- x.go --
+package m
+
+type T struct{}
+
+func (t T) M() int { return 0 }
+
+func G() int {
+	F := 1
+	var t T
+	return t.M() + F
+}
+-- stderr --
+x.go:10:11: F already in scope
+errors found during: mv T.M F

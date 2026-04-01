@@ -1,8 +1,10 @@
-# ex: missing pattern before ->
+# ex: missing pattern before -> errors
 ex {
-	-> foo
+	-> x + 1
 }
 -- x.go --
 package m
+
+func F() int { return 1 }
 -- stderr --
-usage: missing pattern in example: -> foo
+usage: missing pattern in example: -> x + 1

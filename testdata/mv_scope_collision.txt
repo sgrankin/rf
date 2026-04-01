@@ -1,0 +1,10 @@
+# mv: error when new name already exists
+mv F G
+-- x.go --
+package m
+
+func F() int { return 1 }
+func G() int { return 2 }
+-- stderr --
+x.go:4:6: already have G
+errors found during: mv F G

@@ -1,0 +1,12 @@
+# mv: error when renaming field and new name already exists
+mv T.X T.Y
+-- x.go --
+package m
+
+type T struct {
+	X int
+	Y int
+}
+-- stderr --
+x.go:5:2: already have T.Y
+errors found during: mv T.X T.Y

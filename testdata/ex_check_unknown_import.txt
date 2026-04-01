@@ -1,0 +1,12 @@
+# ex: import of unavailable package errors
+ex {
+	import "nonexistent/pkg"
+	var x int
+	x + 1 -> x + 2
+}
+-- x.go --
+package m
+
+func F() int { return 1 + 1 }
+-- stderr --
+usage: import "nonexistent/pkg" not available

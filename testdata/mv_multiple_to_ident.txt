@@ -1,0 +1,9 @@
+# mv: error when trying to move multiple items to an identifier
+mv F G H
+-- x.go --
+package m
+
+func F() {}
+func G() {}
+-- stderr --
+usage: cannot move multiple items to H

@@ -1,0 +1,9 @@
+# mv: error when source not found
+mv Nonexistent NewName
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+Nonexistent not found
+errors found during: mv Nonexistent NewName

@@ -1,0 +1,9 @@
+# ex: empty block errors
+ex {
+}
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+usage: empty block
