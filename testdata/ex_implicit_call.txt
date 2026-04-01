@@ -1,0 +1,118 @@
+# ex: assigneeType covers CallExpr, return in FuncLit, composite lit paths
+ex {
+	var f func(int) int
+	var x int
+	implicit f
+	f(x) -> x + 1
+}
+-- x.go --
+package p
+
+func add(a int, b int) int { return a + b }
+
+type S struct{ X int }
+
+func g() {
+	// CallExpr argument
+	add(1, 2)
+
+	// Return in FuncLit
+	_ = func() int { return 3 }
+
+	// CompositeLit element (slice)
+	_ = []int{4, 5}
+
+	// CompositeLit element (array)
+	_ = [2]int{6, 7}
+
+	// CompositeLit struct field (unkeyed)
+	_ = S{8}
+
+	// KeyValueExpr in map
+	_ = map[string]int{"a": 9}
+
+	// KeyValueExpr in struct
+	_ = S{X: 10}
+
+	// KeyValueExpr in array
+	_ = [2]int{0: 11}
+
+	// KeyValueExpr in slice
+	_ = []int{0: 12}
+
+	// IndexExpr (map key)
+	m := map[int]string{}
+	_ = m[13]
+
+	// Type conversion
+	_ = int(14)
+
+	// Variadic
+	varfn(15, 16)
+}
+
+func varfn(args ...int) {}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,46 +1,46 @@
+ package p
+
+-func add(a int, b int) int { return a + b }
++func add(a int, b int) int { return a + b + 1 }
+
+ type S struct{ X int }
+
+ func g() {
+ 	// CallExpr argument
+-	add(1, 2)
++	add(1+1, 2+1)
+
+ 	// Return in FuncLit
+-	_ = func() int { return 3 }
++	_ = func() int { return 3 + 1 }
+
+ 	// CompositeLit element (slice)
+-	_ = []int{4, 5}
++	_ = []int{4 + 1, 5 + 1}
+
+ 	// CompositeLit element (array)
+-	_ = [2]int{6, 7}
++	_ = [2]int{6 + 1, 7 + 1}
+
+ 	// CompositeLit struct field (unkeyed)
+-	_ = S{8}
++	_ = S{8 + 1}
+
+ 	// KeyValueExpr in map
+-	_ = map[string]int{"a": 9}
++	_ = map[string]int{"a": 9 + 1}
+
+ 	// KeyValueExpr in struct
+-	_ = S{X: 10}
++	_ = S{X: 10 + 1}
+
+ 	// KeyValueExpr in array
+-	_ = [2]int{0: 11}
++	_ = [2]int{0: 11 + 1}
+
+ 	// KeyValueExpr in slice
+-	_ = []int{0: 12}
++	_ = []int{0: 12 + 1}
+
+ 	// IndexExpr (map key)
+ 	m := map[int]string{}
+-	_ = m[13]
++	_ = m[13+1]
+
+ 	// Type conversion
+-	_ = int(14)
++	_ = int(14 + 1)
+
+ 	// Variadic
+-	varfn(15, 16)
++	varfn(15+1, 16+1)
+ }
+
+ func varfn(args ...int) {}

@@ -3,8 +3,3 @@ ex {
 }
 -- x.go --
 package p
--- stderr --
-errors in example:
-declared and not used: x
-var x int
-errors found during: ex { \ ...

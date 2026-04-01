@@ -1,0 +1,35 @@
+# typeassert: else-if chain triggers IfStmt continue in enclosing block search
+typeassert {
+	var x I
+	x.M() == 1 -> x.(m1)
+}
+-- x.go --
+package p
+
+type I interface{ M() int }
+type m1 int
+
+func (m1) M() int { return 1 }
+
+func g(x I) {
+	{
+		if false {
+			return
+		} else if x.M() != 1 {
+			return
+		}
+		_ = x
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -12,6 +12,7 @@
+ 		} else if x.M() != 1 {
+ 			return
+ 		}
++		x := x.(m1)
+ 		_ = x
+ 	}
+ }
