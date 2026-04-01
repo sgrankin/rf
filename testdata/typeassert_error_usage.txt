@@ -1,0 +1,6 @@
+# typeassert: error with no arguments
+typeassert
+-- x.go --
+package m
+-- stderr --
+usage: missing block

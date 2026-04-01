@@ -1,0 +1,6 @@
+# sub: error with no arguments
+sub
+-- x.go --
+package m
+-- stderr --
+usage: sub address text...

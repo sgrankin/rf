@@ -1,0 +1,6 @@
+# inject: error when no arguments
+inject
+-- x.go --
+package m
+-- stderr --
+usage: inject Var Func...
