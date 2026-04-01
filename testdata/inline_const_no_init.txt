@@ -1,0 +1,14 @@
+# inline: error when const has no initializer
+inline D
+-- x.go --
+package m
+
+const (
+	C = 1
+	D
+)
+
+var X = D
+-- stderr --
+x.go:5:2: no initializer for D
+errors found during: inline D

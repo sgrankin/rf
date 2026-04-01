@@ -1,0 +1,9 @@
+# rm: error when removing unsupported kind (e.g. package)
+rm m
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+m not found
+errors found during: rm m

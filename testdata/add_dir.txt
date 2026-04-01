@@ -1,0 +1,9 @@
+# add to a directory (cmdAddSub ItemDir path)
+add m func G() {}
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+m not found
+errors found during: add m func G() {}

@@ -1,0 +1,6 @@
+# inline: error when inlining unsupported kind
+inline F
+-- x.go --
+package m
+
+func F() {}

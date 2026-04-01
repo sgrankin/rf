@@ -1,0 +1,9 @@
+# key: error when symbol not found
+key Nonexistent
+-- x.go --
+package m
+
+type S struct{ X int }
+-- stderr --
+Nonexistent not found
+errors found during: key Nonexistent

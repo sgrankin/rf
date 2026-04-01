@@ -1,0 +1,9 @@
+# key: error when symbol is not a type
+key F
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+F is not a type
+errors found during: key F
