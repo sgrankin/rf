@@ -1,0 +1,13 @@
+# mv: error for pointer method value with value receiver method (*T).M
+mv T.M F
+-- x.go --
+package p
+
+type T struct{}
+
+func (t T) M() {}
+
+var fn = (*T).M
+-- stderr --
+x.go:7:15: cannot rewrite pointer method value (with value receiver method) to function
+errors found during: mv T.M F

@@ -1,0 +1,29 @@
+# mv: method-to-func with value receiver called on pointer inserts *
+mv T.M F
+-- x.go --
+package p
+
+type T struct{ X int }
+
+func (t T) M() int { return t.X }
+
+func f() {
+	t := &T{X: 1}
+	_ = t.M()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,9 +2,9 @@
+
+ type T struct{ X int }
+
+-func (t T) M() int { return t.X }
++func F(t T) int { return t.X }
+
+ func f() {
+ 	t := &T{X: 1}
+-	_ = t.M()
++	_ = F(*t)
+ }
