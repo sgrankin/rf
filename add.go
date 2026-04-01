@@ -42,7 +42,7 @@ func cmdAddSub(snap *refactor.Snapshot, cmd, args string) error {
 	case refactor.ItemConst, refactor.ItemFunc, refactor.ItemType, refactor.ItemVar, refactor.ItemField:
 		stack := snap.SyntaxAt(item.Obj.Pos())
 		if len(stack) == 0 {
-			panic("LOST " + item.Name)
+			return newErrPrecondition("cannot find syntax for %s", item.Name)
 		}
 		after := stack[1]
 		switch after.(type) {

@@ -1,0 +1,12 @@
+# rm: removing a short variable declaration hits removeDecls default case
+rm f.x
+-- x.go --
+package p
+
+func f() {
+	x := 1
+	_ = x
+}
+-- stderr --
+x.go:4:2: cannot delete declaration of x (unexpected *ast.AssignStmt)
+errors found during: rm f.x

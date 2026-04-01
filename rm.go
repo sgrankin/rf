@@ -102,7 +102,8 @@ Objs:
 		case *ast.Ident:
 			decl, ok := stack[2].(*ast.FuncDecl)
 			if !ok {
-				panic(fmt.Sprintf("unexpected node %T", stack[2]))
+				snap.ErrorAt(obj.Pos(), "cannot delete declaration of %s (unexpected %T)", obj.Name(), stack[2])
+				continue Objs
 			}
 			snap.DeleteAt(nodeRange(snap, decl))
 
