@@ -1,0 +1,32 @@
+# mvstmt: extract code from case clause
+mv x.go:6,7 NewFunc
+-- x.go --
+package m
+
+func F(x int) int {
+	switch x {
+	case 0:
+		y := x + 1
+		return y
+	}
+	return 0
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,8 +3,12 @@
+ func F(x int) int {
+ 	switch x {
+ 	case 0:
+-		y := x + 1
+-		return y
++		return NewFunc(x)
+ 	}
+ 	return 0
+ }
++
++func NewFunc(x int) int {
++	y := x + 1
++	return y
++}

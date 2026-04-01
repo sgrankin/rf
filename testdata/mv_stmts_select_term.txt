@@ -1,0 +1,52 @@
+# mvstmt: test isTerm select with complex case bodies
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(ch1, ch2, ch3 chan int) {
+	x := 0
+	// BEGIN
+	select {
+	case v := <-ch1:
+		if v > 0 {
+			x = v
+		}
+		return
+	case ch2 <- 1:
+		for i := 0; i < 10; i++ {
+			x = i
+		}
+		return
+	default:
+		for range ch3 {
+			break
+		}
+		return
+	}
+	// END
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,6 +3,12 @@
+ func F(ch1, ch2, ch3 chan int) {
+ 	x := 0
+ 	// BEGIN
++	New(ch1, x, ch2, ch3)
++	// END
++	_ = x
++}
++
++func New(ch1 chan int, x int, ch2 chan int, ch3 chan int) {
+ 	select {
+ 	case v := <-ch1:
+ 		if v > 0 {
+@@ -20,6 +26,4 @@
+ 		}
+ 		return
+ 	}
+-	// END
+-	_ = x
+ }
