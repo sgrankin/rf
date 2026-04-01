@@ -131,7 +131,7 @@ func main() {
 		// Checkout doesn't remove files that have been git added,
 		// such as those that might be left over from a conflicting cherry-pick or merge.
 		// Remove them ourselves.
-		for _, line := range strings.Split(gitDir(gitdir, "status", "--porcelain=1"), "\n") {
+		for line := range strings.SplitSeq(gitDir(gitdir, "status", "--porcelain=1"), "\n") {
 			if len(line) >= 4 {
 				switch line[0:2] {
 				case "AD", "A ", "UU", "DU":

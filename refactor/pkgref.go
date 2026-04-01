@@ -25,9 +25,9 @@ func (q QualName) Object() types.Object {
 		typ := q.Pkg.Types.Scope().Lookup(q.Name[:i])
 		if tn, ok := typ.(*types.TypeName); ok {
 			named := tn.Type().(*types.Named)
-			for j := 0; j < named.NumMethods(); j++ {
-				if named.Method(j).Name() == q.Name[i+1:] {
-					return named.Method(j)
+			for method := range named.Methods() {
+				if method.Name() == q.Name[i+1:] {
+					return method
 				}
 			}
 		}

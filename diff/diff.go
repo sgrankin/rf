@@ -9,7 +9,7 @@ package diff
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+
 	"os"
 	"os/exec"
 )
@@ -50,11 +50,11 @@ func Diff(oldName string, old []byte, newName string, new []byte) ([]byte, error
 		return data, nil
 	}
 
-	return append([]byte(fmt.Sprintf("diff %s %s\n--- %s\n+++ %s\n", oldName, newName, oldName, newName)), data[start:]...), nil
+	return append(fmt.Appendf(nil, "diff %s %s\n--- %s\n+++ %s\n", oldName, newName, oldName, newName), data[start:]...), nil
 }
 
 func writeTempFile(data []byte) (string, error) {
-	file, err := ioutil.TempFile("", "rf-diff")
+	file, err := os.CreateTemp("", "rf-diff")
 	if err != nil {
 		return "", err
 	}

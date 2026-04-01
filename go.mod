@@ -1,5 +1,5 @@
 module rsc.io/rf
 
-go 1.24
+go 1.26
 
 require golang.org/x/tools v0.10.0

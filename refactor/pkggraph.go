@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"maps"
 	"sort"
 )
 
@@ -55,9 +56,7 @@ func (g *pkgGraph) packages() []*Package {
 func (g *pkgGraph) merge(g2 *pkgGraph) *pkgGraph {
 	g3 := newPkgGraph("merge")
 	// Clone g.
-	for pkgPath, pkg := range g.pkgByPath {
-		g3.pkgByPath[pkgPath] = pkg
-	}
+	maps.Copy(g3.pkgByPath, g.pkgByPath)
 	g3.nEdges = g.nEdges
 	// Add nodes from g2.
 	imports := make(map[string]bool)

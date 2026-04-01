@@ -386,7 +386,7 @@ func avoidOf(snap *refactor.Snapshot, avoids []types.Object, substInfo *types.In
 	avoid := make(map[ast.Node]bool)
 	avoidObj := func(obj types.Object) {
 		stack := snap.SyntaxAt(obj.Pos())
-		for i := 0; i < len(stack); i++ {
+		for i := range stack {
 			switch n := stack[i].(type) {
 			case *ast.FuncDecl, *ast.GenDecl:
 				avoid[n] = true
@@ -910,10 +910,7 @@ func commonRanges(x, y string) []rangePair {
 
 	for i := len(x) - 1; i >= 0; i-- {
 		for j := len(y) - 1; j >= 0; j-- {
-			m := t[i+1][j]
-			if m < t[i][j+1] {
-				m = t[i][j+1]
-			}
+			m := max(t[i+1][j], t[i][j+1])
 			if x[i] == y[j] {
 				if m < t[i+1][j+1]+1 {
 					m = t[i+1][j+1] + 1

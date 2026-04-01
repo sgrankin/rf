@@ -9,6 +9,7 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
+	"maps"
 	"path/filepath"
 
 	"rsc.io/rf/refactor"
@@ -93,9 +94,7 @@ func mvCode(snap *refactor.Snapshot, srcs []*refactor.Item, dst *refactor.Item, 
 			panic("mv dir not implemented")
 		}
 	}
-	for obj, dst := range inFiles {
-		moves[obj] = dst
-	}
+	maps.Copy(moves, inFiles)
 
 	remap := make(map[refactor.QualName]refactor.QualName)
 	for obj, dst := range moves {
@@ -380,7 +379,7 @@ func declObjs(snap *refactor.Snapshot, obj types.Object) []types.Object {
 
 func codeDecl(snap *refactor.Snapshot, obj types.Object) ast.Decl {
 	stack := snap.SyntaxAt(obj.Pos())
-	for i := 0; i < len(stack); i++ {
+	for i := range stack {
 		switch d := stack[i].(type) {
 		case *ast.GenDecl:
 			for _, spec := range d.Specs {

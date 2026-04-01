@@ -14,6 +14,7 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -207,10 +208,8 @@ func (s *Snapshot) NeedImport(pos token.Pos, id string, pkg *types.Package) stri
 
 	ed := s.editAt(file.Package)
 	key := NewImport{want, pkg}
-	for _, p := range ed.AddImports {
-		if p == key {
-			return want
-		}
+	if slices.Contains(ed.AddImports, key) {
+		return want
 	}
 	ed.AddImports = append(ed.AddImports, key)
 	return want

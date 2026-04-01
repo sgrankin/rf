@@ -333,7 +333,7 @@ func (m *mvStmts) findControlFlow() {
 
 		case token.FALLTHROUGH:
 			outside := false
-			for i := 0; i < len(stack); i++ {
+			for i := range stack {
 				outside = outside || stack[i] == m.outside
 				if _, ok := stack[i].(*ast.CaseClause); ok {
 					if outside {
@@ -354,7 +354,7 @@ func (m *mvStmts) findControlFlow() {
 
 			// Search for unlabeled target.
 			outside := false
-			for i := 0; i < len(stack); i++ {
+			for i := range stack {
 				outside = outside || stack[i] == m.outside
 				switch stack[i].(type) {
 				case *ast.CaseClause, *ast.ForStmt, *ast.RangeStmt:
@@ -376,7 +376,7 @@ func (m *mvStmts) findControlFlow() {
 
 			// Search for unlabeled target.
 			outside := false
-			for i := 0; i < len(stack); i++ {
+			for i := range stack {
 				outside = outside || stack[i] == m.outside
 				switch stack[i].(type) {
 				case *ast.ForStmt, *ast.RangeStmt:

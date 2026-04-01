@@ -1202,7 +1202,7 @@ type jsonModuleError struct {
 // stringList flattens its arguments into a single []string.
 // Each argument in args must have type string or []string.
 // Copied from cmd/go.
-func stringList(args ...interface{}) []string {
+func stringList(args ...any) []string {
 	var x []string
 	for _, arg := range args {
 		switch arg := arg.(type) {

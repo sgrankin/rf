@@ -349,7 +349,7 @@ func (s *Snapshot) Write() error {
 				}
 			}
 			if created[dir] == 1 {
-				err = ioutil.WriteFile(name, new, 0666)
+				err = os.WriteFile(name, new, 0666)
 			}
 		}
 		if err != nil {

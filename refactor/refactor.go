@@ -95,8 +95,8 @@ func (r *Refactor) shortPath(path string) string {
 }
 
 func cut(s, sep string) (before, after string, ok bool) {
-	if i := strings.Index(s, sep); i >= 0 {
-		return s[:i], s[i+len(sep):], true
+	if before0, after0, ok0 := strings.Cut(s, sep); ok0 {
+		return before0, after0, true
 	}
 	return s, "", false
 }
