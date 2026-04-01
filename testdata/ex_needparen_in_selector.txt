@@ -1,0 +1,35 @@
+# ex: replacement in selector X position gets parenthesized
+ex {
+	var x int
+	F(x) -> x + 1
+}
+-- x.go --
+package p
+
+type T int
+
+func (T) M() {}
+func F(x int) T { return T(x) }
+
+func f() {
+	F(1).M()
+}
+-- stderr --
+x.go:9:10: (1 + 1).M undefined (type untyped int has no field or method M)
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,9 +2,9 @@
+
+ type T int
+
+-func (T) M() {}
++func (T) M()    {}
+ func F(x int) T { return T(x) }
+
+ func f() {
+-	F(1).M()
++	(1 + 1).M()
+ }
