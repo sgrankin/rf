@@ -1,0 +1,11 @@
+# key: wrong number of initializers error
+key T
+-- x.go --
+package m
+
+type T struct{ X, Y, Z int }
+
+var t = T{1, 2}
+-- stderr --
+x.go:5:15: too few values in struct literal of type T
+errors found before executing script
