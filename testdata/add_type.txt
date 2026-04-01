@@ -1,0 +1,19 @@
+# add: add after a type declaration
+add T type U = T
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F() {}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,6 @@
+ package m
+
+ type T struct{ X int }
++type U = T
+
+ func F() {}

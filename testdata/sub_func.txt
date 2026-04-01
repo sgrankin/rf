@@ -1,0 +1,14 @@
+# sub: remove a function by address
+sub F
+-- x.go --
+package m
+
+func F() {}
+func G() {}
+-- stderr --
+x.go:3:9: expected 'IDENT', found '{'
+x.go:4:6: expected '(', found G
+also merging snapshots failed:
+x.go:3:9: expected 'IDENT', found '{'
+x.go:4:6: expected '(', found G
+errors found after executing: sub F
