@@ -1,0 +1,23 @@
+# mv: move var decl (no init) to struct field
+mv X T.X
+-- x.go --
+package m
+
+type T struct{}
+
+var X int
+
+func F(t T) int { return X }
+-- stderr --
+x.go:7:28: T.X undefined (type T has no field or method X)
+errors found after executing: mv X T.X
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,4 +4,4 @@
+
+ var X int
+
+-func F(t T) int { return X }
++func F(t T) int { return T.X }
