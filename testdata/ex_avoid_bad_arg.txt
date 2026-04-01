@@ -1,0 +1,11 @@
+# ex: check() avoid with non-ident/selector argument hits default case
+ex {
+	avoid 1
+	1 -> 2
+}
+-- x.go --
+package p
+
+var x = 1
+-- stderr --
+usage: cannot avoid *ast.BasicLit

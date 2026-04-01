@@ -1,14 +1,14 @@
-# ex: strict on non-pattern variable
+# ex: strict keyword on non-pattern variable (targets F, a real function)
 ex {
-	var x int
 	strict F
-	F(x) -> G(x)
+	1 -> 2
 }
 -- x.go --
-package m
+package p
 
-func F(x int) int { return x }
-func G(x int) int { return x + 1 }
+func F() {}
+
+var x = 1
 -- stderr --
-strict: func m.F(x int) int is not a pattern variable
+strict: func m.F() is not a pattern variable
 errors found during: ex { \ ...
