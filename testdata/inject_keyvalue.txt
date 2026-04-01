@@ -1,0 +1,23 @@
+# inject: KeyValueExpr key name not counted as usage for parameter naming
+inject G f
+-- x.go --
+package p
+
+var G int
+
+type S struct{ g int }
+
+func f() { h() }
+func h() { _ = S{g: G} }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+
+ type S struct{ g int }
+
+-func f() { h() }
+-func h() { _ = S{g: G} }
++func f()      { h(G) }
++func h(g int) { _ = S{g: g} }

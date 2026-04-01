@@ -1,0 +1,28 @@
+# inject: function reference (not call) removes it from conversion set
+inject G f
+-- x.go --
+package p
+
+var G int
+
+func f() { g(); h() }
+func g() { println(G) }
+func h() { println(G) }
+
+var fn = g
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,8 +2,8 @@
+
+ var G int
+
+-func f() { g(); h() }
+-func g() { println(G) }
+-func h() { println(G) }
++func f()      { g(); h(G) }
++func g()      { println(G) }
++func h(g int) { println(g) }
+
+ var fn = g
