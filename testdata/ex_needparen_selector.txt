@@ -1,24 +1,22 @@
-# ex: binary expression replacement doesn't need selector paren context
 ex {
 	var x int
-	F(x) -> x * 2
+	x -> x + 1
 }
 -- x.go --
-package m
+package p
 
-func F(x int) int { return x * 2 }
+type T struct{ F int }
 
-func G() int {
-	return F(3)
-}
+var t T
+
+var _ = t.F
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -3,5 +3,5 @@
- func F(x int) int { return x * 2 }
+@@ -4,4 +4,4 @@
 
- func G() int {
--	return F(3)
-+	return 3 * 2
- }
+ var t T
+
+-var _ = t.F
++var _ = t.F + 1

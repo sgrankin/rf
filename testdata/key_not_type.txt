@@ -1,9 +1,8 @@
-# key: error when name is not a type
-key F
+key x
 -- x.go --
-package m
+package p
 
-func F() {}
+var x int
 -- stderr --
-F is not a type
-errors found during: key F
+x is not a type
+errors found during: key x

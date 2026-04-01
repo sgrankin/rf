@@ -1,0 +1,7 @@
+ex {
+	import "foo bar"
+}
+-- x.go --
+package p
+-- stderr --
+usage: import "foo bar" not available

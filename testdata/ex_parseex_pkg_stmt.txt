@@ -1,0 +1,7 @@
+ex {
+	package foo
+}
+-- x.go --
+package p
+-- stderr --
+usage: package declaration not allowed

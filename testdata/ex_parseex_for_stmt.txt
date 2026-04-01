@@ -1,0 +1,7 @@
+ex {
+	for {}
+}
+-- x.go --
+package p
+-- stderr --
+usage: for statement not allowed

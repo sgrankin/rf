@@ -1,7 +1,6 @@
-# key: error when type is not a struct
 key T
 -- x.go --
-package m
+package p
 
 type T int
 -- stderr --

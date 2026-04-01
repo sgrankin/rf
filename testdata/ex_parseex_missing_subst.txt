@@ -1,0 +1,7 @@
+ex {
+	x ->
+}
+-- x.go --
+package p
+-- stderr --
+usage: missing substitution in example: x ->

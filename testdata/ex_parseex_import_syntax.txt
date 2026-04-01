@@ -1,0 +1,7 @@
+ex {
+	import bad-path
+}
+-- x.go --
+package p
+-- stderr --
+usage: parsing import bad-path: ex.go:1:21: missing import path
