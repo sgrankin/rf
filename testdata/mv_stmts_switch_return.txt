@@ -1,0 +1,39 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(x int) int {
+	y := x + 1
+	// BEGIN
+	switch y {
+	case 1:
+		return 10
+	case 2:
+		return 20
+	default:
+		return 30
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,6 +3,11 @@
+ func F(x int) int {
+ 	y := x + 1
+ 	// BEGIN
++	return New(y)
++	// END
++}
++
++func New(y int) int {
+ 	switch y {
+ 	case 1:
+ 		return 10
+@@ -11,5 +16,4 @@
+ 	default:
+ 		return 30
+ 	}
+-	// END
+ }

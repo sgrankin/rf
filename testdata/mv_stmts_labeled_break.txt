@@ -1,0 +1,39 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(items [][]int) {
+	// BEGIN
+outer:
+	for _, row := range items {
+		for _, v := range row {
+			if v < 0 {
+				break outer
+			}
+			_ = v
+		}
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F(items [][]int) {
+ 	// BEGIN
++	New(items)
++	// END
++}
++
++func New(items [][]int) {
+ outer:
+ 	for _, row := range items {
+ 		for _, v := range row {
+@@ -11,5 +16,4 @@
+ 			_ = v
+ 		}
+ 	}
+-	// END
+ }

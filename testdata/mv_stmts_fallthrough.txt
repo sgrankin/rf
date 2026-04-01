@@ -1,0 +1,37 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(x int) {
+	y := x + 1
+	switch y {
+	case 1:
+		// BEGIN
+		_ = y
+		fallthrough
+		// END
+	case 2:
+		_ = y
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,10 +5,15 @@
+ 	switch y {
+ 	case 1:
+ 		// BEGIN
+-		_ = y
++		New(y)
+ 		fallthrough
+ 		// END
+ 	case 2:
+ 		_ = y
+ 	}
+ }
++
++func New(y int) {
++	_ = y
++	return
++}
