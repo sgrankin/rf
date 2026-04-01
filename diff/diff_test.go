@@ -24,3 +24,34 @@ func TestDiff(t *testing.T) {
 		t.Errorf("Diff: want:\n%s", want)
 	}
 }
+
+func TestDiffIdentical(t *testing.T) {
+	text := []byte("abc\ndef\n")
+	out, err := Diff("a", text, "b", text)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out != nil {
+		t.Errorf("Diff identical: want nil, got:\n%s", out)
+	}
+}
+
+func TestDiffEmpty(t *testing.T) {
+	out, err := Diff("a", nil, "b", []byte("abc\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out == nil {
+		t.Fatal("Diff empty vs non-empty: want non-nil")
+	}
+}
+
+func TestDiffSingleLine(t *testing.T) {
+	out, err := Diff("a", []byte("x\n"), "b", []byte("y\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out == nil {
+		t.Fatal("Diff single line: want non-nil")
+	}
+}
