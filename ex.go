@@ -340,7 +340,7 @@ func (ex *exArgs) check() error {
 						}
 						return newErrPrecondition("%s: %v is not a single-parameter function-typed variable", kw, obj)
 					default:
-						panic("unreachable")
+						return newErrPrecondition("unknown keyword %s", kw)
 					}
 				}
 			}

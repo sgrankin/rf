@@ -15,7 +15,6 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
-	"log"
 	"os"
 	"reflect"
 
@@ -183,8 +182,7 @@ func (m *matcher) matchExpr(x, y ast.Expr) bool {
 		return false // unhandled AST node type
 
 	case *ast.Ident:
-		log.Fatalf("unexpected Ident: %s", astString(m.fset, x))
-		panic("unreachable")
+		return false // unexpected Ident - should have been handled by wildcardObj
 
 	case *ast.BasicLit:
 		y := y.(*ast.BasicLit)
@@ -377,7 +375,7 @@ func (m *matcher) bindWildcard(xobj types.Object, y ast.Expr) bool {
 	yt := ytv.Type
 	switch xobj := xobj.(type) {
 	default:
-		panic("unreachable")
+		return false // unexpected wildcard object type
 	case *types.TypeName:
 		if !ytv.IsType() {
 			return false
@@ -394,7 +392,7 @@ func (m *matcher) bindWildcard(xobj types.Object, y ast.Expr) bool {
 	if yt == nil {
 		// TODO(mdempsky): I think this should be impossible now
 		// thanks to the IsValue check above.
-		panic("unreachable?")
+		return false
 
 		// y has no type.
 		// Perhaps it is an *ast.Ellipsis in [...]T{}, or
@@ -441,7 +439,7 @@ func (m *matcher) assignableTo(V, T types.Type) bool {
 
 	if v, ok := Vu.(*types.Basic); ok && v.Info()&types.IsUntyped != 0 {
 		if m.isWildcardType(T) {
-			panic(fmt.Sprintf("assignableTo untyped: %v -> %v", V, T))
+			return false // untyped value cannot match wildcard type
 		}
 		return types.AssignableTo(Vu, Tu)
 	}
