@@ -1,0 +1,27 @@
+# ex: needParen adds parens when binary expr replaces X of type assertion
+ex {
+	var x int
+	f(x) -> x + 1
+}
+-- x.go --
+package p
+
+func f(x int) interface{} { return nil }
+
+func h(a int) {
+	_ = f(a).(int)
+}
+-- stderr --
+x.go:6:6: invalid operation: (a + 1) (value of type int) is not an interface
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ func f(x int) interface{} { return nil }
+
+ func h(a int) {
+-	_ = f(a).(int)
++	_ = (a + 1).(int)
+ }

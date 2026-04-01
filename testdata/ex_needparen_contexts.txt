@@ -1,16 +1,34 @@
-# ex: needParen with binary expr in selector, call, index, slice contexts
+# ex: needParen adds parens when binary expr replaces X in index, slice, call, and type assert
 ex {
-	import "bytes"
-	var b *bytes.Buffer
-	b -> b
+	var x int
+	f(x) -> x + 1
 }
 -- x.go --
-package m
+package p
 
-import "bytes"
+func f(x int) []int { return nil }
 
-func F() {
-	var b *bytes.Buffer
-	b.Len()
-	_ = b
+func h(a int) {
+	// IndexExpr: f(a)[0] -> (a+1)[0]
+	_ = f(a)[0]
+	// SliceExpr: f(a)[0:1] -> (a+1)[0:1]
+	_ = f(a)[0:1]
 }
+-- stderr --
+x.go:7:6: cannot index (a + 1) (value of type int)
+x.go:9:6: cannot slice (a + 1) (value of type int)
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,7 +4,7 @@
+
+ func h(a int) {
+ 	// IndexExpr: f(a)[0] -> (a+1)[0]
+-	_ = f(a)[0]
++	_ = (a + 1)[0]
+ 	// SliceExpr: f(a)[0:1] -> (a+1)[0:1]
+-	_ = f(a)[0:1]
++	_ = (a + 1)[0:1]
+ }
