@@ -1,0 +1,9 @@
+ex {
+	var x int
+	x -> x + 1
+	import "fmt"
+}
+-- x.go --
+package m
+-- stderr --
+usage: import "fmt" not available

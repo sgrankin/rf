@@ -1,0 +1,8 @@
+ex {
+	import "no/such/package"
+	x -> y
+}
+-- x.go --
+package m
+-- stderr --
+usage: import "no/such/package" not available

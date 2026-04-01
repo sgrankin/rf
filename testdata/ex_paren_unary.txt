@@ -1,0 +1,21 @@
+ex {
+	var p *int
+	*p -> -(*p)
+}
+-- x.go --
+package m
+
+func F(p *int) int {
+	return *p + 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F(p *int) int {
+-	return *p + 1
++	return -(*p) + 1
+ }

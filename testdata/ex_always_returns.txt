@@ -1,0 +1,37 @@
+# Test typeassert with various control flow paths.
+ex {
+	var x any
+	var y int
+	x == y -> x != y
+}
+-- x.go --
+package m
+
+func F(x any) bool {
+	switch v := x.(type) {
+	case int:
+		if v > 0 {
+			return v == 1
+		} else {
+			return v == 2
+		}
+	default:
+		return v == nil
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,9 +4,9 @@
+ 	switch v := x.(type) {
+ 	case int:
+ 		if v > 0 {
+-			return v == 1
++			return v != 1
+ 		} else {
+-			return v == 2
++			return v != 2
+ 		}
+ 	default:
+ 		return v == nil
