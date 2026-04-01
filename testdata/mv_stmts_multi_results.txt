@@ -1,0 +1,30 @@
+# mv: extract statements writing multiple variables
+mv x.go:4,6 Compute
+-- x.go --
+package m
+
+func F(a int) int {
+	x := a + 1
+	y := x * 2
+	z := y + 3
+	return x + y + z
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,8 +1,13 @@
+ package m
+
+ func F(a int) int {
++	x, y, z := Compute(a)
++	return x + y + z
++}
++
++func Compute(a int) (_x int, _y int, _z int) {
+ 	x := a + 1
+ 	y := x * 2
+ 	z := y + 3
+-	return x + y + z
++	return x, y, z
+ }

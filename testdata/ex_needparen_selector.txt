@@ -1,13 +1,24 @@
-# ex: needParen with star expr in selector context
+# ex: binary expression replacement doesn't need selector paren context
 ex {
-	var p *int
-	*p -> *p
+	var x int
+	F(x) -> x * 2
 }
 -- x.go --
 package m
 
-import "unsafe"
+func F(x int) int { return x * 2 }
 
-func F(p *int) uintptr {
-	return unsafe.Sizeof(*p)
+func G() int {
+	return F(3)
 }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ func F(x int) int { return x * 2 }
+
+ func G() int {
+-	return F(3)
++	return 3 * 2
+ }

@@ -1,0 +1,11 @@
+# mv: cannot move field to file
+mv T.X y.go
+-- x.go --
+package m
+
+type T struct {
+	X int
+}
+-- stderr --
+cannot move field to file y.go
+errors found during: mv T.X y.go

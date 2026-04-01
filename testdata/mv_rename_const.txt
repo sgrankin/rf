@@ -1,0 +1,20 @@
+# mv: rename a standalone const declaration
+mv C NewC
+-- x.go --
+package m
+
+const C = 42
+
+func F() int { return C }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+-const C = 42
++const NewC = 42
+
+-func F() int { return C }
++func F() int { return NewC }

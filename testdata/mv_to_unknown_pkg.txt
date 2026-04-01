@@ -1,0 +1,9 @@
+# mv: move to unknown package file path
+mv F other/pkg/f.go
+-- x.go --
+package m
+
+func F() int { return 1 }
+-- stderr --
+unknown package other/pkg/f.go
+errors found during: mv F other/pkg/f.go
