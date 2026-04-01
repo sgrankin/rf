@@ -1,0 +1,14 @@
+# ex: strict on non-pattern variable
+ex {
+	var x int
+	strict F
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+func G(x int) int { return x + 1 }
+-- stderr --
+strict: func m.F(x int) int is not a pattern variable
+errors found during: ex { \ ...

@@ -1,0 +1,12 @@
+# ex: bindWildcard with TypeName (type variable)
+ex {
+	var T type
+	new(T) -> (*T)(nil)
+}
+-- x.go --
+package m
+
+var X = new(int)
+var Y = new(string)
+-- stderr --
+usage: parsing var T type: 1:15: expected type, found 'type'

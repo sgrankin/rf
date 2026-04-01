@@ -1,36 +1,24 @@
 # mvstmt: exercise hasBreak with various node types in for body
-mv F:/BEGIN/+0,/END/-0 New
+mv x.go:5,14 Extracted
 -- x.go --
 package m
 
-func F(x int, ch chan int, items []int, v any) {
-	// BEGIN
+func F(ch chan int, v int) {
 	for {
-		if x > 0 {
-			break
-		}
-		for i := 0; i < x; i++ {
-			break
-		}
-		for _, item := range items {
-			_ = item
-			break
-		}
 		select {
-		case <-ch:
+		case x := <-ch:
+			_ = x
+		}
+		if v > 0 {
 			break
 		}
-		switch x {
-		case 0:
-			break
-		}
-		switch v.(type) {
-		case int:
+		for range []int{1} {
 			break
 		}
 	}
-	// END
 }
 -- stderr --
-x.go:5:1: extract type *types.Interface not implemented
-errors found during: mv F:/BEGIN/+0,/END/-0 New
+x.go:5:1: multiple control flow exits from moved code:
+	x.go:10:4: break
+	x.go:15:1: implicit next statement
+errors found during: mv x.go:5,14 Extracted

@@ -1,0 +1,22 @@
+# ex: needParen with unary expression in selector context
+ex {
+	var x *int
+	F(x) -> G(*x)
+}
+-- x.go --
+package m
+
+func F(x *int) int { return *x }
+func G(x int) int  { return x }
+
+func H(p *int) int { return F(p) }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,4 +3,4 @@
+ func F(x *int) int { return *x }
+ func G(x int) int  { return x }
+
+-func H(p *int) int { return F(p) }
++func H(p *int) int { return G(*p) }
