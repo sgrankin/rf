@@ -1,9 +1,8 @@
-# mv: error when moving code not in function
-mv x.go:3 NewFunc
+mv x.go:3 helper
 -- x.go --
-package m
+package p
 
-var X = 1
+var x = 1
 -- stderr --
 x.go:3:1: code to move is not in function
-errors found during: mv x.go:3 NewFunc
+errors found during: mv x.go:3 helper

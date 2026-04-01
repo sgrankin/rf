@@ -1,23 +1,24 @@
-# ex: match SendStmt pattern
 ex {
 	var ch chan int
 	var x int
 	ch <- x -> ch <- x + 1
 }
 -- x.go --
-package m
+package p
 
-func F(ch chan int) {
+var ch chan int
+
+func init() {
 	ch <- 42
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -1,5 +1,5 @@
- package m
+@@ -3,5 +3,5 @@
+ var ch chan int
 
- func F(ch chan int) {
+ func init() {
 -	ch <- 42
 +	ch <- 42 + 1
  }

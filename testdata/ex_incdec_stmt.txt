@@ -1,25 +1,23 @@
-# ex: match IncDecStmt pattern
 ex {
 	var x int
 	x++ -> x += 2
 }
 -- x.go --
-package m
+package p
 
-func F() int {
-	x := 0
-	x++
-	return x
+var a int
+
+func init() {
+	a++
 }
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -2,6 +2,6 @@
+@@ -3,5 +3,5 @@
+ var a int
 
- func F() int {
- 	x := 0
--	x++
-+	x += 2
- 	return x
+ func init() {
+-	a++
++	a += 2
  }
