@@ -1,0 +1,35 @@
+# mv: rewriteUses handles assignment LHS (non-DEFINE assign path)
+mv x s.x
+-- x.go --
+package m
+
+type T struct{}
+
+var s T
+var x int
+
+func f() {
+	x = 1
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,11 +1,12 @@
+ package m
+
+-type T struct{}
++type T struct {
++	x int
++}
+
+ var s T
+-var x int
+
+ func f() {
+-	x = 1
+-	_ = x
++	s.x = 1
++	_ = s.x
+ }

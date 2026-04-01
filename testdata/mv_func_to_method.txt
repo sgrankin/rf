@@ -1,62 +1,33 @@
-mv bar S.foo1
-mv baz S.foo2
-mv Qux S.Foo3
-mv quux S.foo4
--- p.go --
+# mv: convert function to method (funcToMethod path)
+mv F T.M
+-- x.go --
 package m
 
-type S struct{}
+type T struct{ X int }
 
-func bar(s S) {}
-func baz(s *S) {}
-func Qux(s *S, x int) {}
-func quux(*S) {}
-
-func xyzzy() {
-	bar(S{})
-	g := &S{}
-	baz(g)
+func F(t T, x int) int {
+	return t.X + x
 }
--- q/q.go --
-package q
 
-import "m"
-
-func plugh() {
-	s := &m.S{}
-	m.Qux(s, 0)
+func G() int {
+	var t T
+	return F(t, 1)
 }
 -- stdout --
-diff old/p.go new/p.go
---- old/p.go
-+++ new/p.go
-@@ -2,13 +2,13 @@
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,11 +2,11 @@
 
- type S struct{}
+ type T struct{ X int }
 
--func bar(s S) {}
--func baz(s *S) {}
--func Qux(s *S, x int) {}
--func quux(*S) {}
-+func (s S) foo1()       {}
-+func (s *S) foo2()      {}
-+func (s *S) Foo3(x int) {}
-+func (*S) foo4()        {}
-
- func xyzzy() {
--	bar(S{})
-+	S{}.foo1()
- 	g := &S{}
--	baz(g)
-+	g.foo2()
+-func F(t T, x int) int {
++func (t T) M(x int) int {
+ 	return t.X + x
  }
-diff old/q/q.go new/q/q.go
---- old/q/q.go
-+++ new/q/q.go
-@@ -4,5 +4,5 @@
 
- func plugh() {
- 	s := &m.S{}
--	m.Qux(s, 0)
-+	s.Foo3(0)
+ func G() int {
+ 	var t T
+-	return F(t, 1)
++	return t.M(1)
  }

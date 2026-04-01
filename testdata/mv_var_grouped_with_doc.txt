@@ -1,0 +1,44 @@
+# mv: removeDecl multi-spec with doc comment
+mv Y s.Y
+-- x.go --
+package m
+
+type T struct {
+	X int
+}
+
+var s T
+
+var (
+	// Y is a var.
+	Y int
+	Z int
+)
+
+func F() int {
+	return Y
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,16 +2,16 @@
+
+ type T struct {
+ 	X int
++	// Y is a var.
++	Y int
+ }
+
+ var s T
+
+ var (
+-	// Y is a var.
+-	Y int
+ 	Z int
+ )
+
+ func F() int {
+-	return Y
++	return s.Y
+ }

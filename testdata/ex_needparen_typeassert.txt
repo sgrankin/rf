@@ -1,11 +1,11 @@
-# ex: needParen when replacing type assert base
+# ex: needParen in TypeAssertExpr.X context
 ex {
-	var x any
-	x.(int) -> x.(int)
+	var x interface{}
+	x -> x
 }
 -- x.go --
 package m
 
-func F(x any) int {
-	return x.(int)
+func F(x interface{}) {
+	_ = x.(int)
 }
