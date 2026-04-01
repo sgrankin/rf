@@ -83,7 +83,7 @@ var cmds = map[string]func(*refactor.Snapshot, string) error{
 	"inject":     cmdInject,
 }
 
-func run(rf *refactor.Refactor, script string) error {
+func run(rf *refactor.Refactor, script string) (err error) {
 	var snaps []*refactor.Snapshot
 
 	text := script
@@ -91,8 +91,7 @@ func run(rf *refactor.Refactor, script string) error {
 
 	defer func() {
 		if e := recover(); e != nil {
-			println("panic executing: " + lastCmd)
-			panic(e)
+			err = fmt.Errorf("internal error executing %s: %v", lastCmd, e)
 		}
 	}()
 

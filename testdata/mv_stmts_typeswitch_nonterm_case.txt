@@ -1,0 +1,25 @@
+# extract code ending with type switch where a case body is not terminal
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+var v any
+
+func F() {
+	// BEGIN
+	x := 1
+	switch v.(type) {
+	case int:
+		println(x)
+	default:
+		println(x)
+		return
+	}
+	// END
+	println("after")
+}
+-- stderr --
+x.go:7:1: multiple control flow exits from moved code:
+	x.go:13:3: return
+	x.go:15:1: implicit next statement
+errors found during: mv F:/BEGIN/+0,/END/-0 New

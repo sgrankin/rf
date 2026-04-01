@@ -1,19 +1,42 @@
-# mv: move code ending with terminating type switch (error: interface type)
-mv x.go:4,12 Compute
+# extract code ending with terminal type switch -> covers isTerm TypeSwitchStmt path
+mv F:/BEGIN/+0,/END/-0 New
 -- x.go --
-package m
+package p
 
-func F(x interface{}) int {
-	y := 1
-	switch x.(type) {
+var v any
+
+func F() int {
+	// BEGIN
+	x := 1
+	switch v.(type) {
 	case int:
-		return y
-	case string:
-		return y + 1
+		println(x)
+		return 1
 	default:
-		return y + 2
+		println(x)
+		return 0
 	}
+	// END
 }
--- stderr --
-x.go:4:1: extract type *types.Interface not implemented
-errors found during: mv x.go:4,12 Compute
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,6 +4,11 @@
+
+ func F() int {
+ 	// BEGIN
++	return New()
++	// END
++}
++
++func New() int {
+ 	x := 1
+ 	switch v.(type) {
+ 	case int:
+@@ -13,5 +18,4 @@
+ 		println(x)
+ 		return 0
+ 	}
+-	// END
+ }
