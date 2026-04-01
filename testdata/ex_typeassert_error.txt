@@ -1,0 +1,14 @@
+# typeassert with invalid condition (not ==)
+typeassert {
+	var x any
+	var y int
+	x > y -> panic()
+}
+-- x.go --
+package m
+
+func F(x any) {
+	_ = x
+}
+-- stderr --
+usage: parsing x > y -> panic(): arrow must be followed by name.(T)

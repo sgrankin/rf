@@ -1,0 +1,24 @@
+# Test applySubst for TypeName wildcard
+ex {
+	type T int
+	T(0) -> T(1)
+}
+-- x.go --
+package m
+
+type MyInt int
+
+var _ = MyInt(0)
+var _ = int(0)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,5 +2,5 @@
+
+ type MyInt int
+
+-var _ = MyInt(0)
+-var _ = int(0)
++var _ = MyInt(1)
++var _ = int(1)

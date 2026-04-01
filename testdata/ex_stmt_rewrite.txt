@@ -1,0 +1,25 @@
+# Test statement-level expression rewrite
+ex {
+	var s string
+	println(s) -> println(s + "!")
+}
+-- x.go --
+package m
+
+func F() {
+	println("hello")
+	println("world")
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package m
+
+ func F() {
+-	println("hello")
+-	println("world")
++	println("hello" + "!")
++	println("world" + "!")
+ }
