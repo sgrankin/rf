@@ -48,12 +48,12 @@ func inScope(name string, obj types.Object) posChecker {
 func cmdMv(snap *refactor.Snapshot, args string) error {
 	args = strings.TrimSpace(args)
 	if args == "" {
-		return newErrUsage("usage: mv old... new")
+		return newErrUsage("mv old... new")
 	}
 
 	items, _ := snap.EvalList(args)
 	if len(items) < 2 {
-		return newErrUsage("usage: mv old... new")
+		return newErrUsage("mv old... new")
 	}
 
 	for _, item := range items[:len(items)-1] {
