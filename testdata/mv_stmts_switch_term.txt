@@ -1,0 +1,30 @@
+mv x.go:4,12 helper
+-- x.go --
+package p
+
+func f() int {
+	x := 1
+	switch x {
+	case 0:
+		return 0
+	case 1:
+		return 1
+	default:
+		return 2
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,10 @@
+ package p
+
+ func f() int {
++	return helper()
++}
++
++func helper() int {
+ 	x := 1
+ 	switch x {
+ 	case 0:
