@@ -1,0 +1,22 @@
+mv x.go:5,14 Extracted
+-- x.go --
+package p
+
+func F(v interface{}) int {
+	x := 0
+Loop:
+	for {
+		switch v.(type) {
+		case int:
+			x++
+			break Loop
+		default:
+			x--
+			break Loop
+		}
+	}
+	return x
+}
+-- stderr --
+x.go:5:1: extract type *types.Interface not implemented
+errors found during: mv x.go:5,14 Extracted

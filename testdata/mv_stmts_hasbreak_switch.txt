@@ -1,0 +1,30 @@
+mv x.go:5,14 Extracted
+-- x.go --
+package p
+
+func F(x int) int {
+	y := 0
+Loop:
+	for {
+		switch x {
+		case 1:
+			y++
+			break Loop
+		default:
+			y--
+			break Loop
+		}
+	}
+	return y
+}
+-- stderr --
+x.go:6:2: expected declaration, found 'return'
+x.go:9:43: expected 'IDENT', found '{'
+x.go:10:2: expected type, found 'return'
+x.go:11:2: expected declaration, found 'for'
+also merging snapshots failed:
+x.go:6:2: expected declaration, found 'return'
+x.go:9:43: expected 'IDENT', found '{'
+x.go:10:2: expected type, found 'return'
+x.go:11:2: expected declaration, found 'for'
+errors found after executing: mv x.go:5,14 Extracted

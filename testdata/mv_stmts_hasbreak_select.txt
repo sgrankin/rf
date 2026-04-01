@@ -1,0 +1,38 @@
+mv x.go:5,12 Extracted
+-- x.go --
+package p
+
+func F(ch chan int) int {
+	x := 0
+Loop:
+	for {
+		select {
+		case v := <-ch:
+			x += v
+			break Loop
+		}
+	}
+	return x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F(ch chan int) int {
+ 	x := 0
++	Extracted(ch, x)
++	return x
++}
++
++func Extracted(ch chan int, x int) {
+ Loop:
+ 	for {
+ 		select {
+@@ -10,5 +15,4 @@
+ 			break Loop
+ 		}
+ 	}
+-	return x
+ }
