@@ -1,0 +1,24 @@
+inline -rm A
+-- x.go --
+package p
+
+const (
+	A = 1
+	B = 2
+)
+
+var _ = A + B
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,8 +1,7 @@
+ package p
+
+ const (
+-	A = 1
+ 	B = 2
+ )
+
+-var _ = A + B
++var _ = 1 + B
