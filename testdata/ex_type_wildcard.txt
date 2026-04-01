@@ -1,25 +1,25 @@
-# ex: type wildcard substitution in applySubst
+# ex: type wildcard in pattern (match.go:379-384)
 ex {
-	type T int
+	type T interface{}
 	var x T
-	x -> T(x)
+	Wrap(x) -> x
 }
 -- x.go --
-package m
+package p
 
-type MyInt int
+func Wrap(x interface{}) interface{} { return x }
 
-var X MyInt = 1
-var Y MyInt = X
+func f() interface{} {
+	return Wrap(42)
+}
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -2,5 +2,5 @@
+@@ -3,5 +3,5 @@
+ func Wrap(x interface{}) interface{} { return x }
 
- type MyInt int
-
--var X MyInt = 1
--var Y MyInt = X
-+var X MyInt = MyInt(1)
-+var Y MyInt = MyInt(X)
+ func f() interface{} {
+-	return Wrap(42)
++	return 42
+ }
