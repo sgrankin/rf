@@ -1,0 +1,28 @@
+# mv: move initialized var to struct field (removeDecl with initializer)
+mv Y S.Y
+-- x.go --
+package m
+
+type S struct {
+	X int
+}
+
+var Y = 42
+
+func F(s *S) int {
+	return Y
+}
+-- stderr --
+x.go:10:11: S.Y undefined (type S has no field or method Y)
+errors found after executing: mv Y S.Y
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,5 +7,5 @@
+ var Y = 42
+
+ func F(s *S) int {
+-	return Y
++	return S.Y
+ }
