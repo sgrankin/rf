@@ -1,0 +1,6 @@
+inline NoSuch
+-- x.go --
+package m
+-- stderr --
+NoSuch not found
+errors found during: inline NoSuch

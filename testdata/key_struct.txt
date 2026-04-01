@@ -1,0 +1,21 @@
+# Test key command converting unkeyed to keyed literals
+key T
+-- x.go --
+package m
+
+type T struct {
+	A int
+	B string
+}
+
+var _ = T{1, "hello"}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,4 +5,4 @@
+ 	B string
+ }
+
+-var _ = T{1, "hello"}
++var _ = T{A: 1, B: "hello"}

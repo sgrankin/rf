@@ -1,0 +1,11 @@
+# inline of a defined type (not an alias) should error
+inline T
+-- x.go --
+package m
+
+type T int
+
+var _ T
+-- stderr --
+x.go:3:6: T is a defined type (not type alias)
+errors found during: inline T

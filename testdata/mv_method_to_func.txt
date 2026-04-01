@@ -1,0 +1,26 @@
+mv T.Method Func
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func (t T) Method() int {
+	return t.X
+}
+
+var _ = T{1}.Method()
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,8 +2,8 @@
+
+ type T struct{ X int }
+
+-func (t T) Method() int {
++func Func(t T) int {
+ 	return t.X
+ }
+
+-var _ = T{1}.Method()
++var _ = Func(T{1})
