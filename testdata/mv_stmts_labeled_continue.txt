@@ -1,16 +1,24 @@
-# mv: extract loop body with labeled continue to outer loop
-mv x.go:5,7 Inner
+# mvstmt: labeled continue causes multiple control flow exits
+mv x.go:8,12 Extracted
 -- x.go --
 package m
 
-func F() {
-outer:
-	for i := 0; i < 10; i++ {
-		if i%2 == 0 {
-			continue outer
+func F(s [][]int) int {
+	sum := 0
+Outer:
+	for _, row := range s {
+		for _, v := range row {
+			if v < 0 {
+				continue Outer
+			}
+			sum += v
+			return sum
 		}
 	}
+	return sum
 }
 -- stderr --
-x.go:5:1: code to move is not a list of statements [x.go:5:1 x.go:8:1] [x.go:4:1 x.go:9:3] [x.go:3:10 x.go:10:2]
-errors found during: mv x.go:5,7 Inner
+x.go:14:37: missing ',' in parameter list
+also merging snapshots failed:
+x.go:14:37: missing ',' in parameter list
+errors found after executing: mv x.go:8,12 Extracted

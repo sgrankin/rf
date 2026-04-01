@@ -1,24 +1,26 @@
-# mv: extract expression into function
-mv x.go:5,/2/ Calc
+# mvstmt: extract expression from binary
+mv x.go:4/a \+ b/ Extracted
 -- x.go --
 package m
 
-func F() int {
-	x := 1
-	return x + 2
+func F(a, b int) int {
+	return a + b + 1
 }
+-- stderr --
+x.go:8:13: undefined: b
+errors found after executing: mv x.go:4/a \+ b/ Extracted
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
 +++ new/x.go
-@@ -2,5 +2,10 @@
+@@ -1,5 +1,9 @@
+ package m
 
- func F() int {
- 	x := 1
-+	return Calc(x)
-+
+ func F(a, b int) int {
+-	return a + b + 1
++	return Extracted(a) + 1
 +}
 +
-+func Calc(x int) int {
- 	return x + 2
++func Extracted(a int) int {
++	return a + b
  }

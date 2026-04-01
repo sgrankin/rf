@@ -1,39 +1,20 @@
-# mv_stmts: findControlFlow with fallthrough in moved code
-mv x.go:6,8 G
+# mvstmt: extract code that includes fallthrough
+mv x.go:6,8 Extracted
 -- x.go --
 package m
 
-func F() int {
-	switch 1 {
+func F(x int) int {
+	switch x {
 	case 1:
-		x := 1
-		_ = x
+		x++
 		fallthrough
-	default:
-		return 0
+	case 2:
+		x += 2
 	}
-	return 0
+	return x
 }
--- stdout --
-diff old/x.go new/x.go
---- old/x.go
-+++ new/x.go
-@@ -3,11 +3,16 @@
- func F() int {
- 	switch 1 {
- 	case 1:
--		x := 1
--		_ = x
-+		G()
- 		fallthrough
- 	default:
- 		return 0
- 	}
- 	return 0
- }
-+
-+func G() {
-+	x := 1
-+	_ = x
-+	return
-+}
+-- stderr --
+x.go:16:2: expected '}', found 'case'
+also merging snapshots failed:
+x.go:16:2: expected '}', found 'case'
+errors found after executing: mv x.go:6,8 Extracted
