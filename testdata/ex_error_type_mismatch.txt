@@ -1,0 +1,14 @@
+# ex: error when pattern type-checks fail
+ex {
+	var x int
+	x + "hello" -> x
+}
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+errors in example:
+invalid operation: x + "hello" (mismatched types int and untyped string)
+x + "hello" /* -> x */
+errors found during: ex { \ ...
