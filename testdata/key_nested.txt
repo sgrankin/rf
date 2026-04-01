@@ -1,0 +1,23 @@
+# key: add field keys to nested struct literal
+key S
+-- x.go --
+package m
+
+type Inner struct{ A int }
+type S struct {
+	X int
+	Y string
+	Z Inner
+}
+
+var V = S{1, "hello", Inner{2}}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,4 +7,4 @@
+ 	Z Inner
+ }
+
+-var V = S{1, "hello", Inner{2}}
++var V = S{X: 1, Y: "hello", Z: Inner{2}}
