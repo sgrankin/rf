@@ -1,0 +1,27 @@
+# mv: extract sequential statements with no control flow exits
+mv x.go:5,6 Compute
+-- x.go --
+package m
+
+func F() int {
+	x := 1
+	y := x + 2
+	z := y * 3
+	return z
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F() int {
+ 	x := 1
++	z := Compute(x)
++	return z
++}
++
++func Compute(x int) int {
+ 	y := x + 2
+ 	z := y * 3
+ 	return z
