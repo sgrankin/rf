@@ -547,6 +547,8 @@ func hasBreak(s ast.Stmt, depth int, label string) bool {
 }
 
 func printType(b *bytes.Buffer, snap *refactor.Snapshot, src, dst token.Pos, typ types.Type) {
+	// Resolve type aliases to their underlying named or basic type.
+	typ = types.Unalias(typ)
 	switch typ := typ.(type) {
 	default:
 		snap.ErrorAt(src, "extract type %T not implemented", typ)
