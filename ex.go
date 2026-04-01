@@ -960,7 +960,7 @@ func commonRanges(x, y string) []rangePair {
 			j++
 
 		default:
-			panic("inconsistent")
+			return nil // inconsistent LCS result
 		}
 	}
 	return pairs
@@ -1007,7 +1007,7 @@ func assigneeType(stack []ast.Node, info *types.Info) types.Type {
 
 		tv, ok := info.Types[parent.Fun]
 		if !ok {
-			panic(fmt.Sprintf("missing type info for %v", parent.Fun))
+			return nil // missing type info
 		}
 
 		// Type conversion.

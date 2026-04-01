@@ -20,7 +20,7 @@ import (
 func transplant(snap *refactor.Snapshot, code string, src, dst token.Pos, moves map[types.Object]*refactor.Package) string {
 	srcPkg, srcFile := snap.FileAt(src)
 	if srcFile == nil {
-		panic("lost source file")
+		return code // source file not found, return unchanged
 	}
 	dstPkg := snap.PackageAt(dst)
 

@@ -1,0 +1,28 @@
+# ex: match interface types in patterns (match.go:565-574)
+ex {
+	var x I
+	Wrap(x) -> x
+}
+-- x.go --
+package p
+
+type I interface {
+	M() int
+}
+
+func Wrap(x I) I { return x }
+
+func f(v I) I {
+	return Wrap(v)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,5 +7,5 @@
+ func Wrap(x I) I { return x }
+
+ func f(v I) I {
+-	return Wrap(v)
++	return v
+ }

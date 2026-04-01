@@ -1,0 +1,18 @@
+# rm: remove function with trailing comment at end of file (rm.go:216-217)
+rm F
+-- x.go --
+package m
+
+func G() {}
+
+func F() {} // remove me
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,3 @@
+ package m
+
+ func G() {}
+-
+-func F() {} // remove me

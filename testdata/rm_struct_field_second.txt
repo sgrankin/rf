@@ -1,5 +1,5 @@
-# rm: delete first name from multi-name struct field (rm.go:66-69)
-rm T.X
+# rm: delete second name from multi-name struct field (rm.go:70-73)
+rm T.Y
 -- x.go --
 package m
 
@@ -15,5 +15,5 @@ diff old/x.go new/x.go
 
  type T struct {
 -	X, Y int
-+	Y int
++	X int
  }

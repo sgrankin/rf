@@ -1,0 +1,9 @@
+# mv: error when old item not found (mv.go:131-132)
+mv DoesNotExist NewName
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+DoesNotExist not found
+errors found during: mv DoesNotExist NewName
