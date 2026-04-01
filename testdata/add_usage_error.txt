@@ -1,0 +1,6 @@
+# add: missing text argument
+add
+-- x.go --
+package m
+-- stderr --
+usage: add address text...
