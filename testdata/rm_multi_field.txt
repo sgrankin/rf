@@ -1,0 +1,19 @@
+# rm: remove one field from multi-name field declaration
+rm S.Y
+-- x.go --
+package p
+
+type S struct {
+	X, Y int
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package p
+
+ type S struct {
+-	X, Y int
++	X int
+ }

@@ -1,0 +1,27 @@
+# ex: implicit * cancels with inner & in matched expression (paren-wrapped)
+ex {
+	var t T
+	t.F -> println(t.F, t)
+}
+-- x.go --
+package p
+
+type T struct{ F int }
+
+func f(v T) {
+	println((&v).F)
+}
+-- stderr --
+x.go:6:10: println((&v).F, v) (no value) used as value
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ type T struct{ F int }
+
+ func f(v T) {
+-	println((&v).F)
++	println(println((&v).F, v))
+ }

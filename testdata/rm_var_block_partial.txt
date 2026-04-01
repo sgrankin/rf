@@ -1,0 +1,22 @@
+# rm: remove one var from multi-spec var block where some specs are not targeted
+rm X
+-- x.go --
+package p
+
+var (
+	X = 1
+	Y = 2
+	Z = 3
+)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,6 @@
+ package p
+
+ var (
+-	X = 1
+ 	Y = 2
+ 	Z = 3
+ )
