@@ -1,0 +1,39 @@
+# ex: compositeLitNeedsParen - composite literal in parenthesized if condition
+ex {
+	type T struct{ X int }
+	T{1} -> T{2}
+}
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F() {
+	_ = (T{1}).X
+	if (T{1}).X > 0 {
+	}
+	for (T{1}).X > 0 {
+	}
+	switch (T{1}).X {
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,11 +3,11 @@
+ type T struct{ X int }
+
+ func F() {
+-	_ = (T{1}).X
+-	if (T{1}).X > 0 {
++	_ = (T{2}).X
++	if (T{2}).X > 0 {
+ 	}
+-	for (T{1}).X > 0 {
++	for (T{2}).X > 0 {
+ 	}
+-	switch (T{1}).X {
++	switch (T{2}).X {
+ 	}
+ }

@@ -1,0 +1,24 @@
+# ex: matchSelectorExpr value pattern matching pointer receiver (implicit & path)
+ex {
+	var t T
+	t.X -> t.X + 1
+}
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F(p *T) int {
+	return p.X
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ type T struct{ X int }
+
+ func F(p *T) int {
+-	return p.X
++	return p.X + 1
+ }

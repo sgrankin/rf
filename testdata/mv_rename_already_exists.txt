@@ -1,0 +1,10 @@
+# mv: rename global when target already exists
+mv X Y
+-- x.go --
+package m
+
+var X = 1
+var Y = 2
+-- stderr --
+x.go:4:5: already have Y
+errors found during: mv X Y

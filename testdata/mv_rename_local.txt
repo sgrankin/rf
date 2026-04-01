@@ -1,0 +1,22 @@
+# mv: rename local variable within function (old.Outer != nil && newOuter != nil && old.Outer.Obj == newOuter.Obj)
+mv F.X F.Y
+-- x.go --
+package m
+
+func F() int {
+	X := 1
+	return X
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package m
+
+ func F() int {
+-	X := 1
+-	return X
++	Y := 1
++	return Y
+ }

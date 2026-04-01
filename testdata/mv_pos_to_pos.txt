@@ -1,0 +1,19 @@
+# mv: move text from one position to another (ItemPos to ItemPos)
+mv x.go:3 x.go:5
+-- x.go --
+package m
+
+var X = 1
+var Y = 2
+var Z = 3
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,4 @@
+ package m
+
+-var X = 1
+ var Y = 2
+-var Z = 3
++var X = 1

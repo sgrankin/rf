@@ -1,0 +1,9 @@
+# add: add to a non-existent directory (ItemNotFound path in cmdAddSub)
+add Q var Z = 3
+-- x.go --
+package m
+
+var X = 1
+-- stderr --
+Q not found
+errors found during: add Q var Z = 3

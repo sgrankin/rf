@@ -1,0 +1,8 @@
+# mv: rename to invalid identifier
+mv X 123bad
+-- x.go --
+package m
+
+var X = 1
+-- stderr --
+usage: malformed replacement: not a valid Go identifier: 123bad

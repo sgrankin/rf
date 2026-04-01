@@ -1,0 +1,26 @@
+# ex: implicit & in non-selector context (applySubst implicit op outside selector)
+ex {
+	var p *T
+	p.X -> F(p)
+}
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F(p *T) int { return p.X }
+
+func G(t T) int {
+	return t.X
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,5 +5,5 @@
+ func F(p *T) int { return p.X }
+
+ func G(t T) int {
+-	return t.X
++	return F(&t)
+ }
