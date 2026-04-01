@@ -1,0 +1,10 @@
+# ex: avoid with missing arguments
+ex {
+	avoid
+	var x int
+	x -> x
+}
+-- x.go --
+package m
+-- stderr --
+usage: missing arguments for avoid

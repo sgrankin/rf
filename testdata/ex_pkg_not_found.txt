@@ -1,0 +1,12 @@
+# ex: package prefix not found
+ex NonexistentPkg {
+	var x int
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+-- stderr --
+NonexistentPkg not found
+errors found during: ex NonexistentPkg { \ ...
