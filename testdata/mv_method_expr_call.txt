@@ -1,0 +1,29 @@
+# mv: convert method expression call T.M(t, args...) to function call
+mv T.M F
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func (t T) M(n int) int { return t.X + n }
+
+func G() int {
+	var t T
+	return T.M(t, 1)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,9 +2,9 @@
+
+ type T struct{ X int }
+
+-func (t T) M(n int) int { return t.X + n }
++func F(t T, n int) int { return t.X + n }
+
+ func G() int {
+ 	var t T
+-	return T.M(t, 1)
++	return F(t, 1)
+ }
