@@ -1,0 +1,14 @@
+# add: add after item in grouped decl (ValueSpec with Lparen path)
+add X var Z = 3
+-- x.go --
+package m
+
+var (
+	X = 1
+	Y = 2
+)
+-- stderr --
+x.go:5:1: expected 'IDENT', found 'var'
+also merging snapshots failed:
+x.go:5:1: expected 'IDENT', found 'var'
+errors found after executing: add X var Z = 3

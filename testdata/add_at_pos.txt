@@ -1,9 +1,9 @@
-# add: add to file (ItemFile path in cmdAddSub)
-add x.go var Z = 3
+# add: add at a position (ItemPos path)
+add x.go:3 func G() {}
 -- x.go --
 package m
 
-var X = 1
+func F() {}
 -- stdout --
 diff old/x.go new/x.go
 --- old/x.go
@@ -11,5 +11,5 @@ diff old/x.go new/x.go
 @@ -1,3 +1,4 @@
  package m
 
- var X = 1
-+var Z = 3
+ func F() {}
++func G() {}
