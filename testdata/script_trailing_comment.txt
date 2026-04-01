@@ -1,0 +1,14 @@
+mv F G # trailing comment
+-- x.go --
+package m
+
+func F() {}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,3 +1,3 @@
+ package m
+
+-func F() {}
++func G() {}

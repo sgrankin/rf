@@ -34,6 +34,29 @@ var commonRangesTests = []struct {
 	{"a", "b", nil},
 }
 
+func TestReadLineTrailingComment(t *testing.T) {
+	tests := []struct {
+		text string
+		line string
+		rest string
+		err  string
+	}{
+		{"mv F G # trailing", "mv F G ", "", ""},
+		{"mv F G\nmv H I", "mv F G", "mv H I", ""},
+	}
+	for _, tt := range tests {
+		line, rest, err := readLine(tt.text)
+		var errStr string
+		if err != nil {
+			errStr = err.Error()
+		}
+		if line != tt.line || rest != tt.rest || errStr != tt.err {
+			t.Errorf("readLine(%q) = (%q, %q, %q), want (%q, %q, %q)",
+				tt.text, line, rest, errStr, tt.line, tt.rest, tt.err)
+		}
+	}
+}
+
 func TestTrimCommentsEscape(t *testing.T) {
 	tests := []struct {
 		in   string
