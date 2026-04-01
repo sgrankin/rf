@@ -1,4 +1,4 @@
-# key: struct literal with wrong field count is not keyed
+# key: already keyed literals are left alone
 key T
 -- x.go --
 package m
@@ -8,7 +8,4 @@ type T struct {
 	Y int
 }
 
-var _ = T{1, 2, 3}
--- stderr --
-x.go:8:17: too many values in struct literal of type T
-errors found before executing script
+var _ = T{X: 1, Y: 2}
