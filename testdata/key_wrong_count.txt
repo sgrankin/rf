@@ -1,0 +1,14 @@
+# key: struct literal with too many initializers (3 values for 2-field struct)
+key S
+-- x.go --
+package m
+
+type S struct {
+	X int
+	Y int
+}
+
+var V = S{1, 2, 3}
+-- stderr --
+x.go:8:17: too many values in struct literal of type S
+errors found before executing script

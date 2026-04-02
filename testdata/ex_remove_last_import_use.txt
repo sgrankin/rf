@@ -1,0 +1,28 @@
+# ex: rewrite that removes the last use of an import, triggering import cleanup
+ex {
+	import "strings"
+
+	var x string
+	strings.TrimSpace(x) -> x
+}
+-- file.go --
+package m
+
+import "strings"
+
+func f() string {
+	return strings.TrimSpace(" hello ")
+}
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,7 +1,5 @@
+ package m
+
+-import "strings"
+-
+ func f() string {
+-	return strings.TrimSpace(" hello ")
++	return " hello "
+ }

@@ -1,0 +1,20 @@
+# mvstmt: continue with label referring to enclosing labeled loop
+mv x.go:7,9 Extracted
+-- x.go --
+package m
+
+func f() {
+outer:
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			if j == 5 {
+				continue outer
+			}
+		}
+	}
+}
+-- stderr --
+x.go:12:37: missing ',' in parameter list
+also merging snapshots failed:
+x.go:12:37: missing ',' in parameter list
+errors found after executing: mv x.go:7,9 Extracted
