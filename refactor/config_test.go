@@ -96,6 +96,45 @@ func TestConfigFlagsEnvsConflict(t *testing.T) {
 	}
 }
 
+func TestConfigFlagsEnvsConflictGOARCH(t *testing.T) {
+	c := Config{BuildTags: []string{"amd64", "arm64"}}
+	_, _, err := c.flagsEnvs()
+	if err == nil {
+		t.Fatal("expected error for conflicting GOARCH values")
+	}
+	if !strings.Contains(err.Error(), "conflicting") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestConfigFlagsEnvsConflictCgo(t *testing.T) {
+	c := Config{BuildTags: []string{"cgo", "!cgo"}}
+	_, _, err := c.flagsEnvs()
+	if err == nil {
+		t.Fatal("expected error for conflicting CGO_ENABLED values")
+	}
+	if !strings.Contains(err.Error(), "conflicting") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestConfigFlagsEnvsDuplicateGOOS(t *testing.T) {
+	c := Config{BuildTags: []string{"linux", "linux"}}
+	_, envs, err := c.flagsEnvs()
+	if err != nil {
+		t.Fatal(err)
+	}
+	count := 0
+	for _, e := range envs {
+		if e == "GOOS=linux" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Errorf("expected 1 GOOS=linux env, got %d in %v", count, envs)
+	}
+}
+
 func TestNewConfigs(t *testing.T) {
 	cs := NewConfigs("linux", "amd64")
 	if len(cs.c) != 1 {
