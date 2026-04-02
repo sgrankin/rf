@@ -9,6 +9,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -18,6 +19,41 @@ import (
 	"rsc.io/rf/diff"
 	"rsc.io/rf/refactor"
 )
+
+func TestMain(m *testing.M) {
+	if os.Getenv("TEST_MAIN") == "rf" {
+		main()
+		return
+	}
+	os.Exit(m.Run())
+}
+
+// runRF invokes the test binary as the rf command with the given args,
+// working directory, and stdin. Returns stdout, stderr, and exit code.
+// Coverage data from the subprocess is collected via GOCOVERDIR.
+func runRF(t *testing.T, dir string, stdin string, args ...string) (string, string, int) {
+	t.Helper()
+	cmd := exec.Command(os.Args[0], args...)
+	// Set up coverage collection for the subprocess.
+	coverDir := t.TempDir()
+	env := append(os.Environ(), "TEST_MAIN=rf", "GOCOVERDIR="+coverDir)
+	cmd.Env = env
+	cmd.Dir = dir
+	cmd.Stdin = strings.NewReader(stdin)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	exitCode := 0
+	if err != nil {
+		if ee, ok := err.(*exec.ExitError); ok {
+			exitCode = ee.ExitCode()
+		} else {
+			t.Fatalf("failed to run rf: %v", err)
+		}
+	}
+	return stdout.String(), stderr.String(), exitCode
+}
 
 var trimCommentsTests = []struct {
 	in  string
@@ -243,6 +279,53 @@ func TestRun(t *testing.T) {
 			cmp("stderr", stderr.Bytes(), wantStderr.Data)
 			cmp("stdout", stdout.Bytes(), wantStdout.Data)
 		})
+	}
+}
+
+// TestMainNoArgs tests that rf with no arguments prints usage and exits 2.
+func TestMainNoArgs(t *testing.T) {
+	_, stderr, code := runRF(t, t.TempDir(), "")
+	if code != 2 {
+		t.Errorf("exit code = %d, want 2", code)
+	}
+	if !strings.Contains(stderr, "usage:") {
+		t.Errorf("stderr = %q, want usage message", stderr)
+	}
+}
+
+// TestMainUnknownCommand tests that rf with an unknown command fails.
+func TestMainUnknownCommand(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module m\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "x.go"), []byte("package m\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	_, stderr, code := runRF(t, dir, "", "nosuchcommand x y")
+	if code == 0 {
+		t.Error("expected non-zero exit code")
+	}
+	if !strings.Contains(stderr, "unknown command") {
+		t.Errorf("stderr = %q, want 'unknown command'", stderr)
+	}
+}
+
+// TestMainDiffFlag tests that -diff flag works.
+func TestMainDiffFlag(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module m\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "x.go"), []byte("package m\n\nvar X int\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	stdout, _, code := runRF(t, dir, "", "-diff", "mv X Y")
+	if code != 0 {
+		t.Errorf("exit code = %d, want 0", code)
+	}
+	if !strings.Contains(stdout, "diff") {
+		t.Errorf("stdout = %q, want diff output", stdout)
 	}
 }
 
