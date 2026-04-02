@@ -30,14 +30,12 @@ func TestMain(m *testing.M) {
 
 // runRF invokes the test binary as the rf command with the given args,
 // working directory, and stdin. Returns stdout, stderr, and exit code.
-// Coverage data from the subprocess is collected via GOCOVERDIR.
+// If GOCOVERDIR is set in the environment, subprocess coverage data
+// is written there automatically.
 func runRF(t *testing.T, dir string, stdin string, args ...string) (string, string, int) {
 	t.Helper()
 	cmd := exec.Command(os.Args[0], args...)
-	// Set up coverage collection for the subprocess.
-	coverDir := t.TempDir()
-	env := append(os.Environ(), "TEST_MAIN=rf", "GOCOVERDIR="+coverDir)
-	cmd.Env = env
+	cmd.Env = append(os.Environ(), "TEST_MAIN=rf")
 	cmd.Dir = dir
 	cmd.Stdin = strings.NewReader(stdin)
 	var stdout, stderr bytes.Buffer
