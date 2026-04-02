@@ -931,16 +931,6 @@ func (s *Snapshot) check(p *Package) {
 	s.r.cache.types[p.BuildID] = &cachedTypeInfo{p.Types, p.TypesInfo}
 }
 
-func opener(name string) func(string) (io.ReadCloser, error) {
-	return func(ignored string) (io.ReadCloser, error) {
-		f, err := os.Open(name)
-		if err != nil {
-			return nil, err
-		}
-		return f, nil
-	}
-}
-
 // Reset undoes any edits to s.
 func (s *Snapshot) Reset() {
 	for k, edit := range s.edits {
