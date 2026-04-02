@@ -1,0 +1,30 @@
+mv Foo T.Bar
+-- p.go --
+package m
+
+type T struct{}
+
+func Foo(t T, x int) int { return x }
+
+func usage() {
+	var t T
+	result := Foo(t, 42)
+	_ = result
+}
+-- stdout --
+diff old/p.go new/p.go
+--- old/p.go
++++ new/p.go
+@@ -2,10 +2,10 @@
+
+ type T struct{}
+
+-func Foo(t T, x int) int { return x }
++func (t T) Bar(x int) int { return x }
+
+ func usage() {
+ 	var t T
+-	result := Foo(t, 42)
++	result := t.Bar(42)
+ 	_ = result
+ }

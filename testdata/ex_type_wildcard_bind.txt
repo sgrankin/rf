@@ -1,0 +1,29 @@
+# ex: bindWildcard TypeName case
+ex {
+	type T int
+	var x T
+	T(x) -> int(x)
+}
+-- x.go --
+package m
+
+type MyInt int
+
+func F() MyInt {
+	var x MyInt = 1
+	return MyInt(x)
+}
+-- stderr --
+x.go:7:9: cannot use int(x) (value of type int) as MyInt value in return statement
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+
+ func F() MyInt {
+ 	var x MyInt = 1
+-	return MyInt(x)
++	return int(x)
+ }

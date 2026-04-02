@@ -1,0 +1,29 @@
+mv x.go:4,9 helper
+-- x.go --
+package p
+
+func f(ch chan int) int {
+	var x int
+	select {
+	case x = <-ch:
+	default:
+		x = 0
+	}
+	return x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package p
+
+ func f(ch chan int) int {
++	x := helper(ch)
++	return x
++}
++
++func helper(ch chan int) int {
+ 	var x int
+ 	select {
+ 	case x = <-ch:

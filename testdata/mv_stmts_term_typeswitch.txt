@@ -1,0 +1,17 @@
+mv x.go:4,10 helper
+-- x.go --
+package p
+
+func f(v interface{}) int {
+	x := 0
+	switch v.(type) {
+	case int:
+		return 1
+	default:
+		return x
+	}
+	return -1
+}
+-- stderr --
+x.go:4:1: extract type *types.Interface not implemented
+errors found during: mv x.go:4,10 helper

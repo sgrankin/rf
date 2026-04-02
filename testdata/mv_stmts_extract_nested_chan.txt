@@ -1,0 +1,26 @@
+# mvstmt: extract code returning chan of recv-chan (printType nested chan paren)
+mv x.go:4 NewFunc
+-- x.go --
+package m
+
+func F() {
+	ch := make(chan (<-chan int))
+	_ = ch
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package m
+
+ func F() {
+-	ch := make(chan (<-chan int))
++	ch := NewFunc()
+ 	_ = ch
+ }
++
++func NewFunc() chan (<-chan int) {
++	ch := make(chan (<-chan int))
++	return ch
++}

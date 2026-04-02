@@ -1,0 +1,20 @@
+# rm: remove a method from an interface (removeDecls interface field)
+rm I.M
+-- x.go --
+package m
+
+type I interface {
+	M()
+	N()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,5 @@
+ package m
+
+ type I interface {
+-	M()
+ 	N()
+ }

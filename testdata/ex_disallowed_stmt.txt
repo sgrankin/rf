@@ -1,0 +1,10 @@
+# ex: return statement not allowed in ex block
+ex {
+	return 1
+}
+-- x.go --
+package m
+
+func F() int { return 1 }
+-- stderr --
+usage: return statement not allowed

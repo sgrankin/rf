@@ -1,0 +1,15 @@
+key T C:1,2
+-- x.go --
+package p
+
+type T struct {
+	X int
+	Y string
+}
+
+const C = 1
+
+var _ = T{1, "hello"}
+-- stderr --
+cannot apply text range to const
+errors found during: key T C:1,2

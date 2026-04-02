@@ -1,0 +1,34 @@
+# ex: compositeLitNeedsParen with composite literal in type conversion arg (ex.go:835-840)
+# and BlockStmt enclosure via func literal (ex.go:865-866).
+# A composite literal used as argument in a type conversion or function call,
+# and inside a function literal body, in an if condition.
+ex {
+	A -> B
+}
+-- x.go --
+package m
+
+type A struct{ X int }
+type B struct{ X int }
+
+type I interface{}
+
+func f() {
+	_ = I(A{1})
+	if func() int { return A{X: 1}.X }() > 0 {
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,7 +6,7 @@
+ type I interface{}
+
+ func f() {
+-	_ = I(A{1})
+-	if func() int { return A{X: 1}.X }() > 0 {
++	_ = I(B{1})
++	if func() int { return B{X: 1}.X }() > 0 {
+ 	}
+ }

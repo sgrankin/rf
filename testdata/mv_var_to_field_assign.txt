@@ -1,0 +1,34 @@
+# mv: removeDecl handles short variable declaration (:= to = conversion)
+mv f.x s.X
+-- x.go --
+package p
+
+type S struct{ Y int }
+
+var s S
+
+func f() {
+	x := 1
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,10 +1,13 @@
+ package p
+
+-type S struct{ Y int }
++type S struct {
++	Y int
++	X int
++}
+
+ var s S
+
+ func f() {
+-	x := 1
+-	_ = x
++	s.X = 1
++	_ = s.X
+ }

@@ -1,0 +1,13 @@
+# ex: implicit with non-function-typed variable errors
+ex {
+	var x int
+	implicit x
+	x + 1 -> x + 2
+}
+-- x.go --
+package m
+
+func F() int { return 1 + 1 }
+-- stderr --
+implicit: var x int is not a single-parameter function-typed variable
+errors found during: ex { \ ...

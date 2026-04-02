@@ -1,0 +1,18 @@
+# mv: extract statements with break inside for loop (break is local)
+mv x.go:5,9 DoLoop
+-- x.go --
+package m
+
+func F() {
+	x := 0
+	for {
+		x++
+		if x > 5 {
+			break
+		}
+	}
+	_ = x
+}
+-- stderr --
+x.go:5:1: code to move is not a list of statements [x.go:5:1 x.go:10:1] [x.go:5:2 x.go:10:3] [x.go:3:10 x.go:12:2]
+errors found during: mv x.go:5,9 DoLoop

@@ -1,0 +1,15 @@
+# typeassert: LOR condition with both sides having true (EQL) matches
+typeassert {
+	var x interface{}
+	x == nil -> x.(int)
+}
+-- x.go --
+package p
+
+func f(x interface{}) {
+	if x == nil || x == nil {
+		println("nil")
+	} else {
+		println("not nil")
+	}
+}

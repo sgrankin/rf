@@ -1,0 +1,9 @@
+# mv: multiple items error when target is not file/dir
+mv X Y Z
+-- x.go --
+package m
+
+var X = 1
+var Y = 2
+-- stderr --
+usage: cannot move multiple items to Z

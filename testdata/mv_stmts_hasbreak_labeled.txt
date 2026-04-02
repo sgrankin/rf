@@ -1,0 +1,38 @@
+# mvstmt: hasBreak with labeled break
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(x int) {
+	// BEGIN
+outer:
+	for i := 0; i < x; i++ {
+		switch i {
+		case 0:
+			break outer
+		}
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F(x int) {
+ 	// BEGIN
++	New(x)
++	// END
++}
++
++func New(x int) {
+ outer:
+ 	for i := 0; i < x; i++ {
+ 		switch i {
+@@ -9,5 +14,4 @@
+ 			break outer
+ 		}
+ 	}
+-	// END
+ }

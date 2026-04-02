@@ -1,0 +1,53 @@
+# ex: implicit op cancellation with parenthesized inner expressions (ex.go:601-606, 615-620)
+# Part 1: op=='*' (pattern T, source *T via (&x)), replx is ParenExpr(&x).
+# The inner & in parens cancels the implicit *.
+# Part 2: op=='&' (pattern *T, source T via (*ptr)), replx is ParenExpr(*ptr).
+# The inner * in parens cancels the implicit &.
+ex {
+	var t T
+	t.Val() -> Use(t)
+}
+ex {
+	var p *T
+	p.M() -> UseP(p)
+}
+-- x.go --
+package p
+
+type T struct{ v int }
+
+func (t T) Val() int { return t.v }
+func (t *T) M() int  { return t.v }
+
+func Use(t T) int    { return t.v }
+func UseP(t *T) int  { return t.v }
+
+func f() {
+	var x T
+	_ = (&x).Val()
+
+	var ptr *T
+	_ = (*ptr).M()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,13 +5,13 @@
+ func (t T) Val() int { return t.v }
+ func (t *T) M() int  { return t.v }
+
+-func Use(t T) int    { return t.v }
+-func UseP(t *T) int  { return t.v }
++func Use(t T) int   { return t.v }
++func UseP(t *T) int { return t.v }
+
+ func f() {
+ 	var x T
+-	_ = (&x).Val()
++	_ = Use(x)
+
+ 	var ptr *T
+-	_ = (*ptr).M()
++	_ = UseP(ptr)
+ }

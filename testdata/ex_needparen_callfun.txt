@@ -1,0 +1,27 @@
+# ex: needParen adds parens when binary expr replaces Fun position of CallExpr
+ex {
+	var x int
+	f(x) -> x + 1
+}
+-- x.go --
+package p
+
+func f(x int) func() int { return nil }
+
+func h(a int) {
+	_ = f(a)()
+}
+-- stderr --
+x.go:6:6: invalid operation: cannot call (a + 1) (value of type int): int is not a function
+errors found after executing: ex { \ ...
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ func f(x int) func() int { return nil }
+
+ func h(a int) {
+-	_ = f(a)()
++	_ = (a + 1)()
+ }

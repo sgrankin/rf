@@ -1,0 +1,8 @@
+mv x.go:3 helper
+-- x.go --
+package p
+
+var x = 1
+-- stderr --
+x.go:3:1: code to move is not in function
+errors found during: mv x.go:3 helper

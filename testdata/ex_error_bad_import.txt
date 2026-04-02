@@ -1,0 +1,15 @@
+# ex with an import that doesn't exist in the module should report error.
+ex {
+	import "nonexistent/pkg"
+	var x int
+	x -> pkg.Convert(x)
+}
+-- file.go --
+package m
+
+func f() {
+	x := 1
+	_ = x
+}
+-- stderr --
+usage: import "nonexistent/pkg" not available

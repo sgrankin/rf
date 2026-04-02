@@ -1,0 +1,10 @@
+# ex: unused pattern variable y is properly suppressed (Go 1.26 "declared and not used: y" format)
+ex {
+	var x int
+	var y int
+	x -> x
+}
+-- x.go --
+package p
+
+var G = 1

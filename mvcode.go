@@ -5,10 +5,10 @@
 package main
 
 import (
-	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
+	"maps"
 	"path/filepath"
 
 	"rsc.io/rf/refactor"
@@ -19,7 +19,7 @@ import (
 func transplant(snap *refactor.Snapshot, code string, src, dst token.Pos, moves map[types.Object]*refactor.Package) string {
 	srcPkg, srcFile := snap.FileAt(src)
 	if srcFile == nil {
-		panic("lost source file")
+		return code // source file not found, return unchanged
 	}
 	dstPkg := snap.PackageAt(dst)
 
@@ -81,7 +81,8 @@ func mvCode(snap *refactor.Snapshot, srcs []*refactor.Item, dst *refactor.Item, 
 		}
 		switch src.Kind {
 		default:
-			panic(fmt.Sprintf("unexpected src %v", src))
+			snap.ErrorAt(token.NoPos, "unexpected source item %v", src)
+			continue
 		case refactor.ItemFile:
 			srcPkg, srcFile := snap.FileByName(src.Name)
 			if srcFile == nil {
@@ -90,12 +91,11 @@ func mvCode(snap *refactor.Snapshot, srcs []*refactor.Item, dst *refactor.Item, 
 			}
 			recordFileMoves(srcPkg, srcFile, dstPkg, inFiles)
 		case refactor.ItemDir:
-			panic("mv dir not implemented")
+			snap.ErrorAt(token.NoPos, "mv dir not implemented")
+			continue
 		}
 	}
-	for obj, dst := range inFiles {
-		moves[obj] = dst
-	}
+	maps.Copy(moves, inFiles)
 
 	remap := make(map[refactor.QualName]refactor.QualName)
 	for obj, dst := range moves {
@@ -107,7 +107,8 @@ func mvCode(snap *refactor.Snapshot, srcs []*refactor.Item, dst *refactor.Item, 
 			}
 		}
 		if src == nil {
-			panic("LOST SRC: " + path)
+			snap.ErrorAt(token.NoPos, "internal error: lost source package %s", path)
+			continue
 		}
 		name := obj.Name()
 		if f, ok := obj.(*types.Func); ok && f.Type().(*types.Signature).Recv() != nil {
@@ -141,7 +142,8 @@ func mvCode(snap *refactor.Snapshot, srcs []*refactor.Item, dst *refactor.Item, 
 			srcPkg, srcFile := snap.FileByName(src.Name)
 			moveCode(snap, srcPkg, srcFile, 0, 0, dst, dstPkg, moves)
 		case refactor.ItemDir:
-			panic("mv dir not implemented")
+			snap.ErrorAt(token.NoPos, "mv dir not implemented")
+			continue
 		}
 	}
 
@@ -168,36 +170,31 @@ func recordFileMoves(srcPkg *refactor.Package, file *ast.File, dstPkg *refactor.
 	for _, d := range file.Decls {
 		switch d := d.(type) {
 		default:
-			panic(fmt.Sprintf("unexpected decl %T", d))
+			continue
 		case *ast.GenDecl:
 			for _, spec := range d.Specs {
 				switch spec := spec.(type) {
-				default:
-					panic(fmt.Sprintf("unexpected spec %T", spec))
 				case *ast.ImportSpec:
 					// ignore
 				case *ast.ValueSpec:
 					for _, id := range spec.Names {
 						obj := srcPkg.TypesInfo.Defs[id]
-						if obj == nil {
-							panic("no obj for var/const")
+						if obj != nil {
+							moves[obj] = dstPkg
 						}
-						moves[obj] = dstPkg
 					}
 				case *ast.TypeSpec:
 					obj := srcPkg.TypesInfo.Defs[spec.Name]
-					if obj == nil {
-						panic("no obj for type")
+					if obj != nil {
+						moves[obj] = dstPkg
 					}
-					moves[obj] = dstPkg
 				}
 			}
 		case *ast.FuncDecl:
 			obj := srcPkg.TypesInfo.Defs[d.Name]
-			if obj == nil {
-				panic("no obj for func")
+			if obj != nil {
+				moves[obj] = dstPkg
 			}
-			moves[obj] = dstPkg
 		}
 	}
 }
@@ -216,7 +213,8 @@ func moveCode(snap *refactor.Snapshot,
 		dst.Name = filepath.Base(snap.Position(srcFile.Package).Filename)
 	}
 	if dst.Kind != refactor.ItemFile {
-		panic("moveFile")
+		snap.ErrorAt(token.NoPos, "internal error: expected file destination, got %v", dst.Kind)
+		return
 	}
 
 	srcSplit := srcFile.Name.End() // just after package declaration
@@ -318,6 +316,9 @@ func declRange(snap *refactor.Snapshot, obj types.Object) (pos, end token.Pos) {
 		pos++
 	}
 	d := codeDecl(snap, obj)
+	if d == nil {
+		return obj.Pos(), obj.Pos()
+	}
 
 	pastEOL := func(pos token.Pos) token.Pos {
 		p := pos
@@ -358,9 +359,13 @@ func declObjs(snap *refactor.Snapshot, obj types.Object) []types.Object {
 	srcPkg, _ := snap.FileAt(obj.Pos())
 	defs := srcPkg.TypesInfo.Defs
 	var objs []types.Object
-	switch d := codeDecl(snap, obj).(type) {
+	d := codeDecl(snap, obj)
+	if d == nil {
+		return []types.Object{obj}
+	}
+	switch d := d.(type) {
 	default:
-		panic(fmt.Sprintf("unexpected codeDecl %T", d))
+		return []types.Object{obj}
 	case *ast.GenDecl:
 		for _, spec := range d.Specs {
 			switch spec := spec.(type) {
@@ -380,7 +385,7 @@ func declObjs(snap *refactor.Snapshot, obj types.Object) []types.Object {
 
 func codeDecl(snap *refactor.Snapshot, obj types.Object) ast.Decl {
 	stack := snap.SyntaxAt(obj.Pos())
-	for i := 0; i < len(stack); i++ {
+	for i := range stack {
 		switch d := stack[i].(type) {
 		case *ast.GenDecl:
 			for _, spec := range d.Specs {
@@ -397,13 +402,11 @@ func codeDecl(snap *refactor.Snapshot, obj types.Object) ast.Decl {
 					}
 				}
 			}
-			panic("unexpected decl")
 		case *ast.FuncDecl:
 			if d.Name.Pos() == obj.Pos() {
 				return d
 			}
-			panic("unexpected func")
 		}
 	}
-	panic("cannot find decl")
+	return nil
 }

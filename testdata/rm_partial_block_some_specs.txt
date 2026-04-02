@@ -1,0 +1,22 @@
+# rm: remove only some specs from a var block, leaving others untouched
+rm X Z
+-- file.go --
+package m
+
+var (
+	X = 1
+	Y = 2
+	Z = 3
+)
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,7 +1,5 @@
+ package m
+
+ var (
+-	X = 1
+ 	Y = 2
+-	Z = 3
+ )

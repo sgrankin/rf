@@ -1,0 +1,28 @@
+# ex: match involving interface type variable
+ex {
+	var e error
+	e.Error() -> "fixed: " + e.Error()
+}
+-- x.go --
+package m
+
+import "fmt"
+
+func F(err error) string {
+	return err.Error()
+}
+
+var _ = fmt.Sprintf
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,7 +3,7 @@
+ import "fmt"
+
+ func F(err error) string {
+-	return err.Error()
++	return "fixed: " + err.Error()
+ }
+
+ var _ = fmt.Sprintf

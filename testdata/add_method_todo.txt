@@ -1,0 +1,9 @@
+add T.M text
+-- x.go --
+package p
+
+type T struct{}
+
+func (T) M() {}
+-- stderr --
+errors found during: add T.M text: TODO: add after method

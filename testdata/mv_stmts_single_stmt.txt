@@ -1,0 +1,15 @@
+# mvstmt: move single non-expression statement (Stmt case, not BlockStmt)
+mv x.go:/for/,/^	}/ helper
+-- x.go --
+package p
+
+func f(n int) {
+loop:
+	for i := 0; i < n; i++ {
+		println(i)
+	}
+	goto loop
+}
+-- stderr --
+x.go:5:2: code to move is not a list of statements [x.go:5:2 x.go:7:3] [x.go:4:1 x.go:7:3] [x.go:3:15 x.go:9:2]
+errors found during: mv x.go:/for/,/^	}/ helper

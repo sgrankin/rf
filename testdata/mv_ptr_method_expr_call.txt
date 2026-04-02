@@ -1,0 +1,29 @@
+# mv: pointer method expression call (*T).M(rcvr, x) to F(*rcvr, x)
+mv T.M F
+-- x.go --
+package p
+
+type T struct{ X int }
+
+func (t T) M() int { return t.X }
+
+func f() {
+	var t T
+	_ = (*T).M(&t)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,9 +2,9 @@
+
+ type T struct{ X int }
+
+-func (t T) M() int { return t.X }
++func F(t T) int { return t.X }
+
+ func f() {
+ 	var t T
+-	_ = (*T).M(&t)
++	_ = F(*&t)
+ }

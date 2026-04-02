@@ -1,0 +1,27 @@
+# mv: rename an exported var (rewriteUses exported path)
+mv X Y
+-- x.go --
+package m
+
+var X = 1
+-- y.go --
+package m
+
+func F() int { return X }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,3 +1,3 @@
+ package m
+
+-var X = 1
++var Y = 1
+diff old/y.go new/y.go
+--- old/y.go
++++ new/y.go
+@@ -1,3 +1,3 @@
+ package m
+
+-func F() int { return X }
++func F() int { return Y }

@@ -1,0 +1,22 @@
+# ex: match involving channel type
+ex {
+	var ch chan int
+	ch <- 1 -> ch <- 2
+}
+-- x.go --
+package m
+
+func F(ch chan int) {
+	ch <- 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F(ch chan int) {
+-	ch <- 1
++	ch <- 2
+ }

@@ -1,0 +1,26 @@
+mv x.go:6 helper
+-- x.go --
+package p
+
+func f() {
+	x := 1
+	_ = x
+	goto done
+done:
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,6 +3,11 @@
+ func f() {
+ 	x := 1
+ 	_ = x
++	helper()
+ 	goto done
+ done:
+ }
++
++func helper() {
++	return
++}

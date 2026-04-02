@@ -1,0 +1,22 @@
+# ex: assigneeType for map index expression
+ex {
+	var x int
+	x + 0 -> x
+}
+-- x.go --
+package m
+
+func F(m map[int]string) string {
+	return m[1+0]
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F(m map[int]string) string {
+-	return m[1+0]
++	return m[1]
+ }

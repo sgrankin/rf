@@ -1,0 +1,28 @@
+# ex: function signature mismatch via tuple length difference exercises identical() tuple path
+ex {
+	var f func(int) int
+	f(1) -> f(1) + 1
+}
+-- x.go --
+package p
+
+func g(x int) int          { return x }
+func h(x, y int) int       { return x + y }
+
+var _ = g(1)
+var _ = h(1, 2)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,7 @@
+ package p
+
+-func g(x int) int          { return x }
+-func h(x, y int) int       { return x + y }
++func g(x int) int    { return x }
++func h(x, y int) int { return x + y }
+
+-var _ = g(1)
++var _ = g(1) + 1
+ var _ = h(1, 2)

@@ -1,0 +1,16 @@
+# add: add text after an existing package directory
+add m/q func G() int { return 2 }
+-- x.go --
+package m
+
+func F() {}
+-- q/q.go --
+package q
+-- stdout --
+diff old/q/q.go new/q/q.go
+--- old/q/q.go
++++ new/q/q.go
+@@ -1 +1,3 @@
+ package q
++
++func G() int { return 2 }

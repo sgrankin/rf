@@ -1,0 +1,11 @@
+# key: already keyed literals are left alone
+key T
+-- x.go --
+package m
+
+type T struct {
+	X int
+	Y int
+}
+
+var _ = T{X: 1, Y: 2}

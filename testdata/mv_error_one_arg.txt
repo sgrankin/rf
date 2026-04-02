@@ -1,0 +1,7 @@
+mv X
+-- x.go --
+package m
+
+var X int
+-- stderr --
+usage: mv old... new

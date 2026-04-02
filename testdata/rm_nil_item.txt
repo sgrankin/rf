@@ -1,0 +1,9 @@
+rm F X:1,2
+-- x.go --
+package p
+
+func F() {}
+const X = 1
+-- stderr --
+cannot apply text range to const
+errors found during: rm F X:1,2

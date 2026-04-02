@@ -1,0 +1,22 @@
+# ex: multi-line ex block
+ex {
+	var x int
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+func G(x int) int { return x + 1 }
+
+func H() int { return F(1) }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,4 +3,4 @@
+ func F(x int) int { return x }
+ func G(x int) int { return x + 1 }
+
+-func H() int { return F(1) }
++func H() int { return G(1) }

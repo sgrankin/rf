@@ -1,0 +1,10 @@
+# ex: import of unavailable package
+ex {
+	import "nonexistent/pkg"
+	var x int
+	x -> x
+}
+-- x.go --
+package m
+-- stderr --
+usage: import "nonexistent/pkg" not available

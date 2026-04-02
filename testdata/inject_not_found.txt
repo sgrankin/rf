@@ -1,0 +1,8 @@
+inject db DoSomething
+-- x.go --
+package p
+
+func DoSomething() {}
+-- stderr --
+db not found
+errors found during: inject db DoSomething

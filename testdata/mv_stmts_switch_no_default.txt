@@ -1,0 +1,27 @@
+# mv: extract code after switch with no default (not terminating)
+mv x.go:5,6 Compute
+-- x.go --
+package m
+
+func F(x int) int {
+	y := 0
+	z := y + x
+	w := z * 2
+	return w
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F(x int) int {
+ 	y := 0
++	w := Compute(y, x)
++	return w
++}
++
++func Compute(y int, x int) int {
+ 	z := y + x
+ 	w := z * 2
+ 	return w

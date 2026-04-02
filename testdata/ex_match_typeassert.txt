@@ -1,0 +1,11 @@
+# ex: match type assertion expression
+ex {
+	var x any
+	x.(int) -> x.(int64)
+}
+-- x.go --
+package m
+
+func F(x any) int64 {
+	return x.(int64)
+}

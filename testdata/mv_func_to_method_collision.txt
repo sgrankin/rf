@@ -1,0 +1,12 @@
+# mv: error when converting func to method and method already exists
+mv F T.M
+-- x.go --
+package m
+
+type T struct{}
+
+func F(t T) int { return 0 }
+func (t T) M() int { return 1 }
+-- stderr --
+x.go:6:12: already have T.M
+errors found during: mv F T.M

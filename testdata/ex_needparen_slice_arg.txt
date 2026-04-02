@@ -1,0 +1,22 @@
+# ex: needParen returns false for SliceExpr arguments (not X)
+ex {
+	var x int
+	x -> x+1
+}
+-- x.go --
+package p
+
+func f(s []int, n int) {
+	_ = s[n:]
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package p
+
+ func f(s []int, n int) {
+-	_ = s[n:]
++	_ = s[n+1:]
+ }

@@ -1,0 +1,17 @@
+# mv: removeDecl multi-assign error
+mv f.x s.X
+-- x.go --
+package p
+
+type S struct{ Y int }
+
+var s S
+
+func f() {
+	x, y := 1, 2
+	_ = x
+	_ = y
+}
+-- stderr --
+x.go:8:2: multiple decl not implemented
+errors found during: mv f.x s.X

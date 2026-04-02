@@ -1,0 +1,6 @@
+ex {
+}
+-- x.go --
+package p
+-- stderr --
+usage: empty block

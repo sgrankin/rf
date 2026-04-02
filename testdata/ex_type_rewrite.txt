@@ -1,0 +1,10 @@
+# ex can rewrite type expressions.
+ex {
+	type _ []int -> []int64
+}
+-- file.go --
+package m
+
+var x []int
+-- stderr --
+usage: parsing type _ []int -> []int64: 1:22: expected ';', found '-'

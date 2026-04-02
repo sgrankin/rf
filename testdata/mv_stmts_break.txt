@@ -1,0 +1,36 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(x int) {
+	y := x + 1
+	// BEGIN
+	for i := 0; i < y; i++ {
+		if i > 5 {
+			break
+		}
+		_ = i
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,11 +3,15 @@
+ func F(x int) {
+ 	y := x + 1
+ 	// BEGIN
++	New(y)
++	// END
++}
++
++func New(y int) {
+ 	for i := 0; i < y; i++ {
+ 		if i > 5 {
+ 			break
+ 		}
+ 		_ = i
+ 	}
+-	// END
+ }

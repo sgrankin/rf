@@ -1,0 +1,26 @@
+# mvstmt: extract code returning send-only chan (printType sendchan coverage)
+mv x.go:4 NewFunc
+-- x.go --
+package m
+
+func F() {
+	ch := make(chan<- int)
+	ch <- 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package m
+
+ func F() {
+-	ch := make(chan<- int)
++	ch := NewFunc()
+ 	ch <- 1
+ }
++
++func NewFunc() chan<- int {
++	ch := make(chan<- int)
++	return ch
++}

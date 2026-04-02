@@ -10,7 +10,6 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
-	"log"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -244,7 +243,6 @@ func (s *Snapshot) Eval(expr string) *Item {
 			pkg.Name = name
 			if pkg.Kind == ItemPkg {
 				if !more {
-					fmt.Println("HAVE", pkg)
 					return pkg
 				}
 				name, rest, more = cut(rest, ".")
@@ -279,8 +277,7 @@ func evalScope(scope *types.Scope, expr string) *Item {
 	obj := scope.Lookup(expr)
 	switch obj := obj.(type) {
 	default:
-		log.Fatalf("%s is a %T, unimplemented", expr, obj)
-		return nil
+		return &Item{Kind: ItemNotFound, Name: expr}
 	case nil:
 		return &Item{Kind: ItemNotFound, Name: expr}
 	case *types.TypeName:
@@ -307,9 +304,7 @@ func evalPackage(p *Package, outer *Item, name string) *Item {
 		if ptr, ok := typ.(*types.Pointer); ok {
 			typ = ptr.Elem().Underlying()
 		}
-		switch typ := typ.(type) {
-		default:
-			fmt.Printf("LOOKUP IN %T\n", typ)
+		switch typ.(type) {
 		case *types.Struct, *types.Interface:
 			return lookupTypeX(p, outer, typ, name)
 		}
@@ -555,7 +550,7 @@ func addrRegexp(data []byte, lo, hi int, dir byte, pattern string) (int, int, er
 func lookupTypeX(p *Package, outer *Item, typ types.Type, name string) *Item {
 	if tn, ok := typ.(*types.Named); ok {
 		n := tn.NumMethods()
-		for i := 0; i < n; i++ {
+		for i := range n {
 			f := tn.Method(i)
 			if f.Name() == name {
 				return &Item{Kind: ItemMethod, Obj: f, Outer: outer, Name: outer.Name + "." + name}
@@ -567,7 +562,7 @@ func lookupTypeX(p *Package, outer *Item, typ types.Type, name string) *Item {
 	switch typ := typ.(type) {
 	case *types.Interface:
 		n := typ.NumMethods()
-		for i := 0; i < n; i++ {
+		for i := range n {
 			f := typ.Method(i)
 			if f.Name() == name {
 				return &Item{Kind: ItemMethod, Obj: f, Outer: outer, Name: outer.Name + "." + name}
@@ -576,7 +571,7 @@ func lookupTypeX(p *Package, outer *Item, typ types.Type, name string) *Item {
 
 	case *types.Struct:
 		n := typ.NumFields()
-		for i := 0; i < n; i++ {
+		for i := range n {
 			f := typ.Field(i)
 			if f.Name() == name {
 				return &Item{Kind: ItemField, Obj: f, Outer: outer, Name: outer.Name + "." + name}

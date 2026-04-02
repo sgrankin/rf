@@ -12,7 +12,6 @@ import (
 	"go/parser"
 	"go/token"
 	"go/types"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -187,8 +186,7 @@ func (s *Snapshot) CreateFile(p *Package, baseName, text string) *ast.File {
 
 	file, err := s.r.cache.newFileText(name, []byte(text), true)
 	if err != nil {
-		println("TEXT", text)
-		panic("CreateFile parse: " + err.Error())
+		panic(fmt.Sprintf("CreateFile parse %s: %v\n%s", baseName, err, text))
 	}
 	ed := &Edit{
 		Name:   name,
@@ -220,7 +218,7 @@ func (s *Snapshot) CreatePackage(pkgpath string) (*Package, error) {
 	}
 
 	if _, err := os.Stat(dir); err == nil {
-		files, _ := ioutil.ReadDir(dir)
+		files, _ := os.ReadDir(dir)
 		for _, file := range files {
 			if strings.HasSuffix(file.Name(), ".go") {
 				return nil, fmt.Errorf("%s exists but not loaded", pkgpath)
@@ -349,7 +347,7 @@ func (s *Snapshot) Write() error {
 				}
 			}
 			if created[dir] == 1 {
-				err = ioutil.WriteFile(name, new, 0666)
+				err = os.WriteFile(name, new, 0666)
 			}
 		}
 		if err != nil {
@@ -361,25 +359,6 @@ func (s *Snapshot) Write() error {
 		return fmt.Errorf("errors writing files")
 	}
 	return nil
-}
-
-func (s *Snapshot) Modified() []string {
-	seen := make(map[string]bool)
-	var paths []string
-	for _, p := range s.packages {
-		path := strings.TrimSuffix(p.PkgPath, "_test")
-		if seen[path] {
-			continue
-		}
-		for _, f := range p.Files {
-			if s.edits[f.Name] != nil {
-				seen[path] = true
-				paths = append(paths, path)
-				break
-			}
-		}
-	}
-	return paths
 }
 
 func (s *Snapshot) Gofmt() {

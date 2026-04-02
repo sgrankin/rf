@@ -1,0 +1,10 @@
+# ex: missing substitution after -> errors
+ex {
+	x + 1 ->
+}
+-- x.go --
+package m
+
+func F() int { return 1 + 1 }
+-- stderr --
+usage: missing substitution in example: x + 1 ->

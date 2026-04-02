@@ -1,0 +1,25 @@
+mv x.go:5 helper
+-- x.go --
+package p
+
+func f() {
+	for {
+		break
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func f() {
+ 	for {
++		helper()
+ 		break
+ 	}
+ }
++
++func helper() {
++	return
++}

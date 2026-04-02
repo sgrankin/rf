@@ -1,0 +1,10 @@
+# ex: missing pattern before -> errors
+ex {
+	-> x + 1
+}
+-- x.go --
+package m
+
+func F() int { return 1 }
+-- stderr --
+usage: missing pattern in example: -> x + 1

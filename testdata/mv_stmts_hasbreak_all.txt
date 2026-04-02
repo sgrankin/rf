@@ -1,0 +1,42 @@
+# mvstmt: exercise hasBreak with various node types in for body
+mv x.go:4,23 Extracted
+-- x.go --
+package m
+
+func F(ch chan int, v int) {
+	for {
+	L:
+		for range []int{1} {
+			break L
+		}
+		select {
+		case x := <-ch:
+			_ = x
+		}
+		switch interface{}(v).(type) {
+		case int:
+			break
+		}
+		for range []int{1} {
+			break
+		}
+		if v > 0 {
+			break
+		}
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,10 @@
+ package m
+
+ func F(ch chan int, v int) {
++	Extracted(ch, v)
++}
++
++func Extracted(ch chan int, v int) {
+ 	for {
+ 	L:
+ 		for range []int{1} {

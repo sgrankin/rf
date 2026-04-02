@@ -1,0 +1,20 @@
+# mvstmt: extract code that includes fallthrough
+mv x.go:6,8 Extracted
+-- x.go --
+package m
+
+func F(x int) int {
+	switch x {
+	case 1:
+		x++
+		fallthrough
+	case 2:
+		x += 2
+	}
+	return x
+}
+-- stderr --
+x.go:16:2: expected '}', found 'case'
+also merging snapshots failed:
+x.go:16:2: expected '}', found 'case'
+errors found after executing: mv x.go:6,8 Extracted

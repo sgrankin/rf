@@ -1,0 +1,27 @@
+# ex: match with struct-typed wildcard
+ex {
+	var s S
+	F(s) -> G(s)
+}
+-- x.go --
+package m
+
+type S struct{ X, Y int }
+
+func F(s S) int { return s.X + s.Y }
+func G(s S) int { return s.X * s.Y }
+
+func H() int {
+	return F(S{1, 2})
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+ func G(s S) int { return s.X * s.Y }
+
+ func H() int {
+-	return F(S{1, 2})
++	return G(S{1, 2})
+ }

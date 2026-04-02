@@ -1,0 +1,8 @@
+# key: already keyed literal is skipped
+key T
+-- x.go --
+package m
+
+type T struct{ X, Y int }
+
+var t = T{X: 1, Y: 2}

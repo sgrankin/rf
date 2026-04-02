@@ -1,0 +1,15 @@
+# ex: avoid pragma with undefined symbol should report error
+ex {
+	avoid nonExistent
+	var x int
+	x -> x + 1
+}
+-- file.go --
+package m
+
+var X = 1
+-- stderr --
+errors in example:
+undefined: nonExistent
+__avoid__(nonExistent)
+errors found during: ex { \ ...

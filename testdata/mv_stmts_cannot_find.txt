@@ -1,0 +1,9 @@
+mv x.go:4,4 helper
+-- x.go --
+package p
+
+func f() {
+}
+-- stderr --
+x.go:4:1: cannot find code to move
+errors found during: mv x.go:4,4 helper

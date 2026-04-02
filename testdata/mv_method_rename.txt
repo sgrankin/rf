@@ -1,0 +1,23 @@
+# mv: rename a method
+mv T.M T.N
+-- x.go --
+package m
+
+type T struct{}
+
+func (t T) M() int { return 0 }
+
+func F(t T) int { return t.M() }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,6 @@
+
+ type T struct{}
+
+-func (t T) M() int { return 0 }
++func (t T) N() int { return 0 }
+
+-func F(t T) int { return t.M() }
++func F(t T) int { return t.N() }

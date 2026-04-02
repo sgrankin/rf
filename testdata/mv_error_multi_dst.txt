@@ -1,0 +1,8 @@
+mv X Y Z
+-- x.go --
+package m
+
+var X int
+var Y int
+-- stderr --
+usage: cannot move multiple items to Z

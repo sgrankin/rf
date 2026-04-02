@@ -1,0 +1,31 @@
+# mv: move var from grouped decl to struct field (removeDecl multi-spec)
+mv Y S.Y
+-- x.go --
+package m
+
+type S struct {
+	X int
+}
+
+var (
+	Y int
+	Z int
+)
+
+func F(s *S) int {
+	return Y
+}
+-- stderr --
+x.go:13:11: S.Y undefined (type S has no field or method Y)
+errors found after executing: mv Y S.Y
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -10,5 +10,5 @@
+ )
+
+ func F(s *S) int {
+-	return Y
++	return S.Y
+ }

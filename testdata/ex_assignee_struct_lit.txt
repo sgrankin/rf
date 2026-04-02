@@ -1,0 +1,27 @@
+# ex: assigneeType via struct composite literal element
+ex {
+	var x int
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+type S struct {
+	X int
+	Y int
+}
+
+func F(x int) int { return x }
+func G(x int) int { return x + 1 }
+
+var s = S{F(1), F(2)}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -8,4 +8,4 @@
+ func F(x int) int { return x }
+ func G(x int) int { return x + 1 }
+
+-var s = S{F(1), F(2)}
++var s = S{G(1), G(2)}

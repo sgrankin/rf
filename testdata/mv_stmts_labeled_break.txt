@@ -1,0 +1,20 @@
+# mvstmt: labeled break/continue referencing outside scope
+mv x.go:6,9 helper
+-- x.go --
+package p
+
+func f() {
+outer:
+	for {
+		x := 1
+		if x > 0 {
+			break outer
+		}
+		println(x)
+	}
+}
+-- stderr --
+x.go:11:27: missing ',' in parameter list
+also merging snapshots failed:
+x.go:11:27: missing ',' in parameter list
+errors found after executing: mv x.go:6,9 helper

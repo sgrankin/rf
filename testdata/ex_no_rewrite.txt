@@ -1,0 +1,6 @@
+# ex: block with only var declaration and no rewrite does nothing
+ex {
+	var x int
+}
+-- x.go --
+package m

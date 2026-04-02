@@ -1,0 +1,34 @@
+# ex: type wildcard substitution requiring package qualification (ex.go:646-660)
+# When a type wildcard in the replacement resolves to a type from another
+# package, the qualifier function returns pkg.Name() to produce e.g. "sub.S".
+ex ./sub {
+	type T any
+	[]T -> map[string]T
+}
+-- x.go --
+package m
+
+type A int
+
+var _ []A
+-- sub/sub.go --
+package sub
+
+import "m"
+
+type B int
+
+var _ []m.A
+var _ []B
+-- stdout --
+diff old/sub/sub.go new/sub/sub.go
+--- old/sub/sub.go
++++ new/sub/sub.go
+@@ -4,5 +4,5 @@
+
+ type B int
+
+-var _ []m.A
+-var _ []B
++var _ map[string]m.A
++var _ map[string]B

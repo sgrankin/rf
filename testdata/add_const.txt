@@ -1,0 +1,19 @@
+# add after a constant
+add C const D = 2
+-- x.go --
+package m
+
+const C = 1
+
+var X int
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,6 @@
+ package m
+
+ const C = 1
++const D = 2
+
+ var X int

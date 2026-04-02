@@ -1,0 +1,11 @@
+# ex: match key-value expression in composite literal
+ex {
+	type T struct{ X, Y int }
+	T{X: 1, Y: 2} -> T{X: 2, Y: 1}
+}
+-- x.go --
+package m
+
+type T struct{ X, Y int }
+
+var V = T{X: 1, Y: 2}

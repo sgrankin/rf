@@ -1,0 +1,17 @@
+# strict keyword with a non-pattern variable should error.
+ex {
+	strict f
+	var x int
+	f(x) -> x
+}
+-- file.go --
+package m
+
+func f(x int) {}
+
+func g() {
+	f(1)
+}
+-- stderr --
+strict: func m.f(x int) is not a pattern variable
+errors found during: ex { \ ...

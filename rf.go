@@ -83,7 +83,7 @@ var cmds = map[string]func(*refactor.Snapshot, string) error{
 	"inject":     cmdInject,
 }
 
-func run(rf *refactor.Refactor, script string) error {
+func run(rf *refactor.Refactor, script string) (err error) {
 	var snaps []*refactor.Snapshot
 
 	text := script
@@ -91,8 +91,7 @@ func run(rf *refactor.Refactor, script string) error {
 
 	defer func() {
 		if e := recover(); e != nil {
-			println("panic executing: " + lastCmd)
-			panic(e)
+			err = fmt.Errorf("internal error executing %s: %v", lastCmd, e)
 		}
 	}()
 
@@ -150,6 +149,8 @@ func run(rf *refactor.Refactor, script string) error {
 				resets++
 				resetErrs.Add(err)
 				continue
+			default:
+				return wrapError(err, "errors found during: %s", lastCmd)
 			}
 
 			if err := snap.Errors.Err(); err != nil {
@@ -358,16 +359,9 @@ func trimComments(line string) string {
 
 var isGoIdent = regexp.MustCompile(`^[\p{L}_][\p{L}\p{Nd}_]*$`)
 
-func topItem(item *refactor.Item) *refactor.Item {
-	for item != nil && item.Outer != nil {
-		item = item.Outer
-	}
-	return item
-}
-
 func cut(s, sep string) (before, after string, ok bool) {
-	if i := strings.Index(s, sep); i >= 0 {
-		return s[:i], s[i+len(sep):], true
+	if before0, after0, ok0 := strings.Cut(s, sep); ok0 {
+		return before0, after0, true
 	}
 	return s, "", false
 }
@@ -388,7 +382,7 @@ func cutLast(s, sep string) (before, after string, ok bool) {
 }
 
 func cmdDebug(snap *refactor.Snapshot, text string) error {
-	for _, f := range strings.Fields(text) {
+	for f := range strings.FieldsSeq(text) {
 		key, val, ok := cut(f, "=")
 		if !ok {
 			val = "1"

@@ -1,0 +1,11 @@
+ex {
+	import "fmt"
+}
+-- x.go --
+package p
+
+import "fmt"
+
+var _ = fmt.Println
+-- stderr --
+usage: no example rewrites

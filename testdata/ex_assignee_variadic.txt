@@ -1,0 +1,33 @@
+# ex: assigneeType via variadic function argument
+ex {
+	var x int
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+func F(x int) int    { return x }
+func G(x int) int    { return x + 1 }
+func V(xs ...int) {} 
+
+func H() {
+	V(F(1), F(2))
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,9 +1,9 @@
+ package m
+
+-func F(x int) int    { return x }
+-func G(x int) int    { return x + 1 }
+-func V(xs ...int) {}
++func F(x int) int { return x }
++func G(x int) int { return x + 1 }
++func V(xs ...int) {}
+
+ func H() {
+-	V(F(1), F(2))
++	V(G(1), G(2))
+ }

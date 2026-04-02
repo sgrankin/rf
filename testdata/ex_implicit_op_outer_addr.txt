@@ -1,0 +1,27 @@
+# ex: implicit & on pattern var cancels with outer * in substitution
+# Pattern p is *T, target v is T, so implicitOp='&'.
+# In substitution *p, the outer * cancels with the implicit &.
+ex {
+	import "bytes"
+	var p *bytes.Buffer
+	p.Len() -> len((*p).Bytes())
+}
+-- x.go --
+package p
+
+import "bytes"
+
+func f(b bytes.Buffer) int {
+	return b.Len()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ import "bytes"
+
+ func f(b bytes.Buffer) int {
+-	return b.Len()
++	return len((b).Bytes())
+ }

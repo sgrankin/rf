@@ -931,16 +931,6 @@ func (s *Snapshot) check(p *Package) {
 	s.r.cache.types[p.BuildID] = &cachedTypeInfo{p.Types, p.TypesInfo}
 }
 
-func opener(name string) func(string) (io.ReadCloser, error) {
-	return func(ignored string) (io.ReadCloser, error) {
-		f, err := os.Open(name)
-		if err != nil {
-			return nil, err
-		}
-		return f, nil
-	}
-}
-
 // Reset undoes any edits to s.
 func (s *Snapshot) Reset() {
 	for k, edit := range s.edits {
@@ -1202,7 +1192,7 @@ type jsonModuleError struct {
 // stringList flattens its arguments into a single []string.
 // Each argument in args must have type string or []string.
 // Copied from cmd/go.
-func stringList(args ...interface{}) []string {
+func stringList(args ...any) []string {
 	var x []string
 	for _, arg := range args {
 		switch arg := arg.(type) {

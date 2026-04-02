@@ -1,8 +1,13 @@
-ex { var s string }
+# ex: unused pattern variable triggers "declared and not used" suppression
+ex {
+	var x int
+	var y int
+	x -> y
+}
 -- x.go --
-package m
+package p
+
+var a = 1
 -- stderr --
-errors in example:
-declared and not used: s
-var s string
-errors found during: ex { var s string }
+x.go:3:9: pattern variable y not bound in match
+errors found during: ex { \ ...

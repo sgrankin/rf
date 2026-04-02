@@ -1,0 +1,16 @@
+# typeassert: error on non-== condition
+typeassert {
+	var i I
+	i.Kind() != 1 -> i.(T1)
+}
+-- x.go --
+package m
+
+type I interface {
+	Kind() int
+}
+
+type T1 struct{}
+func (T1) Kind() int { return 1 }
+-- stderr --
+usage: invalid typeassert condition (must be ==): i.Kind() != 1

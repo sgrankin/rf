@@ -1,0 +1,8 @@
+# inline: error when inlining unsupported kind
+inline F
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+errors found during: inline F: inline F: func not supported

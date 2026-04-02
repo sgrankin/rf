@@ -1,0 +1,7 @@
+mv F 123abc
+-- x.go --
+package p
+
+func F() {}
+-- stderr --
+usage: malformed replacement: not a valid Go identifier: 123abc

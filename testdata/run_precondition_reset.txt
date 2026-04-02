@@ -1,0 +1,9 @@
+# run: errPrecondition triggers snap.Reset (resets path)
+mv NotExist NewName
+-- x.go --
+package m
+
+var X = 1
+-- stderr --
+NotExist not found
+errors found during: mv NotExist NewName

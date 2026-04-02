@@ -1,0 +1,19 @@
+# rm: remove second name from multi-name var spec with values (rm.go:174-188)
+rm Y
+-- x.go --
+package m
+
+var (
+	X, Y, Z = 1, 2, 3
+)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ var (
+-	X, Y, Z = 1, 2, 3
++	X, Z = 1, 3
+ )

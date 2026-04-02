@@ -1,0 +1,34 @@
+# mv: move local short-decl var to struct field (removeDecl AssignStmt path)
+mv F.Y s.Y
+-- x.go --
+package m
+
+type T struct {
+	X int
+}
+
+var s T
+
+func F() int {
+	Y := 1
+	return Y
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,11 +2,12 @@
+
+ type T struct {
+ 	X int
++	Y int
+ }
+
+ var s T
+
+ func F() int {
+-	Y := 1
+-	return Y
++	s.Y = 1
++	return s.Y
+ }

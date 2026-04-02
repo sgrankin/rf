@@ -1,0 +1,12 @@
+# ex: prefix is not a package
+ex F {
+	var x int
+	x -> x + 1
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+-- stderr --
+F is not a package
+errors found during: ex F { \ ...

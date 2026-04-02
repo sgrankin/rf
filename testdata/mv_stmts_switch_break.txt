@@ -1,0 +1,23 @@
+# mv: switch with break is not terminating
+mv x.go:4,13 Compute
+-- x.go --
+package m
+
+func F(x int) int {
+	y := x + 1
+	switch {
+	case y == 1:
+		return 1
+	default:
+		if y > 10 {
+			break
+		}
+		return 2
+	}
+	return 0
+}
+-- stderr --
+x.go:4:1: multiple control flow exits from moved code:
+	x.go:7:3: return
+	x.go:14:1: implicit next statement
+errors found during: mv x.go:4,13 Compute

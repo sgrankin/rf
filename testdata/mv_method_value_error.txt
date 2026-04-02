@@ -1,0 +1,17 @@
+# mv: error when method value (not method call) cannot be rewritten
+mv T.M F
+-- x.go --
+package m
+
+type T struct{}
+
+func (t T) M() int { return 0 }
+
+var f = func() {
+	var t T
+	g := t.M
+	_ = g
+}
+-- stderr --
+x.go:9:9: cannot rewrite method value to function
+errors found during: mv T.M F

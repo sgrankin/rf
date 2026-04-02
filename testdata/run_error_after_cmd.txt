@@ -1,0 +1,20 @@
+# run: type-check error after first command causes Snapshots() failure with lastCmd set
+rm G
+rm H
+-- x.go --
+package p
+
+var G = 1
+var H = G
+-- stderr --
+x.go:3:9: undefined: G
+errors found after executing: rm G
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,4 +1,3 @@
+ package p
+
+-var G = 1
+ var H = G

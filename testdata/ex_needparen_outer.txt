@@ -1,0 +1,21 @@
+ex {
+	import "unsafe"
+	unsafe.Sizeof(0) -> 1 + 2
+}
+-- x.go --
+package p
+
+import "unsafe"
+
+var _ = unsafe.Sizeof(0) * 4
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,3 @@
+ package p
+
+-import "unsafe"
+-
+-var _ = unsafe.Sizeof(0) * 4
++var _ = (1 + 2) * 4

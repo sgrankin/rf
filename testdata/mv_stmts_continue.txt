@@ -1,0 +1,21 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(items []int) int {
+	total := 0
+	for _, v := range items {
+		// BEGIN
+		if v < 0 {
+			continue
+		}
+		total += v
+		// END
+	}
+	return total
+}
+-- stderr --
+x.go:7:1: multiple control flow exits from moved code:
+	x.go:8:4: continue
+	x.go:11:1: implicit next statement
+errors found during: mv F:/BEGIN/+0,/END/-0 New

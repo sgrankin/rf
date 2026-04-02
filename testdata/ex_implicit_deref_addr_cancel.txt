@@ -1,0 +1,27 @@
+# ex: implicit deref cancels with outer & in substitution
+ex {
+	var t T
+	t.X -> t.Y
+}
+-- x.go --
+package m
+
+type T struct {
+	X int
+	Y int
+}
+
+func F(p *T) int {
+	return p.X
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+ }
+
+ func F(p *T) int {
+-	return p.X
++	return p.Y
+ }

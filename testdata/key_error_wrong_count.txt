@@ -1,0 +1,14 @@
+# key: error when composite literal has wrong number of fields
+key S
+-- x.go --
+package m
+
+type S struct {
+	X int
+	Y int
+}
+
+var V = S{1}
+-- stderr --
+x.go:8:12: too few values in struct literal of type S
+errors found before executing script

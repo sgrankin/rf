@@ -1,0 +1,37 @@
+# typeassert: avoid keyword skips matching in avoided function
+typeassert {
+	var x I
+	avoid g
+	x.M() == 1 -> x.(m1)
+}
+-- x.go --
+package p
+
+type I interface{ M() int }
+type m1 int
+
+func (m1) M() int { return 1 }
+
+func f(x I) {
+	if x.M() == 1 {
+		_ = x
+	}
+}
+
+func g(x I) {
+	if x.M() == 1 {
+		_ = x
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,6 +7,7 @@
+
+ func f(x I) {
+ 	if x.M() == 1 {
++		x := x.(m1)
+ 		_ = x
+ 	}
+ }

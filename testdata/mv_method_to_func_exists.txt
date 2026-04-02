@@ -1,0 +1,14 @@
+mv T.DoWork DoWork
+-- x.go --
+package p
+
+type T struct{}
+
+func (t T) DoWork() int {
+	return 1
+}
+
+func DoWork() {}
+-- stderr --
+x.go:9:6: already have DoWork
+errors found during: mv T.DoWork DoWork

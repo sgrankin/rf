@@ -1,0 +1,10 @@
+# ex: error on malformed pattern expression
+ex {
+	1 +  -> 2
+}
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+usage: parsing 1 +  -> 2: 1:17: expected type, found 1

@@ -1,0 +1,29 @@
+# ex: implicit dereference cancels with inner address-of
+ex {
+	var t T
+	t.Val() -> NewVal(&t)
+}
+-- x.go --
+package p
+
+type T struct{ v int }
+
+func (t T) Val() int { return t.v }
+
+func NewVal(t *T) int { return t.v }
+
+func f() {
+	p := &T{1}
+	_ = p.Val()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -8,5 +8,5 @@
+
+ func f() {
+ 	p := &T{1}
+-	_ = p.Val()
++	_ = NewVal(p)
+ }

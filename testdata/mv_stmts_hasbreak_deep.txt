@@ -1,0 +1,49 @@
+# mvstmt: extract code with isTerm checking complex break patterns
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(x int, ch chan int) int {
+	// BEGIN
+	switch x {
+	case 0:
+		select {
+		case <-ch:
+			return 0
+		default:
+			return -1
+		}
+	case 1:
+		switch x {
+		case 1:
+			return 1
+		default:
+			return -1
+		}
+	default:
+		return x
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F(x int, ch chan int) int {
+ 	// BEGIN
++	return New(x, ch)
++	// END
++}
++
++func New(x int, ch chan int) int {
+ 	switch x {
+ 	case 0:
+ 		select {
+@@ -20,5 +25,4 @@
+ 	default:
+ 		return x
+ 	}
+-	// END
+ }

@@ -1,0 +1,18 @@
+# ex: package-qualified identifier shadowed when inlining into same package
+ex {
+	import pkg "m"
+	var x int
+	x + 1 -> pkg.G + x
+}
+-- x.go --
+package p
+
+var G = 10
+
+func f() int {
+	G := 5
+	return G + 1
+}
+-- stderr --
+x.go:7:9: G is shadowed in replacement - var G int
+errors found during: ex { \ ...

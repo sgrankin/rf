@@ -1,0 +1,41 @@
+# mv: code in for loop with switch containing break
+mv x.go:4,14 Compute
+-- x.go --
+package m
+
+func F(x int) {
+	for i := 0; i < 10; i++ {
+		switch x {
+		case 1:
+			if i > 5 {
+				break
+			}
+			x++
+		default:
+			x--
+		}
+	}
+	_ = x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package m
+
+ func F(x int) {
++	Compute(x)
++	_ = x
++}
++
++func Compute(x int) {
+ 	for i := 0; i < 10; i++ {
+ 		switch x {
+ 		case 1:
+@@ -12,5 +17,4 @@
+ 			x--
+ 		}
+ 	}
+-	_ = x
+ }

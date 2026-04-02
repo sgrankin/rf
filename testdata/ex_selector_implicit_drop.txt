@@ -1,0 +1,30 @@
+# ex: drop explicit * in selector when selector adds implicit * (ex.go:629-632)
+# When replx is *ptr (StarExpr) and it's substituted into a selector position,
+# the selector can add the implicit *, so the explicit * is dropped.
+ex {
+	var x T
+	F(x) -> x.Take()
+}
+-- x.go --
+package p
+
+type T int
+
+func (t T) Take() T { return t }
+func F(T)           {}
+
+func _() {
+	var ptr *T
+	F(*ptr)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,5 +7,5 @@
+
+ func _() {
+ 	var ptr *T
+-	F(*ptr)
++	ptr.Take()
+ }

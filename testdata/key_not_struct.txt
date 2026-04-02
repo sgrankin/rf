@@ -1,0 +1,8 @@
+key T
+-- x.go --
+package p
+
+type T int
+-- stderr --
+T is not a struct type
+errors found during: key T

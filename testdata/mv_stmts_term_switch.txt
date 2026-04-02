@@ -1,0 +1,31 @@
+# mv: extract code ending with terminating switch
+mv x.go:4,12 Compute
+-- x.go --
+package m
+
+func F(x int) int {
+	y := x + 1
+	switch {
+	case y == 1:
+		return 1
+	case y == 2:
+		return 2
+	default:
+		return 3
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,10 @@
+ package m
+
+ func F(x int) int {
++	return Compute(x)
++}
++
++func Compute(x int) int {
+ 	y := x + 1
+ 	switch {
+ 	case y == 1:

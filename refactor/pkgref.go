@@ -25,9 +25,9 @@ func (q QualName) Object() types.Object {
 		typ := q.Pkg.Types.Scope().Lookup(q.Name[:i])
 		if tn, ok := typ.(*types.TypeName); ok {
 			named := tn.Type().(*types.Named)
-			for j := 0; j < named.NumMethods(); j++ {
-				if named.Method(j).Name() == q.Name[i+1:] {
-					return named.Method(j)
+			for method := range named.Methods() {
+				if method.Name() == q.Name[i+1:] {
+					return method
 				}
 			}
 		}
@@ -255,11 +255,8 @@ func (s *Snapshot) addPkgDeps(g *DepsGraph, p *Package) {
 }
 
 func (s *Snapshot) addDeps(g *DepsGraph, from QualName, p *Package, n ast.Node) {
-	if p == nil {
-		panic("NO P")
-	}
 	if p.TypesInfo == nil {
-		panic("NO TYPESINFO")
+		panic("addDeps: package " + p.PkgPath + " has no TypesInfo")
 	}
 	Walk(n, func(stack []ast.Node) {
 		switch n := stack[0].(type) {

@@ -15,7 +15,6 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
-	"log"
 	"os"
 	"reflect"
 
@@ -180,11 +179,10 @@ func (m *matcher) matchExpr(x, y ast.Expr) bool {
 	}
 	switch x := x.(type) {
 	default:
-		panic(fmt.Sprintf("unhandled AST node type: %T", x))
+		return false // unhandled AST node type
 
 	case *ast.Ident:
-		log.Fatalf("unexpected Ident: %s", astString(m.fset, x))
-		panic("unreachable")
+		return false // unexpected Ident - should have been handled by wildcardObj
 
 	case *ast.BasicLit:
 		y := y.(*ast.BasicLit)
@@ -375,16 +373,9 @@ func (m *matcher) bindWildcard(xobj types.Object, y ast.Expr) bool {
 	// Check that y is assignable to the declared type of the param.
 	ytv := m.infoY.Types[y]
 	yt := ytv.Type
-	switch xobj := xobj.(type) {
+	switch xobj.(type) {
 	default:
-		panic("unreachable")
-	case *types.TypeName:
-		if !ytv.IsType() {
-			return false
-		}
-		// TODO(rsc): Returning true should only happen when a map entry has been created.
-		return m.assignableTo(yt, xobj.Type())
-
+		return false // unexpected wildcard object type
 	case *types.Var:
 		if !ytv.IsValue() {
 			return false
@@ -394,7 +385,7 @@ func (m *matcher) bindWildcard(xobj types.Object, y ast.Expr) bool {
 	if yt == nil {
 		// TODO(mdempsky): I think this should be impossible now
 		// thanks to the IsValue check above.
-		panic("unreachable?")
+		return false
 
 		// y has no type.
 		// Perhaps it is an *ast.Ellipsis in [...]T{}, or
@@ -441,7 +432,7 @@ func (m *matcher) assignableTo(V, T types.Type) bool {
 
 	if v, ok := Vu.(*types.Basic); ok && v.Info()&types.IsUntyped != 0 {
 		if m.isWildcardType(T) {
-			panic(fmt.Sprintf("assignableTo untyped: %v -> %v", V, T))
+			return false // untyped value cannot match wildcard type
 		}
 		return types.AssignableTo(Vu, Tu)
 	}
@@ -489,6 +480,10 @@ func (m *matcher) isWildcardType(t types.Type) bool {
 
 // identical reports whether x and y are identical types.
 func (m *matcher) identical(x, y types.Type) bool {
+	// Resolve type aliases so that IntAlias (= int) compares equal to int.
+	x = types.Unalias(x)
+	y = types.Unalias(y)
+
 	if x == y {
 		return true
 	}
@@ -588,7 +583,7 @@ func (m *matcher) identical(x, y types.Type) bool {
 		return x.Obj() == y.Obj()
 	}
 
-	panic("unreachable")
+	return false // unhandled type
 }
 
 func (m *matcher) implements(V types.Type, T *types.Interface) bool {
@@ -654,6 +649,7 @@ func (m *matcher) matchWildcardType(xname *types.Named, y types.Type) bool {
 		fmt.Fprintf(os.Stderr, "primary type match\n")
 	}
 
+	y = types.Unalias(y)
 	m.envT[name] = y // record binding
 
 	// Treat basic types as though they were unnamed.

@@ -1,0 +1,8 @@
+# mv: unimplemented replacement - global var to var inside function
+mv X F.x
+-- x.go --
+package m
+
+var X int
+
+func F() {}

@@ -1,0 +1,19 @@
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+func F(v any) {
+	x := 1
+	// BEGIN
+	switch v.(type) {
+	case int:
+		_ = x
+		return
+	default:
+		return
+	}
+	// END
+}
+-- stderr --
+x.go:6:1: extract type *types.Interface not implemented
+errors found during: mv F:/BEGIN/+0,/END/-0 New

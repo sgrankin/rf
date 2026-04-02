@@ -1,0 +1,15 @@
+# mv: convert function with *T parameter to method on *T
+mv F (*T).M
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F(t *T) int { return t.X }
+
+func G() int {
+	t := &T{X: 1}
+	return F(t)
+}
+-- stderr --
+usage: malformed replacement: not a valid Go identifier: (*T)

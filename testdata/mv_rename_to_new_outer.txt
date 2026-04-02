@@ -1,0 +1,12 @@
+# mv: rename old global to struct field path (newOuter != nil)
+mv X S.X
+-- x.go --
+package m
+
+type T struct{}
+
+var S T
+var X = 1
+-- stderr --
+x.go:6:5: removing declaration would drop initializer
+errors found during: mv X S.X

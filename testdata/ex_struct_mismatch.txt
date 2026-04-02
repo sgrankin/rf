@@ -1,0 +1,11 @@
+# ex: type wildcard matching with anonymous struct types exercises identical() struct comparison
+ex {
+	type T struct{ X int }
+	(*T)(nil) -> (*T)(nil)
+}
+-- x.go --
+package p
+
+var _ = (*struct{ X int })(nil)
+var _ = (*struct{ X, Y int })(nil)
+var _ = (*struct{ X string })(nil)

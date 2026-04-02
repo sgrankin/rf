@@ -1,0 +1,26 @@
+# ex: identical comparison of chan types
+ex {
+	var ch chan int
+	F(ch) -> G(ch)
+}
+-- x.go --
+package m
+
+func F(ch chan int) {}
+func G(ch chan int) {}
+
+func H() {
+	ch := make(chan int)
+	F(ch)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,5 +5,5 @@
+
+ func H() {
+ 	ch := make(chan int)
+-	F(ch)
++	G(ch)
+ }

@@ -1,0 +1,32 @@
+# ex: avoid with method via selector expression
+ex {
+	var x int
+	avoid T.M
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+type T struct{}
+func (T) M() {}
+
+func F(x int) int { return x }
+func G(x int) int { return x + 1 }
+
+func H() int { return F(1) }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,9 +1,10 @@
+ package m
+
+ type T struct{}
++
+ func (T) M() {}
+
+ func F(x int) int { return x }
+ func G(x int) int { return x + 1 }
+
+-func H() int { return F(1) }
++func H() int { return G(1) }

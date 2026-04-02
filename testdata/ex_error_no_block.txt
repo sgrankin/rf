@@ -1,0 +1,5 @@
+ex
+-- x.go --
+package m
+-- stderr --
+usage: missing block

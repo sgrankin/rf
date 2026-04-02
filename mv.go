@@ -11,7 +11,6 @@ import (
 	"go/token"
 	"go/types"
 	"path"
-	"reflect"
 	"regexp"
 	"strings"
 
@@ -49,12 +48,12 @@ func inScope(name string, obj types.Object) posChecker {
 func cmdMv(snap *refactor.Snapshot, args string) error {
 	args = strings.TrimSpace(args)
 	if args == "" {
-		return newErrUsage("usage: mv old... new")
+		return newErrUsage("mv old... new")
 	}
 
 	items, _ := snap.EvalList(args)
 	if len(items) < 2 {
-		return newErrUsage("usage: mv old... new")
+		return newErrUsage("mv old... new")
 	}
 
 	for _, item := range items[:len(items)-1] {
@@ -203,11 +202,15 @@ func cmdMv(snap *refactor.Snapshot, args string) error {
 			// But an empty struct type has no pos at all, so we have to
 			// use the pos of the declaration in which the struct appears.
 			var structPos token.Pos
-			switch typ := tvar.Type().(type) {
+			t := tvar.Type()
+			if ptr, ok := t.(*types.Pointer); ok {
+				t = ptr.Elem()
+			}
+			switch t := t.(type) {
 			case *types.Struct:
 				structPos = tvar.Pos()
 			case *types.Named:
-				structPos = typ.Obj().Pos()
+				structPos = t.Obj().Pos()
 			}
 
 			doc := removeDecl(snap, old)
@@ -274,7 +277,8 @@ func rewriteDefn(snap *refactor.Snapshot, old *refactor.Item, new string) {
 	outer := stack[1]
 	switch outer.(type) {
 	default:
-		panic(refactor.StackTypes(stack))
+		snap.ErrorAt(old.Obj.Pos(), "cannot rewrite definition (unexpected %T)", outer)
+		return
 	case *ast.FuncDecl, *ast.Field, *ast.AssignStmt:
 		// ok
 	case *ast.ValueSpec, *ast.TypeSpec:
@@ -323,14 +327,6 @@ func rewriteUses(snap *refactor.Snapshot, old *refactor.Item, new string, checkP
 		return
 	}
 	snap.ForEachFile(fix)
-}
-
-func StackTypes(list []ast.Node) string {
-	var types []reflect.Type
-	for _, n := range list {
-		types = append(types, reflect.TypeOf(n))
-	}
-	return fmt.Sprint(types)
 }
 
 // removeDecl removes the declaration of old,
@@ -536,7 +532,8 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 	fn := stack[0].(*ast.FuncType)
 
 	if len(decl.Type.Params.List) < 1 {
-		panic(fmt.Sprintf("function %q has no parameters", decl.Name.Name))
+		snap.ErrorAt(method.Pos(), "function %q has no parameters to use as receiver", decl.Name.Name)
+		return
 	}
 
 	// Determine receiver name from the parameter list
@@ -551,17 +548,22 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 	rcvrType := func() string {
 		switch pt := decl.Type.Params.List[0].Type.(type) {
 		default:
-			panic(fmt.Sprintf("unexpected parameter type: %T", pt))
+			snap.ErrorAt(method.Pos(), "unexpected parameter type %T for receiver", pt)
+			return ""
 		case *ast.Ident:
 			return pt.Name
 		case *ast.StarExpr:
 			ident, ok := pt.X.(*ast.Ident)
 			if !ok {
-				panic("parameter type is not an identifier")
+				snap.ErrorAt(method.Pos(), "parameter type is not an identifier")
+				return ""
 			}
 			return "*" + ident.Name
 		}
 	}()
+	if rcvrType == "" {
+		return
+	}
 
 	lo := fn.Func
 	hi := func() token.Pos {
@@ -598,7 +600,8 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 			if assignExpr != nil && selExpr != nil && strings.HasPrefix(rcvrType, "*") {
 				id, ok := selExpr.X.(*ast.Ident)
 				if !ok {
-					panic(fmt.Sprintf("unexpected type %T", selExpr.X))
+					snap.ErrorAt(selExpr.Pos(), "unexpected selector expression type %T", selExpr.X)
+					return
 				}
 				repl := fmt.Sprintf("(*%s.%s).%s", id.String(), rcvrType[1:], name)
 				snap.ReplaceNode(selExpr, repl)
@@ -629,7 +632,7 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 				}
 				return nil
 			}()
-			if call == nil || len(call.Args) >= 1 {
+			if call != nil && len(call.Args) >= 1 {
 				fn := func() *ast.Ident {
 					switch t := call.Fun.(type) {
 					case *ast.Ident:
@@ -658,7 +661,8 @@ func funcToMethod(snap *refactor.Snapshot, method *types.Func, name string) {
 			if selExpr, ok := stack[1].(*ast.SelectorExpr); ok {
 				id, ok := selExpr.X.(*ast.Ident)
 				if !ok {
-					panic(fmt.Sprintf("unexpected type %T", selExpr.X))
+					snap.ErrorAt(selExpr.Pos(), "unexpected selector expression type %T", selExpr.X)
+					return
 				}
 				if strings.HasPrefix(rcvrType, "*") {
 					repl := fmt.Sprintf("(*%s.%s).%s", id.String(), rcvrType[1:], name)

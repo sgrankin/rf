@@ -1,0 +1,35 @@
+# ex: matchSelectorExpr with method value and method expression
+ex {
+	var t T
+	t.Do -> t.Do2
+}
+-- x.go --
+package p
+
+type T struct{}
+
+func (T) Do()  {}
+func (T) Do2() {}
+
+func f() {
+	var v T
+	// method value - should match
+	fn := v.Do
+	_ = fn
+	// method expression - should not match (type vs value)
+	fn2 := T.Do
+	_ = fn2
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -8,7 +8,7 @@
+ func f() {
+ 	var v T
+ 	// method value - should match
+-	fn := v.Do
++	fn := v.Do2
+ 	_ = fn
+ 	// method expression - should not match (type vs value)
+ 	fn2 := T.Do

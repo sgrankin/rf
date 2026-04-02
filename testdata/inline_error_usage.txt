@@ -1,0 +1,5 @@
+inline
+-- x.go --
+package m
+-- stderr --
+usage: inline [-rm] decl...

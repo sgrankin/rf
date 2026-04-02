@@ -1,0 +1,28 @@
+# mv: move var to field in pointer-to-struct var
+mv X s.F
+-- x.go --
+package m
+
+type T struct{}
+
+var s *T
+var X int
+
+func G() int { return X }
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,8 +1,9 @@
+ package m
+
+-type T struct{}
++type T struct {
++	F int
++}
+
+ var s *T
+-var X int
+
+-func G() int { return X }
++func G() int { return s.F }

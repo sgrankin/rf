@@ -1,0 +1,17 @@
+mv x.go:5,8 helper
+-- x.go --
+package p
+
+func f(x int) int {
+	y := x + 1
+	if y > 0 {
+		return y
+	}
+	y++
+	return -y
+}
+-- stderr --
+x.go:5:1: multiple control flow exits from moved code:
+	x.go:6:3: return
+	x.go:9:1: implicit next statement
+errors found during: mv x.go:5,8 helper

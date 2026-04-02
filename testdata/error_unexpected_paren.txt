@@ -1,0 +1,6 @@
+# error: unexpected closing paren
+mv x.go:3) Y
+-- x.go --
+package m
+-- stderr --
+unexpected )

@@ -1,0 +1,12 @@
+# ex: check() reports error for unknown import in ex pattern
+ex {
+	import "nonexistent/pkg"
+	var x int
+	x -> x
+}
+-- x.go --
+package p
+
+func f(x int) { _ = x }
+-- stderr --
+usage: import "nonexistent/pkg" not available

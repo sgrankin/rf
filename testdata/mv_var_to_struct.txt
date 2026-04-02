@@ -1,0 +1,27 @@
+mv VT V.VT
+-- x.go --
+package m
+
+var VT int
+
+var V struct {
+	Value int
+}
+
+var _ = VT + V.Value
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,9 +1,8 @@
+ package m
+
+-var VT int
+-
+ var V struct {
+ 	Value int
++	VT    int
+ }
+
+-var _ = VT + V.Value
++var _ = V.VT + V.Value

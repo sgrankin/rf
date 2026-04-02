@@ -1,0 +1,37 @@
+# ex: compositeLitNeedsParen BlockStmt/CompositeLit cases (ex.go:864-872)
+# Composite literal safely enclosed by:
+# - a BlockStmt (via func literal body) — no if-condition ambiguity
+# - an outer CompositeLit (as an element) — safely enclosed by braces
+ex {
+	A -> B
+}
+-- x.go --
+package m
+
+type A struct{ X int }
+type B struct{ X int }
+
+type S struct{ V int }
+
+func f() {
+	// BlockStmt: composite lit inside func literal body in if condition
+	if func() int { return A{X: 1}.X }() > 0 {
+	}
+	// Outer CompositeLit: composite lit as element of another composite lit
+	_ = S{V: A{X: 1}.X}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,8 +7,8 @@
+
+ func f() {
+ 	// BlockStmt: composite lit inside func literal body in if condition
+-	if func() int { return A{X: 1}.X }() > 0 {
++	if func() int { return B{X: 1}.X }() > 0 {
+ 	}
+ 	// Outer CompositeLit: composite lit as element of another composite lit
+-	_ = S{V: A{X: 1}.X}
++	_ = S{V: B{X: 1}.X}
+ }

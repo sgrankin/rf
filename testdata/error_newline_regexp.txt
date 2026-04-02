@@ -1,0 +1,7 @@
+# error: newline in regexp
+mv x.go:/foo
+bar/ Y
+-- x.go --
+package m
+-- stderr --
+newline in regexp search: /foo

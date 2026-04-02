@@ -1,0 +1,25 @@
+# ex: assigneeType via return statement in function
+ex {
+	var x int
+	F(x) -> G(x)
+}
+-- x.go --
+package m
+
+func F(x int) int { return x }
+func G(x int) int { return x + 1 }
+
+func H() int {
+	return F(1)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+ func G(x int) int { return x + 1 }
+
+ func H() int {
+-	return F(1)
++	return G(1)
+ }

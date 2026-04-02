@@ -1,0 +1,8 @@
+key x
+-- x.go --
+package p
+
+var x int
+-- stderr --
+x is not a type
+errors found during: key x

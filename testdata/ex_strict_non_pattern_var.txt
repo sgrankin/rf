@@ -1,0 +1,13 @@
+# ex: strict with a non-pattern variable errors
+ex {
+	strict F
+	F() -> G()
+}
+-- x.go --
+package m
+
+func F() int { return 1 }
+func G() int { return 2 }
+-- stderr --
+strict: func m.F() int is not a pattern variable
+errors found during: ex { \ ...

@@ -1,0 +1,23 @@
+# ex: match involving map expression
+ex {
+	var m map[string]int
+	m["key"] -> m["other"]
+}
+-- x.go --
+package m
+
+func F() int {
+	m := map[string]int{"a": 1}
+	return m["key"]
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,5 +2,5 @@
+
+ func F() int {
+ 	m := map[string]int{"a": 1}
+-	return m["key"]
++	return m["other"]
+ }

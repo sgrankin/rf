@@ -1,0 +1,22 @@
+# ex: type pattern rewrite (DeclStmt path in check)
+ex {
+	[]int -> []string
+}
+-- x.go --
+package p
+
+type MySlice []int
+
+var _ []int
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package p
+
+-type MySlice []int
++type MySlice []string
+
+-var _ []int
++var _ []string

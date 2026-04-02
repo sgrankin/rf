@@ -1,0 +1,48 @@
+mv Helper m/sub
+-- a.go --
+package m
+
+func Helper() int {
+	return 42
+}
+
+var _ = Helper()
+-- sub/sub.go --
+package sub
+
+import "m"
+
+var _ = m.Helper()
+-- stdout --
+diff old/a.go new/a.go
+--- old/a.go
++++ new/a.go
+@@ -1,7 +1,5 @@
+ package m
+
+-func Helper() int {
+-	return 42
+-}
++import "m/sub"
+
+-var _ = Helper()
++var _ = sub.Helper()
+diff old/sub/a.go new/sub/a.go
+--- old/sub/a.go
++++ new/sub/a.go
+@@ -0,0 +1,5 @@
++package sub
++
++func Helper() int {
++	return 42
++}
+diff old/sub/sub.go new/sub/sub.go
+--- old/sub/sub.go
++++ new/sub/sub.go
+@@ -1,5 +1,3 @@
+ package sub
+
+-import "m"
+-
+-var _ = m.Helper()
++var _ = Helper()

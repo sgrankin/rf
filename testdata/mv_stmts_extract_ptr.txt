@@ -1,0 +1,26 @@
+# mvstmt: extract code returning pointer type (printType pointer coverage)
+mv x.go:4 NewFunc
+-- x.go --
+package m
+
+func F() {
+	x := new(int)
+	*x = 42
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,11 @@
+ package m
+
+ func F() {
+-	x := new(int)
++	x := NewFunc()
+ 	*x = 42
+ }
++
++func NewFunc() *int {
++	x := new(int)
++	return x
++}

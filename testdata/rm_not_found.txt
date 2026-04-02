@@ -1,0 +1,9 @@
+# rm: error when item not found
+rm Nonexistent
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+Nonexistent not found
+errors found during: rm Nonexistent

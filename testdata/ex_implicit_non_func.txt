@@ -1,0 +1,16 @@
+# implicit keyword with a non-single-param pattern var should error.
+ex {
+	var x int
+	implicit x
+	x -> x + 1
+}
+-- file.go --
+package m
+
+func f() {
+	x := 1
+	_ = x
+}
+-- stderr --
+implicit: var x int is not a single-parameter function-typed variable
+errors found during: ex { \ ...

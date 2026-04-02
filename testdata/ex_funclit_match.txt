@@ -1,0 +1,8 @@
+# ex: matchExpr FuncLit case (func literals never match)
+ex {
+	func() {} -> func() { println("hello") }
+}
+-- x.go --
+package p
+
+var f = func() {}

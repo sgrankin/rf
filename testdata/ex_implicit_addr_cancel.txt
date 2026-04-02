@@ -1,0 +1,26 @@
+ex {
+	var t *T
+	t.F -> t.G
+}
+-- x.go --
+package p
+
+type T struct {
+	F int
+	G int
+}
+
+func H(v T) int {
+	return v.F
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+ }
+
+ func H(v T) int {
+-	return v.F
++	return v.G
+ }

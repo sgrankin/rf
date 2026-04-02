@@ -1,0 +1,17 @@
+# ex: global identifier shadowed at replacement site triggers error
+ex {
+	var x int
+	x + 1 -> G + x
+}
+-- x.go --
+package p
+
+var G = 10
+
+func f() int {
+	G := 5
+	return G + 1
+}
+-- stderr --
+x.go:7:9: G is shadowed in replacement - var G int
+errors found during: ex { \ ...

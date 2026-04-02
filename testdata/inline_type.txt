@@ -1,0 +1,18 @@
+# inline: inline a type definition
+inline T
+-- x.go --
+package m
+
+type T = int
+
+var X T
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,4 +2,4 @@
+
+ type T = int
+
+-var X T
++var X int

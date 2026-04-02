@@ -1,0 +1,15 @@
+# rm: remove partial vars from grouped multi-name spec
+rm X
+-- x.go --
+package m
+
+var X, Y = 1, 2
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,3 +1,3 @@
+ package m
+
+-var X, Y = 1, 2
++var Y = 2

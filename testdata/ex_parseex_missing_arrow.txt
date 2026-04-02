@@ -1,0 +1,7 @@
+ex {
+	x + y
+}
+-- x.go --
+package p
+-- stderr --
+usage: parsing: x + y: missing -> in rewrite

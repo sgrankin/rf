@@ -1,0 +1,27 @@
+# ex: implicit wildcard function (check run + assigneeType path)
+ex {
+	var f func(int) int
+	var x int
+	implicit f
+	f(x) -> x + 1
+}
+-- x.go --
+package m
+
+func F() int {
+	var x int = 1
+	return x
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package m
+
+ func F() int {
+-	var x int = 1
+-	return x
++	var x int = 1 + 1
++	return x + 1
+ }

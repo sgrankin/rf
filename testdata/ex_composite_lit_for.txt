@@ -1,0 +1,31 @@
+# Test composite literal in for condition
+ex {
+	type T = []int
+	var x T
+	len(x) == 0 -> false
+}
+-- x.go --
+package m
+
+func F() {
+	var x []int
+	for len(x) == 0 {
+		break
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,7 +2,7 @@
+
+ func F() {
+ 	var x []int
+-	for len(x) == 0 {
++	for false {
+ 		break
+ 	}
+ }
+-- stderr --
+x.go:4:6: declared and not used: x
+errors found after executing: ex { \ ...

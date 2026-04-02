@@ -5,6 +5,7 @@
 package main
 
 import (
+	"go/ast"
 	"reflect"
 	"testing"
 )
@@ -31,6 +32,66 @@ var commonRangesTests = []struct {
 	{"zx", "wyx", []rangePair{{1, 2, 1}}},
 	{"zyx", "wx", []rangePair{{2, 1, 1}}},
 	{"a", "b", nil},
+}
+
+func TestReadLineTrailingComment(t *testing.T) {
+	tests := []struct {
+		text string
+		line string
+		rest string
+		err  string
+	}{
+		{"mv F G # trailing", "mv F G ", "", ""},
+		{"mv F G\nmv H I", "mv F G", "mv H I", ""},
+	}
+	for _, tt := range tests {
+		line, rest, err := readLine(tt.text)
+		var errStr string
+		if err != nil {
+			errStr = err.Error()
+		}
+		if line != tt.line || rest != tt.rest || errStr != tt.err {
+			t.Errorf("readLine(%q) = (%q, %q, %q), want (%q, %q, %q)",
+				tt.text, line, rest, errStr, tt.line, tt.rest, tt.err)
+		}
+	}
+}
+
+func TestTrimCommentsEscape(t *testing.T) {
+	tests := []struct {
+		in   string
+		want string
+	}{
+		{`hello # comment`, "hello"},
+		{`"hello # world"`, `"hello # world"`},
+		{`"esc\"ape" # comment`, `"esc\"ape"`},
+		{`'esc\'ape' # comment`, `'esc\'ape'`},
+		{"no comment", "no comment"},
+	}
+	for _, tt := range tests {
+		got := trimComments(tt.in)
+		if got != tt.want {
+			t.Errorf("trimComments(%q) = %q, want %q", tt.in, got, tt.want)
+		}
+	}
+}
+
+func TestImportPath(t *testing.T) {
+	tests := []struct {
+		value string
+		want  string
+	}{
+		{`"fmt"`, "fmt"},
+		{`"net/http"`, "net/http"},
+		{`bad`, ""},
+	}
+	for _, tt := range tests {
+		spec := &ast.ImportSpec{Path: &ast.BasicLit{Value: tt.value}}
+		got := importPath(spec)
+		if got != tt.want {
+			t.Errorf("importPath(%q) = %q, want %q", tt.value, got, tt.want)
+		}
+	}
 }
 
 func TestCommonRanges(t *testing.T) {

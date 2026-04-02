@@ -1,0 +1,8 @@
+ex {
+	var x int
+	x -> !
+}
+-- x.go --
+package p
+
+var a int = 1

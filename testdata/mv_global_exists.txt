@@ -1,0 +1,10 @@
+# mv where destination already exists should error
+mv X Y
+-- x.go --
+package m
+
+var X int
+var Y int
+-- stderr --
+x.go:4:5: already have Y
+errors found during: mv X Y

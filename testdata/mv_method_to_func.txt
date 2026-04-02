@@ -1,0 +1,32 @@
+mv T.DoWork DoWork
+-- x.go --
+package p
+
+type T struct{}
+
+func (t T) DoWork() int {
+	return 1
+}
+
+func f() {
+	var t T
+	_ = t.DoWork()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,11 +2,11 @@
+
+ type T struct{}
+
+-func (t T) DoWork() int {
++func DoWork(t T) int {
+ 	return 1
+ }
+
+ func f() {
+ 	var t T
+-	_ = t.DoWork()
++	_ = DoWork(t)
+ }

@@ -1,0 +1,15 @@
+# add: add to file (ItemFile path in cmdAddSub)
+add x.go var Z = 3
+-- x.go --
+package m
+
+var X = 1
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,3 +1,4 @@
+ package m
+
+ var X = 1
++var Z = 3

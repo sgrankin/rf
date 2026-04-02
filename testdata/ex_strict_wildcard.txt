@@ -1,0 +1,26 @@
+# ex: strict wildcard binding in bindWildcard
+ex {
+	var x int
+	strict x
+	x + 0 -> x
+}
+-- x.go --
+package m
+
+func F() int {
+	var x int = 1
+	var y int32 = 2
+	_ = y + 0
+	return x + 0
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,5 +4,5 @@
+ 	var x int = 1
+ 	var y int32 = 2
+ 	_ = y + 0
+-	return x + 0
++	return x
+ }

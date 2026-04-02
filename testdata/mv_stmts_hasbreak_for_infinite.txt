@@ -1,0 +1,36 @@
+# mvstmt: extract code with infinite for loop (isTerm for ForStmt)
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package m
+
+func F(x int) int {
+	// BEGIN
+	for {
+		if x > 0 {
+			return x
+		}
+		x++
+	}
+	// END
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,11 +2,15 @@
+
+ func F(x int) int {
+ 	// BEGIN
++	return New(x)
++	// END
++}
++
++func New(x int) int {
+ 	for {
+ 		if x > 0 {
+ 			return x
+ 		}
+ 		x++
+ 	}
+-	// END
+ }

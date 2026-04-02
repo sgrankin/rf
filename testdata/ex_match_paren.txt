@@ -1,0 +1,22 @@
+# ex: match through parenthesized expressions
+ex {
+	var x int
+	x + 1 -> x + 2
+}
+-- x.go --
+package m
+
+func F() int {
+	return (1) + 1
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F() int {
+-	return (1) + 1
++	return 1 + 2
+ }

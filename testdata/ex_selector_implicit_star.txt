@@ -1,0 +1,29 @@
+# ex: selector strips redundant dereference in substitution (ex.go:629-632)
+# When matched expression is *ptr and substitution uses it in selector context,
+# the selector applies implicit dereference, so explicit * is stripped.
+ex {
+	var t T
+	t.Val() -> t.v
+}
+-- x.go --
+package p
+
+type T struct{ v int }
+
+func (t T) Val() int { return t.v }
+
+func f() {
+	p := &T{1}
+	_ = p.Val()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+
+ func f() {
+ 	p := &T{1}
+-	_ = p.Val()
++	_ = p.v
+ }

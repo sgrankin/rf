@@ -1,0 +1,7 @@
+ex {
+	-> y
+}
+-- x.go --
+package p
+-- stderr --
+usage: missing pattern in example: -> y

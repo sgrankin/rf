@@ -1,0 +1,5 @@
+add
+-- x.go --
+package m
+-- stderr --
+usage: add address text...

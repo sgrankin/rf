@@ -1,0 +1,22 @@
+# mv: overlapping edits should produce error, not panic
+mv x.go:8,17 NewF
+-- x.go --
+package p
+
+var v any
+
+func f() {
+	println("before")
+	x := 1
+	switch v.(type) {
+	case int:
+		println(x)
+		return
+	case string:
+		println(x)
+		return
+	}
+	println("after")
+}
+-- stderr --
+internal error executing mv x.go:8,17 NewF: x.go:8:1: overlapping edits: [61,172)->"NewF(x)\n", [171,171)->"\n\nfunc NewF(x int) {\n\tswitch v.(type) {\n\tcase int:\n\t\tprintln(x)\n\t\treturn\n\tcase string:\n\t\tprintln(x)\n\t\treturn\n\t}\n\tprintln(\"after\")\n}\n}\n\n"

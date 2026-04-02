@@ -1,0 +1,26 @@
+# mv: move a global var to a struct field (rewriteDefn coverage)
+mv X S.X
+-- x.go --
+package m
+
+type S struct{}
+
+var X int
+
+func F(s *S) {
+	_ = X
+}
+-- stderr --
+x.go:8:8: S.X undefined (type S has no field or method X)
+errors found after executing: mv X S.X
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,5 +5,5 @@
+ var X int
+
+ func F(s *S) {
+-	_ = X
++	_ = S.X
+ }

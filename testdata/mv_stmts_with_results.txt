@@ -1,0 +1,28 @@
+# mv: extract statements that write to variables used later
+mv x.go:4,5 Compute
+-- x.go --
+package m
+
+func F(a int) int {
+	x := a + 1
+	y := x * 2
+	return x + y
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,12 @@
+ package m
+
+ func F(a int) int {
++	x, y := Compute(a)
++	return x + y
++}
++
++func Compute(a int) (_x int, _y int) {
+ 	x := a + 1
+ 	y := x * 2
+-	return x + y
++	return x, y
+ }

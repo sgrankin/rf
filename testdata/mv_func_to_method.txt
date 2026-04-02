@@ -1,62 +1,32 @@
-mv bar S.foo1
-mv baz S.foo2
-mv Qux S.Foo3
-mv quux S.foo4
--- p.go --
-package m
+mv DoWork T.DoWork
+-- x.go --
+package p
 
-type S struct{}
+type T struct{}
 
-func bar(s S) {}
-func baz(s *S) {}
-func Qux(s *S, x int) {}
-func quux(*S) {}
-
-func xyzzy() {
-	bar(S{})
-	g := &S{}
-	baz(g)
+func DoWork(t T) int {
+	return 1
 }
--- q/q.go --
-package q
 
-import "m"
-
-func plugh() {
-	s := &m.S{}
-	m.Qux(s, 0)
+func f() {
+	var t T
+	_ = DoWork(t)
 }
 -- stdout --
-diff old/p.go new/p.go
---- old/p.go
-+++ new/p.go
-@@ -2,13 +2,13 @@
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,11 +2,11 @@
 
- type S struct{}
+ type T struct{}
 
--func bar(s S) {}
--func baz(s *S) {}
--func Qux(s *S, x int) {}
--func quux(*S) {}
-+func (s S) foo1()       {}
-+func (s *S) foo2()      {}
-+func (s *S) Foo3(x int) {}
-+func (*S) foo4()        {}
-
- func xyzzy() {
--	bar(S{})
-+	S{}.foo1()
- 	g := &S{}
--	baz(g)
-+	g.foo2()
+-func DoWork(t T) int {
++func (t T) DoWork() int {
+ 	return 1
  }
-diff old/q/q.go new/q/q.go
---- old/q/q.go
-+++ new/q/q.go
-@@ -4,5 +4,5 @@
 
- func plugh() {
- 	s := &m.S{}
--	m.Qux(s, 0)
-+	s.Foo3(0)
+ func f() {
+ 	var t T
+-	_ = DoWork(t)
++	_ = t.DoWork()
  }

@@ -1,0 +1,27 @@
+# typeassert: switch with case that does not always return
+typeassert {
+	var i I
+	i.Kind() == 1 -> i.(T1)
+}
+-- x.go --
+package m
+
+type I interface {
+	Kind() int
+	Do()
+}
+
+type T1 struct{}
+func (T1) Kind() int { return 1 }
+func (T1) Do()       {}
+
+func F(x I) {
+	if x.Kind() != 1 {
+		switch 0 {
+		case 0:
+			return
+		default:
+		}
+	}
+	x.Do()
+}

@@ -1,0 +1,31 @@
+inject db caller
+-- x.go --
+package p
+
+var db int
+
+func DoSomething() int {
+	return db + 1
+}
+
+func caller() int {
+	return DoSomething()
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,10 +2,10 @@
+
+ var db int
+
+-func DoSomething() int {
+-	return db + 1
++func DoSomething(db_ int) int {
++	return db_ + 1
+ }
+
+ func caller() int {
+-	return DoSomething()
++	return DoSomething(db)
+ }

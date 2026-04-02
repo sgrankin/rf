@@ -1,0 +1,24 @@
+# ex: rewrite type with package-qualified replacement
+ex {
+	import "encoding/json"
+
+	type x json.RawMessage
+	x -> []byte
+}
+-- file.go --
+package m
+
+import "encoding/json"
+
+var x json.RawMessage
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,5 +1,3 @@
+ package m
+
+-import "encoding/json"
+-
+-var x json.RawMessage
++var x []byte

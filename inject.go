@@ -44,9 +44,11 @@ func cmdInject(snap *refactor.Snapshot, args string) error {
 	qv := snap.QualNameOf(targetObj)
 	if qv == (refactor.QualName{}) {
 		if items[0].Obj == nil {
-			panic("no obj for " + items[0].Name)
+			snap.ErrorAt(items[0].Pos, "cannot find object for %s", items[0].Name)
+		} else {
+			snap.ErrorAt(items[0].Pos, "cannot find qualified name for %s", items[0].Name)
 		}
-		panic("lost item: " + items[0].Name)
+		return nil
 	}
 	targetName := strings.ToLower(qv.Name)
 
@@ -58,7 +60,8 @@ func cmdInject(snap *refactor.Snapshot, args string) error {
 	add = func(q refactor.QualName) {
 		obj := q.Object()
 		if obj == nil {
-			panic("lost obj")
+			snap.ErrorAt(items[0].Pos, "internal error: lost object for %s", q.String())
+			return
 		}
 		if usesVar[obj] {
 			return
@@ -82,7 +85,8 @@ func cmdInject(snap *refactor.Snapshot, args string) error {
 	add = func(q refactor.QualName) {
 		obj := q.Object()
 		if obj == nil {
-			panic("lost obj: " + q.String())
+			snap.ErrorAt(items[0].Pos, "internal error: lost object for %s", q.String())
+			return
 		}
 		if converting[obj] != "" || !usesVar[obj] {
 			return
@@ -137,9 +141,6 @@ func cmdInject(snap *refactor.Snapshot, args string) error {
 		for _, decl := range file.Decls {
 			if fn, ok := decl.(*ast.FuncDecl); ok {
 				obj := pkg.TypesInfo.Defs[fn.Name]
-				if obj == nil {
-					fmt.Printf("MISSING %v\n", fn.Name)
-				}
 				if converting[obj] == "" {
 					continue
 				}

@@ -1,0 +1,23 @@
+# ex: match SendStmt via statement-level pattern
+ex {
+	var ch chan int
+	var x int
+	ch <- x -> ch <- x + 1
+}
+-- x.go --
+package m
+
+func F(ch chan int) {
+	ch <- 42
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ func F(ch chan int) {
+-	ch <- 42
++	ch <- 42 + 1
+ }

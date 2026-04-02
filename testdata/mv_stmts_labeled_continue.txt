@@ -1,0 +1,24 @@
+# mvstmt: labeled continue causes multiple control flow exits
+mv x.go:8,12 Extracted
+-- x.go --
+package m
+
+func F(s [][]int) int {
+	sum := 0
+Outer:
+	for _, row := range s {
+		for _, v := range row {
+			if v < 0 {
+				continue Outer
+			}
+			sum += v
+			return sum
+		}
+	}
+	return sum
+}
+-- stderr --
+x.go:14:37: missing ',' in parameter list
+also merging snapshots failed:
+x.go:14:37: missing ',' in parameter list
+errors found after executing: mv x.go:8,12 Extracted

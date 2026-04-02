@@ -1,0 +1,14 @@
+debug verbose
+ex {
+	var x int
+	x + 1 -> x + 2
+}
+-- x.go --
+package p
+
+type MyInt int
+
+func f() {
+	var x MyInt
+	_ = x + 1
+}

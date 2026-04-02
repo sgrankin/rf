@@ -1,0 +1,45 @@
+# mv: extract for body with continue as exit
+mv x.go:5,11 DoWork
+-- x.go --
+package m
+
+func F() {
+	for i := 0; i < 10; i++ {
+		x := i * 2
+		_ = x
+		if x > 5 {
+			continue
+		} else {
+			continue
+		}
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,12 +2,17 @@
+
+ func F() {
+ 	for i := 0; i < 10; i++ {
+-		x := i * 2
+-		_ = x
+-		if x > 5 {
+-			continue
+-		} else {
+-			continue
+-		}
++		DoWork(i)
++		continue
++	}
++}
++
++func DoWork(i int) {
++	x := i * 2
++	_ = x
++	if x > 5 {
++		return
++	} else {
++		return
+ 	}
+ }

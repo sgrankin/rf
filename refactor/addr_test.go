@@ -74,6 +74,40 @@ var addrToByteRangeTests = []struct {
 	{0, "/90/+-", 40, 45},
 
 	{0, "/^3/+/0/", 13, 14},
+
+	// $ address
+	{0, "$", 45, 45},
+	{0, "$-1", 40, 45},
+
+	// char offset addresses
+	{0, "#0", 0, 0},
+	{0, "#5", 5, 5},
+	{0, "#5,#10", 5, 10},
+
+	// mixed +/- with char offset
+	{0, "/50/+#2", 26, 26},
+	{0, "/50/-#2", 20, 20},
+
+	// address 0 without direction
+	{0, "0", 0, 0},
+	{0, "0,0", 0, 0},
+}
+
+var addrErrorTests = []struct {
+	addr string
+}{
+	{"@"},
+	{"/unterminated"},
+}
+
+func TestAddrToByteRangeErrors(t *testing.T) {
+	data := []byte(testInput)
+	for _, tt := range addrErrorTests {
+		_, _, err := addrToByteRange(tt.addr, 0, data)
+		if err == nil {
+			t.Errorf("addrToByteRange(%#q, 0, data) = nil error, want error", tt.addr)
+		}
+	}
 }
 
 func TestAddrToByteRange(t *testing.T) {

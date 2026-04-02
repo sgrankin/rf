@@ -1,0 +1,19 @@
+# rm: remove first name from multi-name field
+rm T.X
+-- x.go --
+package m
+
+type T struct {
+	X, Y int
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package m
+
+ type T struct {
+-	X, Y int
++	Y int
+ }

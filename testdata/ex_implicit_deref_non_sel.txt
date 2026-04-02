@@ -1,0 +1,27 @@
+# ex: implicit deref applied in non-selector substitution context
+ex {
+	var t T
+	F(t) -> G(t)
+}
+-- x.go --
+package m
+
+type T struct{ X int }
+
+func F(t T) int { return t.X }
+func G(t T) int { return t.X + 1 }
+
+func H(p *T) int {
+	return F(*p)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,5 +6,5 @@
+ func G(t T) int { return t.X + 1 }
+
+ func H(p *T) int {
+-	return F(*p)
++	return G(*p)
+ }

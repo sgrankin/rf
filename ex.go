@@ -258,7 +258,8 @@ func (ex *exArgs) check() error {
 				return
 			}
 			if strings.HasSuffix(err.Error(), " declared but not used") ||
-				strings.HasSuffix(err.Error(), " declared and not used") {
+				strings.HasSuffix(err.Error(), " declared and not used") ||
+				strings.Contains(err.Error(), "declared and not used:") {
 				return
 			}
 			if strings.HasSuffix(err.Error(), " (type) is not an expression") {
@@ -339,7 +340,7 @@ func (ex *exArgs) check() error {
 						}
 						return newErrPrecondition("%s: %v is not a single-parameter function-typed variable", kw, obj)
 					default:
-						panic("unreachable")
+						return newErrPrecondition("unknown keyword %s", kw)
 					}
 				}
 			}
@@ -385,8 +386,11 @@ func (ex *exArgs) check() error {
 func avoidOf(snap *refactor.Snapshot, avoids []types.Object, substInfo *types.Info, subst ast.Node) map[ast.Node]bool {
 	avoid := make(map[ast.Node]bool)
 	avoidObj := func(obj types.Object) {
+		if !obj.Pos().IsValid() {
+			return
+		}
 		stack := snap.SyntaxAt(obj.Pos())
-		for i := 0; i < len(stack); i++ {
+		for i := range stack {
 			switch n := stack[i].(type) {
 			case *ast.FuncDecl, *ast.GenDecl:
 				avoid[n] = true
@@ -431,6 +435,7 @@ func (ex *exArgs) run() {
 		env:     make(map[types.Object]envBind),
 		envT:    make(map[string]types.Type),
 		stricts: ex.stricts,
+		verbose: ex.snap.Refactor().Debug["verbose"] != "",
 	}
 
 	var avoid map[ast.Node]bool
@@ -557,6 +562,10 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 			case *types.Var:
 				b := m.env[xobj]
 				replx := b.matchExpr
+				if replx == nil {
+					m.snap.ErrorAt(matchPos, "pattern variable %s not bound in match", id.Name)
+					return
+				}
 
 				var outer ast.Node
 				if len(stack) >= 2 {
@@ -598,15 +607,15 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 					}
 				}
 				if op == '&' {
-					if addr, ok := replx.(*ast.UnaryExpr); ok && addr.Op == token.AND {
+					if star, ok := replx.(*ast.StarExpr); ok {
 						// Delete the inner *.
-						replx = addr.X
+						replx = star.X
 						op = 0
 					}
 					if px, ok := replx.(*ast.ParenExpr); ok {
-						if addr, ok := px.X.(*ast.UnaryExpr); ok && addr.Op == token.AND {
+						if star, ok := px.X.(*ast.StarExpr); ok {
 							// Delete the inner *.
-							replx = addr.X
+							replx = star.X
 							op = 0
 						}
 					}
@@ -647,7 +656,8 @@ func (m *matcher) applySubst(subst ast.Node, matchContext []ast.Node) (string, a
 					repl = "(" + repl + ")"
 				}
 			default:
-				panic("unreachable")
+				m.snap.ErrorAt(id.Pos(), "internal error: unexpected object type %T", xobj)
+				return
 			}
 			buf.Replace(id.Pos(), id.End(), repl)
 			return
@@ -720,7 +730,7 @@ func needParen(newX ast.Node, stack []ast.Node) bool {
 	var prec int
 	switch newX := newX.(type) {
 	default:
-		panic(fmt.Sprintf("needParen inner %T", newX))
+		return true // conservatively add parens for unknown node types
 	case *ast.SelectorExpr,
 		*ast.TypeAssertExpr,
 		*ast.CallExpr,
@@ -745,7 +755,7 @@ func needParen(newX ast.Node, stack []ast.Node) bool {
 
 	switch outer := outer.(type) {
 	default:
-		panic(fmt.Sprintf("needParen outer %T", outer))
+		return true // conservatively add parens for unknown outer context
 	case *ast.BinaryExpr:
 		return prec < outer.Op.Precedence()
 	case *ast.StarExpr, *ast.UnaryExpr:
@@ -910,10 +920,7 @@ func commonRanges(x, y string) []rangePair {
 
 	for i := len(x) - 1; i >= 0; i-- {
 		for j := len(y) - 1; j >= 0; j-- {
-			m := t[i+1][j]
-			if m < t[i][j+1] {
-				m = t[i][j+1]
-			}
+			m := max(t[i+1][j], t[i][j+1])
 			if x[i] == y[j] {
 				if m < t[i+1][j+1]+1 {
 					m = t[i+1][j+1] + 1
@@ -953,7 +960,7 @@ func commonRanges(x, y string) []rangePair {
 			j++
 
 		default:
-			panic("inconsistent")
+			return nil // inconsistent LCS result
 		}
 	}
 	return pairs
@@ -1000,7 +1007,7 @@ func assigneeType(stack []ast.Node, info *types.Info) types.Type {
 
 		tv, ok := info.Types[parent.Fun]
 		if !ok {
-			panic(fmt.Sprintf("missing type info for %v", parent.Fun))
+			return nil // missing type info
 		}
 
 		// Type conversion.
@@ -1167,6 +1174,7 @@ func (ex *exArgs) runTypeAssert() {
 		infoX:   ex.patternPkg.TypesInfo,
 		env:     make(map[types.Object]envBind),
 		envT:    make(map[string]types.Type),
+		verbose: snap.Refactor().Debug["verbose"] != "",
 	}
 
 	// TODO(rsc): This is almost as wrong as the other avoidOf call.
@@ -1237,8 +1245,10 @@ func typeAssertIf(m *matcher, stack []ast.Node, typeAsserts []example, done map[
 						list = stmt.List
 					case *ast.CaseClause:
 						list = stmt.Body
+					case *ast.CommClause:
+						list = stmt.Body
 					default:
-						panic(fmt.Sprintf("unexpected %T", stmt))
+						return // unexpected context; skip assertion
 					}
 					for j := 0; j < len(list); j++ {
 						if list[j] == stack[i-1] {
@@ -1391,14 +1401,6 @@ func alwaysReturns(list []ast.Stmt) bool {
 
 	// Otherwise the last statement is what matters.
 	stmt := list[len(list)-1]
-	for {
-		if l, ok := stmt.(*ast.LabeledStmt); ok {
-			stmt = l.Stmt
-			continue
-		}
-		break
-	}
-
 	switch stmt := stmt.(type) {
 	case *ast.ReturnStmt:
 		return true

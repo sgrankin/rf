@@ -1,0 +1,9 @@
+# inline: error when item not found
+inline Nonexistent
+-- x.go --
+package m
+
+var X = 1
+-- stderr --
+Nonexistent not found
+errors found during: inline Nonexistent

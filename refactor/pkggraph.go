@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"maps"
 	"sort"
 )
 
@@ -55,9 +56,7 @@ func (g *pkgGraph) packages() []*Package {
 func (g *pkgGraph) merge(g2 *pkgGraph) *pkgGraph {
 	g3 := newPkgGraph("merge")
 	// Clone g.
-	for pkgPath, pkg := range g.pkgByPath {
-		g3.pkgByPath[pkgPath] = pkg
-	}
+	maps.Copy(g3.pkgByPath, g.pkgByPath)
 	g3.nEdges = g.nEdges
 	// Add nodes from g2.
 	imports := make(map[string]bool)
@@ -285,11 +284,12 @@ func (g *pkgGraph) visitBottomUp(visit func(p *Package) error) error {
 
 	// Self-check.
 	if len(waiting) > 0 && !stopped {
-		fmt.Println("visit stalled:")
+		var buf bytes.Buffer
+		fmt.Fprintln(&buf, "visit stalled:")
 		for p, n := range waiting {
-			fmt.Println(p.PkgPath, n, rdeps[p])
+			fmt.Fprintln(&buf, p.PkgPath, n, rdeps[p])
 		}
-		panic("visit did not complete")
+		panic(buf.String())
 	}
 
 	return errs.Err()

@@ -1,0 +1,19 @@
+# add: add text after a type declaration
+add T // T is a type
+-- x.go --
+package m
+
+type T int
+
+func F() {}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,4 +2,6 @@
+
+ type T int
+
++// T is a type
++
+ func F() {}

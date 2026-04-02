@@ -1,0 +1,57 @@
+# typeassert: match in switch case
+typeassert {
+	var i I
+	i.Kind() == 1 -> i.(T1)
+	i.Kind() == 2 -> i.(T2)
+}
+-- x.go --
+package m
+
+type I interface {
+	Kind() int
+	Do()
+}
+
+type T1 struct{}
+func (T1) Kind() int { return 1 }
+func (T1) Do()       {}
+
+type T2 struct{}
+func (T2) Kind() int { return 2 }
+func (T2) Do()       {}
+
+func F(x I) {
+	switch x.Kind() {
+	case 1:
+		x.Do()
+	case 2:
+		x.Do()
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,18 +6,22 @@
+ }
+
+ type T1 struct{}
++
+ func (T1) Kind() int { return 1 }
+ func (T1) Do()       {}
+
+ type T2 struct{}
++
+ func (T2) Kind() int { return 2 }
+ func (T2) Do()       {}
+
+ func F(x I) {
+ 	switch x.Kind() {
+ 	case 1:
++		x := x.(T1)
+ 		x.Do()
+ 	case 2:
++		x := x.(T2)
+ 		x.Do()
+ 	}
+ }

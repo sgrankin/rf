@@ -1,0 +1,32 @@
+# ex: contextAppropriate prevents substituting multi-return where single expected
+ex {
+	f() -> g()
+}
+-- x.go --
+package p
+
+func f() int { return 1 }
+func g() (int, error) { return 1, nil }
+
+func h() {
+	x := f()
+	_ = x
+	println(f())
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,10 +1,10 @@
+ package p
+
+-func f() int { return 1 }
++func f() int          { return 1 }
+ func g() (int, error) { return 1, nil }
+
+ func h() {
+ 	x := f()
+ 	_ = x
+-	println(f())
++	println(g())
+ }

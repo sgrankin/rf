@@ -1,0 +1,7 @@
+mv X 123bad
+-- x.go --
+package m
+
+var X int
+-- stderr --
+usage: malformed replacement: not a valid Go identifier: 123bad

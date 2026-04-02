@@ -1,0 +1,15 @@
+# typeassert: LAND condition with both sides having false (NEQ) matches
+typeassert {
+	var x interface{}
+	x == nil -> x.(int)
+}
+-- x.go --
+package p
+
+func f(x interface{}) {
+	if x != nil && x != nil {
+		println("not nil")
+	} else {
+		println("nil")
+	}
+}

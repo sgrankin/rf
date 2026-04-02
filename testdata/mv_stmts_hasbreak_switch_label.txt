@@ -1,0 +1,46 @@
+# mvstmt: hasBreak returns true for labeled break in switch case
+mv F:/BEGIN/+0,/END/-0 New
+-- x.go --
+package p
+
+var done bool
+
+func F() {
+	// BEGIN
+	x := 1
+outer:
+	for {
+		switch {
+		case done:
+			break outer
+		default:
+			println(x)
+		}
+	}
+	// END
+	println("after")
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -4,6 +4,12 @@
+
+ func F() {
+ 	// BEGIN
++	New()
++	// END
++	println("after")
++}
++
++func New() {
+ 	x := 1
+ outer:
+ 	for {
+@@ -14,6 +20,4 @@
+ 			println(x)
+ 		}
+ 	}
+-	// END
+-	println("after")
+ }

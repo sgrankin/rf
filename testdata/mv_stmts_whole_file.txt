@@ -1,0 +1,11 @@
+mv x.go:1,$ NewFunc
+-- x.go --
+package p
+
+func f() {
+	x := 1
+	_ = x
+}
+-- stderr --
+x.go:1:1: cannot find code to move
+errors found during: mv x.go:1,$ NewFunc

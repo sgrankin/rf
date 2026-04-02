@@ -1,0 +1,25 @@
+mv x.go:5,7 Spin
+-- x.go --
+package p
+
+func F(ch chan int) {
+	x := 1
+	for {
+		ch <- x
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,10 @@
+
+ func F(ch chan int) {
+ 	x := 1
++	Spin(ch, x)
++}
++
++func Spin(ch chan int, x int) {
+ 	for {
+ 		ch <- x
+ 	}

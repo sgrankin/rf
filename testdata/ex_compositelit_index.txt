@@ -1,0 +1,30 @@
+# ex: compositeLitNeedsParen IndexExpr/SliceExpr/ArrayType/MapType cases (ex.go:847-858)
+# Composite literal used in index, slice, array length, and map key positions.
+# These enclose the composite literal safely (in square brackets).
+ex {
+	A -> B
+}
+-- x.go --
+package m
+
+type A struct{ X int }
+type B struct{ X int }
+
+func f() {
+	var a [10]int
+	_ = a[A{X: 1}.X]
+	_ = a[A{X: 1}.X:A{X: 2}.X]
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,6 +5,6 @@
+
+ func f() {
+ 	var a [10]int
+-	_ = a[A{X: 1}.X]
+-	_ = a[A{X: 1}.X:A{X: 2}.X]
++	_ = a[B{X: 1}.X]
++	_ = a[B{X: 1}.X:B{X: 2}.X]
+ }

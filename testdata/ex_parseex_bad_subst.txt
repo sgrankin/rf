@@ -1,0 +1,8 @@
+ex {
+	var x int
+	x -> +++
+}
+-- x.go --
+package p
+-- stderr --
+usage: parsing x -> +++: 1:17: expected type, found '++'

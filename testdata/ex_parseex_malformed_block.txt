@@ -1,0 +1,5 @@
+ex no-block
+-- x.go --
+package p
+-- stderr --
+usage: malformed block - missing { }

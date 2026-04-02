@@ -1,0 +1,13 @@
+# add: add after a function declaration
+add F func G() {}
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+x.go:3:12: expected '(', found G
+x.go:4:2: expected type, found ')'
+also merging snapshots failed:
+x.go:3:12: expected '(', found G
+x.go:4:2: expected type, found ')'
+errors found after executing: add F func G() {}

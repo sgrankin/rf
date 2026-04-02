@@ -1,0 +1,39 @@
+# mvstmt: extract code with chan, map, array, slice types
+mv x.go:/code/+0,/end/-0 NewFunc
+-- x.go --
+package m
+
+func F() {
+	// code
+	ch := make(chan int)
+	m := make(map[string]int)
+	a := [3]int{1, 2, 3}
+	s := []int{1, 2, 3}
+	_ = ch
+	_ = m
+	_ = a
+	_ = s
+	// end
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,6 +2,11 @@
+
+ func F() {
+ 	// code
++	NewFunc()
++	// end
++}
++
++func NewFunc() {
+ 	ch := make(chan int)
+ 	m := make(map[string]int)
+ 	a := [3]int{1, 2, 3}
+@@ -10,5 +15,4 @@
+ 	_ = m
+ 	_ = a
+ 	_ = s
+-	// end
+ }

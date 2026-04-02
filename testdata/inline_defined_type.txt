@@ -1,0 +1,11 @@
+# inline: error when trying to inline a defined type (not alias)
+inline T
+-- x.go --
+package m
+
+type T int
+
+var x T
+-- stderr --
+x.go:3:6: T is a defined type (not type alias)
+errors found during: inline T

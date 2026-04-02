@@ -1,0 +1,22 @@
+# rm: remove some vars from block, keeping others with no overlap
+rm X Z
+-- x.go --
+package m
+
+var (
+	X = 1
+	Y = 2
+	Z = 3
+)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,7 +1,5 @@
+ package m
+
+ var (
+-	X = 1
+ 	Y = 2
+-	Z = 3
+ )

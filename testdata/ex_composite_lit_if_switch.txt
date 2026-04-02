@@ -1,0 +1,19 @@
+# ex: composite literal needing paren in switch context
+ex {
+	var x struct{ V int }
+	x.V -> x.V
+}
+-- x.go --
+package m
+
+type S struct{ V int }
+
+func F() {
+	switch S{1}.V {
+	case 1:
+		println("one")
+	}
+}
+-- stderr --
+x.go:6:11: expected '}', found 1
+errors found before executing script

@@ -1,0 +1,31 @@
+# ex: contextAppropriate allows HasOk expressions in 2-variable assignment
+ex {
+	var m map[string]int
+	var k string
+	Get(m, k) -> m[k]
+}
+-- x.go --
+package p
+
+func Get(m map[string]int, k string) (int, bool) {
+	v, ok := m[k]
+	return v, ok
+}
+
+func f() {
+	m := map[string]int{"a": 1}
+	v, ok := Get(m, "a")
+	_, _ = v, ok
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -7,6 +7,6 @@
+
+ func f() {
+ 	m := map[string]int{"a": 1}
+-	v, ok := Get(m, "a")
++	v, ok := m["a"]
+ 	_, _ = v, ok
+ }

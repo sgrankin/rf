@@ -1,0 +1,5 @@
+mv
+-- x.go --
+package m
+-- stderr --
+usage: mv old... new

@@ -1,0 +1,5 @@
+inject
+-- x.go --
+package p
+-- stderr --
+usage: inject Var Func...

@@ -1,0 +1,23 @@
+# ex: match involving function type signatures
+ex {
+	var f func(int) string
+	f(1) -> f(2)
+}
+-- x.go --
+package m
+
+func F() string {
+	g := func(n int) string { return "" }
+	return g(1)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -2,5 +2,5 @@
+
+ func F() string {
+ 	g := func(n int) string { return "" }
+-	return g(1)
++	return g(2)
+ }

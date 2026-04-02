@@ -1,0 +1,5 @@
+ex {
+	var x int
+}
+-- x.go --
+package p

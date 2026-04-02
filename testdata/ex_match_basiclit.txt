@@ -1,0 +1,20 @@
+# ex: match and rewrite basic literals
+ex {
+	42 -> 43
+}
+-- x.go --
+package m
+
+var X = 42
+var Y = 42 + 1
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,4 +1,4 @@
+ package m
+
+-var X = 42
+-var Y = 42 + 1
++var X = 43
++var Y = 43 + 1

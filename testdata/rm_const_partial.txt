@@ -1,0 +1,19 @@
+rm A
+-- x.go --
+package p
+
+const (
+	A = 1
+	B = 2
+)
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,5 @@
+ package p
+
+ const (
+-	A = 1
+ 	B = 2
+ )

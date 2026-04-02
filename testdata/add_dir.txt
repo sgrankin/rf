@@ -1,0 +1,8 @@
+# add: add text after directory (error: no such directory)
+add foo/bar some text
+-- x.go --
+package m
+
+func F() {}
+-- stderr --
+errors found during: add foo/bar some text: no such directory foo/bar

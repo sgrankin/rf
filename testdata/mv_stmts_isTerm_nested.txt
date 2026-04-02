@@ -1,0 +1,41 @@
+# mv_stmts: isTerm on switch with nested control flow hitting hasBreak at depth>0
+mv x.go:4,22 G
+-- x.go --
+package m
+
+func F() {
+	switch {
+	default:
+		for {
+			break
+		}
+		switch {
+		default:
+			select {
+			default:
+				switch interface{}(0).(type) {
+				default:
+					if true {
+						return
+					}
+				}
+			}
+		}
+		return
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,10 @@
+ package m
+
+ func F() {
++	G()
++}
++
++func G() {
+ 	switch {
+ 	default:
+ 		for {

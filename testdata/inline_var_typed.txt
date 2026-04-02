@@ -1,0 +1,11 @@
+# inline of a var with declared type should error
+inline X
+-- x.go --
+package m
+
+var X int = 42
+
+var _ = X
+-- stderr --
+x.go:3:5: X has declared type
+errors found during: inline X

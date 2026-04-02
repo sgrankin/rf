@@ -1,0 +1,20 @@
+rm C
+-- x.go --
+package p
+
+const C = 1
+
+var _ = C
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,3 @@
+ package p
+
+-const C = 1
+-
+ var _ = C
+-- stderr --
+x.go:3:9: undefined: C
+errors found after executing: rm C

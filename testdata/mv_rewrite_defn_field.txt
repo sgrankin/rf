@@ -1,0 +1,21 @@
+mv S.X S.Y
+-- x.go --
+package p
+
+type S struct {
+	// X is a field.
+	X int
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,6 +1,6 @@
+ package p
+
+ type S struct {
+-	// X is a field.
+-	X int
++	// Y is a field.
++	Y int
+ }

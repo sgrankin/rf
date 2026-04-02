@@ -1,0 +1,18 @@
+# rm: delete using character offset address (#n)
+rm f:#5,#10
+-- file.go --
+package m
+
+func f() {
+	println("hello world")
+}
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,5 +1,4 @@
+ package m
+
+ func f() {
+-	println("hello world")
+ }

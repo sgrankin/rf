@@ -1,0 +1,21 @@
+# key: add keys to struct literal
+key T
+-- x.go --
+package m
+
+type T struct {
+	X int
+	Y int
+}
+
+var _ = T{1, 2}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -5,4 +5,4 @@
+ 	Y int
+ }
+
+-var _ = T{1, 2}
++var _ = T{X: 1, Y: 2}

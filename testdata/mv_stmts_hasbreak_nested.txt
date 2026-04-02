@@ -1,0 +1,37 @@
+# mv_stmts: hasBreak with nested control flow (select, typeswitch, labeled, if, range)
+mv x.go:8,28 G
+-- x.go --
+package m
+
+import "fmt"
+
+func F() {
+	var xs []int
+	for _, x := range xs {
+		switch x {
+		case 1:
+			break
+		}
+		select {
+		default:
+			break
+		}
+		var i interface{} = x
+		switch i.(type) {
+		case int:
+			break
+		}
+		if x > 0 {
+			break
+		}
+		for {
+			break
+		}
+		fmt.Println(x)
+	}
+}
+-- stderr --
+x.go:8:1: multiple control flow exits from moved code:
+	x.go:14:4: break
+	x.go:28:1: implicit next statement
+errors found during: mv x.go:8,28 G

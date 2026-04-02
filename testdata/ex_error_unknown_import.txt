@@ -1,0 +1,12 @@
+# ex: unknown import in pattern (ex.go:286)
+ex {
+	import "nosuchpkg/fake"
+	var x fake.T
+	x -> x
+}
+-- x.go --
+package m
+
+func f() {}
+-- stderr --
+usage: import "nosuchpkg/fake" not available

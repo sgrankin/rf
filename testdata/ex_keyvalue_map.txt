@@ -1,0 +1,22 @@
+# ex: assigneeType handles KeyValueExpr in map composite literal
+ex {
+	var x int
+	x -> int(x)
+}
+-- x.go --
+package p
+
+var M = map[string]int{
+	"a": 1,
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,5 +1,5 @@
+ package p
+
+ var M = map[string]int{
+-	"a": 1,
++	"a": int(1),
+ }

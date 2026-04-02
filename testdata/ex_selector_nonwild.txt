@@ -1,0 +1,24 @@
+# ex: selector expression where x.X is not a wildcard
+ex {
+	import "os"
+	os.Stdout.Write(nil) -> os.Stderr.Write(nil)
+}
+-- x.go --
+package p
+
+import "os"
+
+func f() {
+	os.Stdout.Write(nil)
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -3,5 +3,5 @@
+ import "os"
+
+ func f() {
+-	os.Stdout.Write(nil)
++	os.Stderr.Write(nil)
+ }

@@ -1,0 +1,17 @@
+# mv: error when struct var is shadowed at use site  
+mv X S.F
+-- x.go --
+package m
+
+type T struct{}
+
+var S T
+var X int
+
+func G() int {
+	S := 0
+	return X + S
+}
+-- stderr --
+x.go:10:9: S is shadowed
+errors found during: mv X S.F

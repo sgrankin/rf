@@ -1,0 +1,13 @@
+debug verbose
+ex {
+	var x int
+	strict x
+	x + 1 -> x + 2
+}
+-- x.go --
+package p
+
+func f() {
+	var s string
+	_ = s + "hello"
+}

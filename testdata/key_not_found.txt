@@ -1,0 +1,9 @@
+# key: error when type is not found
+key Unknown
+-- x.go --
+package m
+
+type T struct{}
+-- stderr --
+Unknown not found
+errors found during: key Unknown

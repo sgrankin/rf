@@ -1,0 +1,32 @@
+# ex: selector expression with type mismatch (different struct types)
+ex {
+	var t T1
+	t.X -> t.Y
+}
+-- x.go --
+package m
+
+type T1 struct {
+	X int
+	Y int
+}
+
+type T2 struct {
+	X int
+	Y int
+}
+
+func F(a T1, b T2) int {
+	return a.X + b.X
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -11,5 +11,5 @@
+ }
+
+ func F(a T1, b T2) int {
+-	return a.X + b.X
++	return a.Y + b.X
+ }

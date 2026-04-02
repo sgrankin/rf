@@ -1,0 +1,9 @@
+# ex: var with parse error
+ex {
+	var x !!!
+	x -> x
+}
+-- x.go --
+package m
+-- stderr --
+usage: parsing var x !!!: 1:15: expected type, found '!'

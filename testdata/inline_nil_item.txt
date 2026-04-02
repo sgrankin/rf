@@ -1,0 +1,9 @@
+inline X X:1,2
+-- x.go --
+package p
+
+const X = 1
+var _ = X
+-- stderr --
+cannot apply text range to const
+errors found during: inline X X:1,2
