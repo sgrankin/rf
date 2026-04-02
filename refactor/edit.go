@@ -186,8 +186,7 @@ func (s *Snapshot) CreateFile(p *Package, baseName, text string) *ast.File {
 
 	file, err := s.r.cache.newFileText(name, []byte(text), true)
 	if err != nil {
-		println("TEXT", text)
-		panic("CreateFile parse: " + err.Error())
+		panic(fmt.Sprintf("CreateFile parse %s: %v\n%s", baseName, err, text))
 	}
 	ed := &Edit{
 		Name:   name,

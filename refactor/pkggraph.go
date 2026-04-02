@@ -284,11 +284,12 @@ func (g *pkgGraph) visitBottomUp(visit func(p *Package) error) error {
 
 	// Self-check.
 	if len(waiting) > 0 && !stopped {
-		fmt.Println("visit stalled:")
+		var buf bytes.Buffer
+		fmt.Fprintln(&buf, "visit stalled:")
 		for p, n := range waiting {
-			fmt.Println(p.PkgPath, n, rdeps[p])
+			fmt.Fprintln(&buf, p.PkgPath, n, rdeps[p])
 		}
-		panic("visit did not complete")
+		panic(buf.String())
 	}
 
 	return errs.Err()

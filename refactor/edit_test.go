@@ -3,6 +3,7 @@ package refactor
 import (
 	"go/token"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -65,4 +66,83 @@ func TestBufferEditPanicEndLtPos(t *testing.T) {
 		}
 	}()
 	b.edit(5, 3, "x", false) // end < pos
+}
+
+func TestCreateFileParsePanic(t *testing.T) {
+	fset := token.NewFileSet()
+	cache := &buildCache{
+		fset:       fset,
+		files: make(map[string]*File),
+	}
+	r := &Refactor{cache: cache}
+	cache.r = r
+	s := &Snapshot{
+		fset:  fset,
+		r:     r,
+		files: map[string]*File{},
+		edits: map[string]*Edit{},
+	}
+	p := &Package{Dir: "/tmp/test", Name: "m"}
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Fatal("expected panic for parse error")
+		}
+		if !strings.Contains(r.(string), "CreateFile parse") {
+			t.Fatalf("unexpected panic: %v", r)
+		}
+	}()
+	s.CreateFile(p, "bad.go", "not valid go {{{{")
+}
+
+func TestCreateFileDefaultText(t *testing.T) {
+	fset := token.NewFileSet()
+	cache := &buildCache{
+		fset:       fset,
+		files: make(map[string]*File),
+	}
+	r := &Refactor{cache: cache}
+	cache.r = r
+	s := &Snapshot{
+		fset:  fset,
+		r:     r,
+		files: map[string]*File{},
+		edits: map[string]*Edit{},
+	}
+	p := &Package{Dir: "/tmp/test", Name: "mypkg"}
+	f := s.CreateFile(p, "new.go", "")
+	if f == nil {
+		t.Fatal("CreateFile returned nil")
+	}
+	if f.Name.Name != "mypkg" {
+		t.Errorf("package name = %q, want %q", f.Name.Name, "mypkg")
+	}
+}
+
+func TestCreateFileDuplicatePanic(t *testing.T) {
+	fset := token.NewFileSet()
+	cache := &buildCache{
+		fset:       fset,
+		files: make(map[string]*File),
+	}
+	r := &Refactor{cache: cache}
+	cache.r = r
+	s := &Snapshot{
+		fset:  fset,
+		r:     r,
+		files: map[string]*File{},
+		edits: map[string]*Edit{},
+	}
+	p := &Package{Dir: "/tmp/test", Name: "m"}
+	s.CreateFile(p, "x.go", "package m\n")
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Fatal("expected panic for duplicate file")
+		}
+		if !strings.Contains(r.(string), "created twice") {
+			t.Fatalf("unexpected panic: %v", r)
+		}
+	}()
+	s.CreateFile(p, "x.go", "package m\n")
 }

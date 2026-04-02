@@ -5,6 +5,7 @@
 package refactor
 
 import (
+	"fmt"
 	"go/ast"
 	"go/token"
 	"go/types"
@@ -100,8 +101,7 @@ func (s *Snapshot) FileAt(pos token.Pos) (*Package, *ast.File) {
 				start := token.Pos(tfile.Base())
 				end := start + token.Pos(tfile.Size())
 				if !(tfile.Base() <= int(pos) && int(pos) <= tfile.Base()+tfile.Size()) {
-					println("WEIRD", name, pos, start, end)
-					panic("POS")
+					panic(fmt.Sprintf("FileAt: pos %d outside file %s [%d, %d]", pos, name, start, end))
 				}
 				return p, f.Syntax
 			}

@@ -255,11 +255,8 @@ func (s *Snapshot) addPkgDeps(g *DepsGraph, p *Package) {
 }
 
 func (s *Snapshot) addDeps(g *DepsGraph, from QualName, p *Package, n ast.Node) {
-	if p == nil {
-		panic("NO P")
-	}
 	if p.TypesInfo == nil {
-		panic("NO TYPESINFO")
+		panic("addDeps: package " + p.PkgPath + " has no TypesInfo")
 	}
 	Walk(n, func(stack []ast.Node) {
 		switch n := stack[0].(type) {
