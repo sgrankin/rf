@@ -1,9 +1,7 @@
-# ex: compositeLitNeedsParen TypeAssertExpr case (ex.go:841-844)
-# A composite literal used as the expression (X) of a type assertion
-# inside an if condition. The type assertion encloses the composite literal
-# so the assertion parens prevent ambiguity.
-# Also covers the case where the composite literal IS the type assertion type
-# (unreachable in practice, but tested by having it as X instead).
+# ex: compositeLitNeedsParen with composite literal in type conversion arg (ex.go:835-840)
+# and BlockStmt enclosure via func literal (ex.go:865-866).
+# A composite literal used as argument in a type conversion or function call,
+# and inside a function literal body, in an if condition.
 ex {
 	A -> B
 }
@@ -16,10 +14,21 @@ type B struct{ X int }
 type I interface{}
 
 func f() {
-	if A{1}.(I) != nil {
+	_ = I(A{1})
+	if func() int { return A{X: 1}.X }() > 0 {
 	}
 }
--- stderr --
-x.go:9:9: expected ';', found '.'
-x.go:11:3: expected '}', found 'EOF'
-errors found before executing script
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -6,7 +6,7 @@
+ type I interface{}
+
+ func f() {
+-	_ = I(A{1})
+-	if func() int { return A{X: 1}.X }() > 0 {
++	_ = I(B{1})
++	if func() int { return B{X: 1}.X }() > 0 {
+ 	}
+ }
