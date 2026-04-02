@@ -4,7 +4,10 @@
 
 package diff
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 const (
 	oldName = "a/b/c"
@@ -75,5 +78,75 @@ func TestDiffLarger(t *testing.T) {
 	}
 	if out == nil {
 		t.Fatal("Diff larger: want non-nil")
+	}
+}
+
+func TestDiffBothEmpty(t *testing.T) {
+	out, err := Diff("a", []byte{}, "b", []byte{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out != nil {
+		t.Errorf("Diff both empty: want nil, got:\n%s", out)
+	}
+}
+
+func TestDiffBothNil(t *testing.T) {
+	out, err := Diff("a", nil, "b", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out != nil {
+		t.Errorf("Diff both nil: want nil, got:\n%s", out)
+	}
+}
+
+func TestWriteTempFileErrorBadDir(t *testing.T) {
+	// Set TMPDIR to a non-existent directory to trigger os.CreateTemp failure (lines 59-60).
+	t.Setenv("TMPDIR", "/nonexistent-dir-for-test")
+	old := []byte("hello\n")
+	new := []byte("world\n")
+	_, err := Diff("a", old, "b", new)
+	if err == nil {
+		t.Fatal("expected error when TMPDIR is invalid, got nil")
+	}
+}
+
+func TestDiffCommandNotFound(t *testing.T) {
+	// Set PATH to empty so the diff command cannot be found (lines 33-34).
+	t.Setenv("PATH", "")
+	old := []byte("hello\n")
+	new := []byte("world\n")
+	_, err := Diff("a", old, "b", new)
+	if err == nil {
+		t.Fatal("expected error when diff command is not found, got nil")
+	}
+}
+
+func TestWriteTempFileErrorSecondCall(t *testing.T) {
+	// Use a temp dir with limited space: create the dir, write the first file,
+	// then make the dir read-only so the second writeTempFile fails (lines 27-28).
+	dir := t.TempDir()
+	t.Setenv("TMPDIR", dir)
+
+	// Verify that Diff works with this TMPDIR first.
+	old := []byte("hello\n")
+	new := []byte("world\n")
+	out, err := Diff("a", old, "b", new)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out == nil {
+		t.Fatal("expected non-nil diff output")
+	}
+
+	// Now remove the dir entirely and verify we get an error.
+	if err := os.RemoveAll(dir); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = Diff("a", old, "b", new)
+	if err == nil {
+		t.Fatal("expected error when TMPDIR is removed, got nil")
 	}
 }

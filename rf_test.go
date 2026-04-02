@@ -327,6 +327,43 @@ func TestMainDiffFlag(t *testing.T) {
 	}
 }
 
+// TestMainWriteMode tests that rf without -diff writes files.
+func TestMainWriteMode(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module m\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "x.go"), []byte("package m\n\nvar X int\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	_, _, code := runRF(t, dir, "", "mv X Y")
+	if code != 0 {
+		t.Errorf("exit code = %d, want 0", code)
+	}
+	data, err := os.ReadFile(filepath.Join(dir, "x.go"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), "var Y int") {
+		t.Errorf("file contents = %q, want var Y int", data)
+	}
+}
+
+// TestMainAllPlatFlag tests that -allplat flag is accepted.
+func TestMainAllPlatFlag(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), []byte("module m\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "x.go"), []byte("package m\n\nvar X int\n"), 0666); err != nil {
+		t.Fatal(err)
+	}
+	_, _, code := runRF(t, dir, "", "-diff", "-allplat", "mv X Y")
+	if code != 0 {
+		t.Errorf("exit code = %d, want 0", code)
+	}
+}
+
 func trimSpace(data []byte) []byte {
 	lines := bytes.Split(data, []byte("\n"))
 	for i, line := range lines {

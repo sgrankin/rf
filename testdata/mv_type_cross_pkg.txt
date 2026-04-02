@@ -1,0 +1,65 @@
+mv Point m/sub
+-- a.go --
+package m
+
+type Point struct {
+	X int
+	Y int
+}
+
+var Origin = Point{0, 0}
+-- b.go --
+package m
+
+var P = Point{X: 1, Y: 2}
+-- sub/sub.go --
+package sub
+
+import "m"
+
+var _ = m.Point{1, 2}
+-- stdout --
+diff old/a.go new/a.go
+--- old/a.go
++++ new/a.go
+@@ -1,8 +1,5 @@
+ package m
+
+-type Point struct {
+-	X int
+-	Y int
+-}
++import "m/sub"
+
+-var Origin = Point{0, 0}
++var Origin = sub.Point{X: 0, Y: 0}
+diff old/b.go new/b.go
+--- old/b.go
++++ new/b.go
+@@ -1,3 +1,5 @@
+ package m
+
+-var P = Point{X: 1, Y: 2}
++import "m/sub"
++
++var P = sub.Point{X: 1, Y: 2}
+diff old/sub/a.go new/sub/a.go
+--- old/sub/a.go
++++ new/sub/a.go
+@@ -0,0 +1,6 @@
++package sub
++
++type Point struct {
++	X int
++	Y int
++}
+diff old/sub/sub.go new/sub/sub.go
+--- old/sub/sub.go
++++ new/sub/sub.go
+@@ -1,5 +1,3 @@
+ package sub
+
+-import "m"
+-
+-var _ = m.Point{1, 2}
++var _ = Point{X: 1, Y: 2}

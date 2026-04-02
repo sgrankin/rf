@@ -1,0 +1,76 @@
+mv x.go m/sub
+-- x.go --
+package m
+
+import "fmt"
+
+var Count int
+
+func Hello() string {
+	return fmt.Sprintf("hello %d", Count)
+}
+
+type Config struct {
+	Name string
+}
+-- main.go --
+package m
+
+var _ = Hello()
+
+var _ = Config{Name: "test"}
+
+var _ = Count
+-- sub/sub.go --
+package sub
+-- stdout --
+diff old/main.go new/main.go
+--- old/main.go
++++ new/main.go
+@@ -1,7 +1,9 @@
+ package m
+
+-var _ = Hello()
++import "m/sub"
+
+-var _ = Config{Name: "test"}
++var _ = sub.Hello()
+
+-var _ = Count
++var _ = sub.Config{Name: "test"}
++
++var _ = sub.Count
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -1,13 +0,0 @@
+-package m
+-
+-import "fmt"
+-
+-var Count int
+-
+-func Hello() string {
+-	return fmt.Sprintf("hello %d", Count)
+-}
+-
+-type Config struct {
+-	Name string
+-}
+diff old/sub/x.go new/sub/x.go
+--- old/sub/x.go
++++ new/sub/x.go
+@@ -0,0 +1,13 @@
++package sub
++
++import "fmt"
++
++var Count int
++
++func Hello() string {
++	return fmt.Sprintf("hello %d", Count)
++}
++
++type Config struct {
++	Name string
++}
