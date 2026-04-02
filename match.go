@@ -373,16 +373,9 @@ func (m *matcher) bindWildcard(xobj types.Object, y ast.Expr) bool {
 	// Check that y is assignable to the declared type of the param.
 	ytv := m.infoY.Types[y]
 	yt := ytv.Type
-	switch xobj := xobj.(type) {
+	switch xobj.(type) {
 	default:
 		return false // unexpected wildcard object type
-	case *types.TypeName:
-		if !ytv.IsType() {
-			return false
-		}
-		// TODO(rsc): Returning true should only happen when a map entry has been created.
-		return m.assignableTo(yt, xobj.Type())
-
 	case *types.Var:
 		if !ytv.IsValue() {
 			return false

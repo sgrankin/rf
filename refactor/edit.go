@@ -362,25 +362,6 @@ func (s *Snapshot) Write() error {
 	return nil
 }
 
-func (s *Snapshot) Modified() []string {
-	seen := make(map[string]bool)
-	var paths []string
-	for _, p := range s.packages {
-		path := strings.TrimSuffix(p.PkgPath, "_test")
-		if seen[path] {
-			continue
-		}
-		for _, f := range p.Files {
-			if s.edits[f.Name] != nil {
-				seen[path] = true
-				paths = append(paths, path)
-				break
-			}
-		}
-	}
-	return paths
-}
-
 func (s *Snapshot) Gofmt() {
 	s.addImports()
 	for _, p := range s.packages {

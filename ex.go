@@ -1401,14 +1401,6 @@ func alwaysReturns(list []ast.Stmt) bool {
 
 	// Otherwise the last statement is what matters.
 	stmt := list[len(list)-1]
-	for {
-		if l, ok := stmt.(*ast.LabeledStmt); ok {
-			stmt = l.Stmt
-			continue
-		}
-		break
-	}
-
 	switch stmt := stmt.(type) {
 	case *ast.ReturnStmt:
 		return true

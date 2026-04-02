@@ -141,9 +141,6 @@ func cmdInject(snap *refactor.Snapshot, args string) error {
 		for _, decl := range file.Decls {
 			if fn, ok := decl.(*ast.FuncDecl); ok {
 				obj := pkg.TypesInfo.Defs[fn.Name]
-				if obj == nil {
-					fmt.Printf("MISSING %v\n", fn.Name)
-				}
 				if converting[obj] == "" {
 					continue
 				}

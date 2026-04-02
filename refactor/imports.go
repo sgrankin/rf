@@ -41,7 +41,7 @@ func deleteUnusedImports(s *Snapshot, p *Package, text []byte) []byte {
 		if name == "" {
 			p1 := s.pkgGraph.byPath(p.ImportMap.Lookup(importPath))
 			if p1 == nil {
-				panic("NO IMPORT: " + importPath)
+				return false // unknown import; assume used
 			}
 			name = p1.Name
 		}
@@ -164,8 +164,8 @@ func importPath(s *ast.ImportSpec) string {
 func (s *Snapshot) NeedImport(pos token.Pos, id string, pkg *types.Package) string {
 	_, file := s.FileAt(pos)
 	if file == nil {
-		fmt.Println(s.Position(pos))
-		panic("no file")
+		s.ErrorAt(pos, "cannot find file for import")
+		return pkg.Name()
 	}
 
 	want := id

@@ -1,6 +1,20 @@
 package refactor
 
-import "testing"
+import (
+	"go/types"
+	"testing"
+)
+
+func TestEvalScopeUnhandledType(t *testing.T) {
+	// evalScope should return ItemNotFound for unhandled object types
+	// (e.g. *types.Builtin, *types.Label) instead of crashing.
+	scope := types.Universe
+	// "len" is a *types.Builtin in the universe scope.
+	item := evalScope(scope, "len")
+	if item.Kind != ItemNotFound {
+		t.Errorf("evalScope(universe, 'len') = %v, want ItemNotFound", item.Kind)
+	}
+}
 
 func TestItemKindString(t *testing.T) {
 	tests := []struct {

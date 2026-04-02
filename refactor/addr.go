@@ -10,7 +10,6 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
-	"log"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -279,8 +278,7 @@ func evalScope(scope *types.Scope, expr string) *Item {
 	obj := scope.Lookup(expr)
 	switch obj := obj.(type) {
 	default:
-		log.Fatalf("%s is a %T, unimplemented", expr, obj)
-		return nil
+		return &Item{Kind: ItemNotFound, Name: expr}
 	case nil:
 		return &Item{Kind: ItemNotFound, Name: expr}
 	case *types.TypeName:
@@ -307,9 +305,7 @@ func evalPackage(p *Package, outer *Item, name string) *Item {
 		if ptr, ok := typ.(*types.Pointer); ok {
 			typ = ptr.Elem().Underlying()
 		}
-		switch typ := typ.(type) {
-		default:
-			fmt.Printf("LOOKUP IN %T\n", typ)
+		switch typ.(type) {
 		case *types.Struct, *types.Interface:
 			return lookupTypeX(p, outer, typ, name)
 		}
