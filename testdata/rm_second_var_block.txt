@@ -1,5 +1,5 @@
-# Remove one var from a multi-name spec inside a var block.
-rm X
+# Remove second var from a multi-name spec inside a var block.
+rm Y
 -- file.go --
 package m
 
@@ -15,5 +15,5 @@ diff old/file.go new/file.go
 
  var (
 -	X, Y = 1, 2
-+	Y = 2
++	X = 1
  )

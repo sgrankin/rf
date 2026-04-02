@@ -1,0 +1,29 @@
+# implicitOp='&' (pattern has *T, target has T) and replacement is *ptr.
+# The & and * should cancel.
+ex {
+	var p *S
+	p.F -> NewF(p.F)
+}
+-- file.go --
+package m
+
+type S struct{ F int }
+
+func NewF(v int) int { return v + 1 }
+
+var g S
+
+func example() {
+	_ = g.F
+}
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -7,5 +7,5 @@
+ var g S
+
+ func example() {
+-	_ = g.F
++	_ = NewF(g.F)
+ }
