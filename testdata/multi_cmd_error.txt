@@ -1,0 +1,17 @@
+# A second command should fail if the first command introduced compile errors.
+rm F
+rm G
+-- file.go --
+package m
+
+func F() int { return G() }
+func G() int { return 1 }
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,4 +1 @@
+ package m
+-
+-func F() int { return G() }
+-func G() int { return 1 }
