@@ -1,0 +1,18 @@
+# mvstmt: break with label referring to enclosing labeled loop
+mv x.go:6,8 Extracted
+-- x.go --
+package m
+
+func f() {
+outer:
+	for i := 0; i < 10; i++ {
+		if i == 5 {
+			break outer
+		}
+	}
+}
+-- stderr --
+x.go:10:37: missing ',' in parameter list
+also merging snapshots failed:
+x.go:10:37: missing ',' in parameter list
+errors found after executing: mv x.go:6,8 Extracted

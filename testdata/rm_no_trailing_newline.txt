@@ -1,0 +1,16 @@
+# rm: remove declaration at end of file with no trailing newline
+rm Y
+-- file.go --
+package m
+
+var X = 1
+var Y = 2
+-- stdout --
+diff old/file.go new/file.go
+--- old/file.go
++++ new/file.go
+@@ -1,4 +1,3 @@
+ package m
+
+ var X = 1
+-var Y = 2
