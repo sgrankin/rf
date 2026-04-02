@@ -1,0 +1,36 @@
+# Type assertion in a select statement's CommClause.
+typeassert {
+	var i I
+	i.M() == 1 -> i.(m1)
+}
+-- x.go --
+package p
+
+type I interface {
+	M() int
+}
+type m1 int
+
+func (m1) M() int { return 1 }
+
+func _(x I, ch chan int) {
+	select {
+	case <-ch:
+		if x.M() != 1 {
+			return
+		}
+		_ = x
+	}
+}
+-- stdout --
+diff old/x.go new/x.go
+--- old/x.go
++++ new/x.go
+@@ -13,6 +13,7 @@
+ 		if x.M() != 1 {
+ 			return
+ 		}
++		x := x.(m1)
+ 		_ = x
+ 	}
+ }
