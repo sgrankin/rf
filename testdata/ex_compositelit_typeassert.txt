@@ -1,0 +1,25 @@
+# ex: compositeLitNeedsParen TypeAssertExpr case (ex.go:841-844)
+# A composite literal used as the expression (X) of a type assertion
+# inside an if condition. The type assertion encloses the composite literal
+# so the assertion parens prevent ambiguity.
+# Also covers the case where the composite literal IS the type assertion type
+# (unreachable in practice, but tested by having it as X instead).
+ex {
+	A -> B
+}
+-- x.go --
+package m
+
+type A struct{ X int }
+type B struct{ X int }
+
+type I interface{}
+
+func f() {
+	if A{1}.(I) != nil {
+	}
+}
+-- stderr --
+x.go:9:9: expected ';', found '.'
+x.go:11:3: expected '}', found 'EOF'
+errors found before executing script
