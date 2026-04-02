@@ -10,11 +10,14 @@ See `doc.go` for full documentation.
 ## Build & Test
 
 ```
-go test ./...                          # run all tests
+make test                              # run all tests, show uncovered lines
 go test -run TestRun/mv_func.txt       # run a single testdata case
 go test -run TestRun -u                # update expected test output
-go test -coverprofile=c.out ./...      # coverage
 ```
+
+`make test` runs tests with `-coverpkg=./...` so cross-package coverage
+is counted (e.g. `rsc.io/rf` tests exercising `rsc.io/rf/refactor`), then
+pipes the profile through `uncovered.sh` to print uncovered line ranges.
 
 ## Network
 
